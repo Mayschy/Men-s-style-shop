@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 
-const BASE_URL = 'http://localhost:3000/api/products';
+const BASE_URL = 'https://men-style-shop.onrender.com/api/products';
 
 
 const colorPrimary = '#333A40'; 

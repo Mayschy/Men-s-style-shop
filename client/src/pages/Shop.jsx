@@ -15,7 +15,7 @@ const Shop = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch("http://localhost:3000/api/products");
+        const response = await fetch("https://men-style-shop.onrender.com/api/products");
 
         if (!response.ok) {
           throw new Error("Failed to fetch products from server");
@@ -38,9 +38,9 @@ const Shop = () => {
   const handleAddToCart = async (productId, productName) => {
     const result = await addToCart(productId, 1);
     if (result.success) {
-      alert(`✅ ${productName} добавлен в корзину!`);
+      alert(`✅ ${productName}`);
     } else {
-      alert(`❌ Ошибка при добавлении в корзину: ${result.error}`);
+      alert(`❌ ${result.error}`);
     }
   };
 

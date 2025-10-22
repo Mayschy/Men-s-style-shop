@@ -36,7 +36,7 @@ const Auth = () => {
     e.preventDefault();
     setError("");
 
-    const API_BASE_URL = "http://localhost:3000";
+    const API_BASE_URL = "https://men-style-shop.onrender.com";
 
     if (isLogin) {
       const result = await login(email, password);

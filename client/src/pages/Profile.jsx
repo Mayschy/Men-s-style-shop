@@ -56,7 +56,7 @@ const Profile = () => {
     country: "",
   });
 
-  const API_BASE_URL = "http://localhost:3000";
+  const API_BASE_URL = "https://men-style-shop.onrender.com";
 
   const fetchProfile = async () => {
     setLoading(true);
