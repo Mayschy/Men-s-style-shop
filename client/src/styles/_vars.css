@@ -1,0 +1,18 @@
+:root {
+
+    --color-primary: #533016;       
+    --color-prim2:rgb(48, 28, 12);  
+    --color-secondary: #cebe66;    
+    --color-text-dark: #333333;    
+    --color-text-light: #666666;   
+    --color-background: #F8F8F8;  
+    --color-border: #D3D3D3;        
+    --color-navbar-bg: #FFFFFF;    
+    
+
+    --font-primary: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 32px;
+}

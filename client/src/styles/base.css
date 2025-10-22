@@ -1,0 +1,27 @@
+@import './_vars.css';
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-primary);
+    line-height: 1.5;
+    color: var(--color-text-dark);
+    background-color: var(--color-background);
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+/* Скрываем стандартные маркеры у списков */
+ul, ol {
+    list-style: none;
+}
