@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext"; // Для получения user и токена
+import { useAuth } from "../context/AuthContext"; 
 
-// --- СТИЛЕВЫЕ КОМПОНЕНТЫ ---
 
-// Общий стиль кнопки (для сохранения)
 const primaryButtonStyle = {
   padding: "10px 20px",
-  backgroundColor: "var(--color-primary)", // Темно-коричневый
+  backgroundColor: "var(--color-primary)", 
   color: "white",
   border: "none",
   borderRadius: "4px",
@@ -15,29 +13,28 @@ const primaryButtonStyle = {
   transition: "background-color 0.3s ease",
 };
 
-// Стиль для поля ввода/просмотра
+
 const inputStyle = {
   padding: "12px",
   border: "1px solid var(--color-border)",
   borderRadius: "4px",
   backgroundColor: "white",
-  width: "100%", // Занимает всю доступную ширину
+  width: "100%", 
   boxSizing: "border-box",
 };
 
-// Стиль для контейнеров (Карточек)
+
 const cardStyle = {
-  backgroundColor: "var(--color-background)", // Светлый фон
+  backgroundColor: "var(--color-background)", 
   border: "1px solid var(--color-border)",
   borderRadius: "8px",
   padding: "30px",
-  boxShadow: "0 4px 10px rgba(0,0,0,0.05)", // Легкая тень
+  boxShadow: "0 4px 10px rgba(0,0,0,0.05)", 
 };
 
-// --- ОСНОВНОЙ КОМПОНЕНТ ---
+
 
 const Profile = () => {
-  // ✅ ИСПРАВЛЕНИЕ: Мы зависим от объекта user из контекста
   const { user, logout } = useAuth();
 
   const [profileData, setProfileData] = useState(null);
@@ -46,7 +43,6 @@ const Profile = () => {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("details");
 
-  // Локальные состояния для формы редактирования
   const [editForm, setEditForm] = useState({
     firstName: "",
     lastName: "",

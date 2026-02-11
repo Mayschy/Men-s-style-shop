@@ -9,6 +9,7 @@ const { admin } = require('../middleware/adminMiddleware');
 
 
 router.get('/', productController.getProducts);
+router.get('/:id', productController.getProductById);
 
 router.post('/', protect, admin, productController.addProduct);
 

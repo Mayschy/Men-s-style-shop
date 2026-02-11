@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
-import { useAuth } from "../context/AuthContext";
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("all");
-
-  const { addToCart } = useAuth();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -34,15 +31,6 @@ const Shop = () => {
     };
     fetchProducts();
   }, []);
-
-  const handleAddToCart = async (productId, productName) => {
-    const result = await addToCart(productId, 1);
-    if (result.success) {
-      alert(`✅ ${productName}`);
-    } else {
-      alert(`❌ ${result.error}`);
-    }
-  };
 
   const filteredProducts =
     filter === "all" ? products : products.filter((p) => p.category === filter);
@@ -124,7 +112,6 @@ const Shop = () => {
           <ProductCard
             key={product._id}
             product={product}
-            onAddToCart={() => handleAddToCart(product._id, product.name)}
           />
         ))}
       </div>
