@@ -1,8 +1,7 @@
 import React from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-
-const styles = {};
+import "./Cart.css";
 
 const Cart = () => {
   const { user, cart, removeFromCart } = useAuth();
@@ -10,12 +9,17 @@ const Cart = () => {
 
   if (!user) {
     return (
-      <p
-        className="page-content"
-        style={{ textAlign: "center", marginTop: "50px" }}
-      >
-        Please log in to view your cart.
-      </p>
+      <div className="cart-container">
+        <div className="auth-message">
+          <p>Please log in to view your cart.</p>
+          <button 
+            className="btn-primary"
+            onClick={() => navigate("/auth")}
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
     );
   }
 
@@ -35,86 +39,97 @@ const Cart = () => {
     }
   };
 
-  const itemStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "10px 0",
-    borderBottom: "1px solid #eee",
-  };
-  const totalStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    marginTop: "20px",
-    padding: "10px 0",
-    borderTop: "2px solid #333",
-    fontWeight: "bold",
-  };
-
   return (
-    <div
-      className="page-content"
-      style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}
-    >
-      <h1>🛒 Shopping Cart</h1>
+    <div className="cart-container">
+      <div className="cart-header">
+        <h1>🛒 Shopping Cart</h1>
+        <p className="cart-subtitle">Review your items before checkout</p>
+      </div>
 
       {cart.length === 0 ? (
-        <p style={{ marginTop: "20px" }}>
-          Your cart is empty. Go add some style!
-        </p>
+        <div className="empty-cart">
+          <div className="empty-cart-icon">📭</div>
+          <h2>Your cart is empty</h2>
+          <p>Discover our collection of premium men's fashion</p>
+          <button 
+            className="btn-primary"
+            onClick={() => navigate("/shop")}
+          >
+            Continue Shopping
+          </button>
+        </div>
       ) : (
-        <div style={{ marginTop: "30px" }}>
-          {cart.map((item) => (
-            <div key={item.productId._id} style={itemStyle}>
-              <span style={{ flex: 3 }}>
-                {item.productId.name}
-                <span style={{ color: "#888", marginLeft: "10px" }}>
-                  x{item.quantity}
-                </span>
-              </span>
-              <span style={{ flex: 1, textAlign: "right", fontWeight: "bold" }}>
-                ${(item.productId.price * item.quantity).toFixed(2)}
-              </span>
-              <button
-                onClick={() =>
-                  handleRemove(item.productId._id, item.productId.name)
-                }
-                style={{
-                  marginLeft: "15px",
-                  padding: "5px 10px",
-                  backgroundColor: "red",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                }}
-              >
-                Remove
-              </button>
+        <div className="cart-content">
+          <div className="cart-items-section">
+            <div className="cart-items">
+              {cart.map((item) => (
+                <div key={item.productId._id} className="cart-item">
+                  <div className="item-details">
+                    <h3 className="item-name">{item.productId.name}</h3>
+                    <div className="item-meta">
+                      <span className="item-price">
+                        ${item.productId.price.toFixed(2)} each
+                      </span>
+                      <span className="item-quantity">
+                        Quantity: <strong>{item.quantity}</strong>
+                      </span>
+                    </div>
+                  </div>
+                  <div className="item-actions">
+                    <span className="item-total">
+                      ${(item.productId.price * item.quantity).toFixed(2)}
+                    </span>
+                    <button
+                      onClick={() =>
+                        handleRemove(item.productId._id, item.productId.name)
+                      }
+                      className="btn-remove"
+                      title="Remove from cart"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-
-          <div style={totalStyle}>
-            <span>Total:</span>
-            <span>${totalAmount.toFixed(2)}</span>
           </div>
 
-          <button
-            onClick={() => navigate("/checkout")}
-            style={{
-              marginTop: "30px",
-              padding: "15px 30px",
-              backgroundColor: "green",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-              fontSize: "1.1em",
-              width: "100%",
-            }}
-          >
-            Proceed to Checkout →
-          </button>
+          <div className="cart-summary-section">
+            <div className="cart-summary">
+              <h2>Order Summary</h2>
+              
+              <div className="summary-row">
+                <span>Subtotal</span>
+                <span>${totalAmount.toFixed(2)}</span>
+              </div>
+              
+              <div className="summary-row">
+                <span>Shipping</span>
+                <span className="shipping-free">Free</span>
+              </div>
+              
+              <div className="summary-divider"></div>
+              
+              <div className="summary-total">
+                <span>Total Amount</span>
+                <span>${totalAmount.toFixed(2)}</span>
+              </div>
+
+              <button
+                onClick={() => navigate("/checkout")}
+                className="btn-checkout"
+              >
+                Proceed to Checkout
+              </button>
+
+              <button
+                onClick={() => navigate("/shop")}
+                className="btn-continue-shopping"
+              >
+                Continue Shopping
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
