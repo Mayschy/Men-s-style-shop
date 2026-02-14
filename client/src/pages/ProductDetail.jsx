@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import './ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -45,41 +46,20 @@ const ProductDetail = () => {
 
   if (isLoading) {
     return (
-      <div
-        style={{
-          textAlign: 'center',
-          marginTop: '100px',
-          fontSize: '1.5em',
-          color: 'var(--color-text-dark)',
-        }}
-      >
-        Loading product...
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Loading product...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div
-        style={{
-          textAlign: 'center',
-          marginTop: '100px',
-          fontSize: '1.2em',
-          color: 'red',
-        }}
-      >
-        <p>Error: {error}</p>
+      <div className="error-container">
+        <p className="error-text">Error: {error}</p>
         <button
           onClick={() => navigate('/shop')}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: 'var(--color-primary)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            marginTop: '20px',
-          }}
+          className="btn-primary"
         >
           Back to Shop
         </button>
@@ -87,216 +67,62 @@ const ProductDetail = () => {
     );
   }
 
-  if (!product) return <div>Product not found</div>;
+  if (!product) return <div className="not-found">Product not found</div>;
 
   return (
-    <div
-      style={{
-        maxWidth: '1000px',
-        margin: '0 auto',
-        padding: '40px 20px',
-        backgroundColor: '#fafafa',
-        minHeight: '100vh',
-      }}
-    >
+    <div className="product-detail-container">
       <button
         onClick={() => navigate('/shop')}
-        style={{
-          marginBottom: '30px',
-          padding: '10px 20px',
-          backgroundColor: 'transparent',
-          color: 'var(--color-primary)',
-          border: '2px solid var(--color-primary)',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          fontSize: '1em',
-          fontWeight: 'bold',
-          transition: 'all 0.3s ease',
-        }}
-        onMouseEnter={(e) => {
-          e.target.backgroundColor = 'var(--color-primary)';
-          e.target.color = 'white';
-        }}
-        onMouseLeave={(e) => {
-          e.target.backgroundColor = 'transparent';
-          e.target.color = 'var(--color-primary)';
-        }}
+        className="btn-back"
       >
         ← Back to Shop
       </button>
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '40px',
-          marginTop: '20px',
-        }}
-      >
+      <div className="product-layout">
         {/* Image Section */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'white',
-            borderRadius: '8px',
-            padding: '20px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-          }}
-        >
-          <img
-            src={product.imageUrl}
-            alt={product.name}
-            style={{
-              maxWidth: '100%',
-              maxHeight: '500px',
-              objectFit: 'contain',
-            }}
-          />
+        <div className="product-image-section">
+          <div className="image-zoom-wrapper">
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="product-image"
+            />
+          </div>
         </div>
 
         {/* Details Section */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div>
-            <h1
-              style={{
-                fontSize: '2.5em',
-                margin: '0 0 15px 0',
-                color: 'var(--color-text-dark)',
-              }}
-            >
-              {product.name}
-            </h1>
+        <div className="product-details-section">
+          <div className="details-header">
+            <h1 className="product-title">{product.name}</h1>
 
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '15px',
-                marginBottom: '20px',
-              }}
-            >
-              <p
-                style={{
-                  fontSize: '2em',
-                  fontWeight: 'bold',
-                  color: 'var(--color-primary)',
-                  margin: 0,
-                }}
-              >
+            <div className="price-stock-row">
+              <p className="product-price">
                 ${product.price.toFixed(2)}
               </p>
-              <span
-                style={{
-                  padding: '8px 12px',
-                  borderRadius: '4px',
-                  backgroundColor: product.isAvailable ? '#4caf50' : '#f44336',
-                  color: 'white',
-                  fontWeight: 'bold',
-                  fontSize: '0.9em',
-                }}
-              >
+              <span className={`stock-badge ${product.isAvailable ? 'in-stock' : 'out-of-stock'}`}>
                 {product.isAvailable ? '✓ In Stock' : '✗ Out of Stock'}
               </span>
             </div>
 
-            <div
-              style={{
-                marginBottom: '10px',
-              }}
-            >
-              <span
-                style={{
-                  display: 'inline-block',
-                  backgroundColor: 'var(--color-primary)',
-                  color: 'white',
-                  padding: '4px 12px',
-                  borderRadius: '4px',
-                  fontSize: '0.85em',
-                  fontWeight: 'bold',
-                  marginBottom: '15px',
-                }}
-              >
-                Category: {product.category}
-              </span>
+            <div className="category-pill">
+              Category: {product.category}
             </div>
 
-            <hr
-              style={{
-                border: 'none',
-                borderTop: '2px solid #ddd',
-                margin: '20px 0',
-              }}
-            />
+            <div className="divider"></div>
 
-            <div
-              style={{
-                backgroundColor: 'white',
-                padding: '20px',
-                borderRadius: '8px',
-                marginBottom: '20px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-              }}
-            >
-              <h3
-                style={{
-                  margin: '0 0 10px 0',
-                  color: 'var(--color-text-dark)',
-                  fontSize: '1.2em',
-                }}
-              >
-                Description
-              </h3>
-              <p
-                style={{
-                  margin: 0,
-                  color: '#666',
-                  lineHeight: '1.6',
-                  fontSize: '1em',
-                }}
-              >
+            <div className="description-box">
+              <h3 className="section-title">Description</h3>
+              <p className="description-text">
                 {product.description}
               </p>
             </div>
 
             {product.styleTags && product.styleTags.length > 0 && (
-              <div
-                style={{
-                  backgroundColor: 'white',
-                  padding: '20px',
-                  borderRadius: '8px',
-                  marginBottom: '20px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                }}
-              >
-                <h3
-                  style={{
-                    margin: '0 0 10px 0',
-                    color: 'var(--color-text-dark)',
-                    fontSize: '1.2em',
-                  }}
-                >
-                  Style Tags
-                </h3>
-                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <div className="style-tags-box">
+                <h3 className="section-title">Style Tags</h3>
+                <div className="tags-container">
                   {product.styleTags.map((tag, idx) => (
-                    <span
-                      key={idx}
-                      style={{
-                        backgroundColor: '#f0f0f0',
-                        padding: '6px 12px',
-                        borderRadius: '20px',
-                        fontSize: '0.9em',
-                        color: '#333',
-                      }}
-                    >
+                    <span key={idx} className="tag">
                       #{tag}
                     </span>
                   ))}
@@ -306,51 +132,13 @@ const ProductDetail = () => {
           </div>
 
           {/* Purchase Section */}
-          <div
-            style={{
-              backgroundColor: 'white',
-              padding: '20px',
-              borderRadius: '8px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '15px',
-                marginBottom: '20px',
-              }}
-            >
-              <label
-                style={{
-                  fontSize: '1em',
-                  fontWeight: 'bold',
-                  color: 'var(--color-text-dark)',
-                }}
-              >
-                Quantity:
-              </label>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  border: '2px solid var(--color-primary)',
-                  borderRadius: '4px',
-                  overflow: 'hidden',
-                }}
-              >
+          <div className="purchase-section">
+            <div className="quantity-row">
+              <label className="quantity-label">Quantity:</label>
+              <div className="quantity-control">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  style={{
-                    padding: '8px 12px',
-                    backgroundColor: 'white',
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontSize: '1.2em',
-                    fontWeight: 'bold',
-                    color: 'var(--color-primary)',
-                  }}
+                  className="qty-btn"
                 >
                   −
                 </button>
@@ -360,26 +148,11 @@ const ProductDetail = () => {
                   onChange={(e) =>
                     setQuantity(Math.max(1, parseInt(e.target.value) || 1))
                   }
-                  style={{
-                    width: '50px',
-                    textAlign: 'center',
-                    fontSize: '1em',
-                    fontWeight: 'bold',
-                    border: 'none',
-                    padding: '8px',
-                  }}
+                  className="qty-input"
                 />
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  style={{
-                    padding: '8px 12px',
-                    backgroundColor: 'white',
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontSize: '1.2em',
-                    fontWeight: 'bold',
-                    color: 'var(--color-primary)',
-                  }}
+                  className="qty-btn"
                 >
                   +
                 </button>
@@ -389,34 +162,7 @@ const ProductDetail = () => {
             <button
               onClick={handleAddToCart}
               disabled={!product.isAvailable}
-              style={{
-                width: '100%',
-                padding: '16px',
-                backgroundColor: product.isAvailable
-                  ? 'var(--color-primary)'
-                  : '#ccc',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                fontSize: '1.1em',
-                fontWeight: 'bold',
-                cursor: product.isAvailable ? 'pointer' : 'not-allowed',
-                transition: 'background-color 0.3s ease',
-              }}
-              onMouseEnter={(e) => {
-                if (product.isAvailable) {
-                  e.target.style.backgroundColor = 'var(--color-primary)';
-                  e.target.style.opacity = '0.9';
-                  e.target.style.transform = 'translateY(-2px)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (product.isAvailable) {
-                  e.target.style.backgroundColor = 'var(--color-primary)';
-                  e.target.style.opacity = '1';
-                  e.target.style.transform = 'translateY(0)';
-                }
-              }}
+              className={`btn-add-to-cart ${!product.isAvailable ? 'disabled' : ''}`}
             >
               {product.isAvailable ? '🛒 Add to Cart' : 'Out of Stock'}
             </button>
