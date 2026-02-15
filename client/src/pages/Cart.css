@@ -110,13 +110,6 @@
   border-bottom: none;
 }
 
-.cart-item:hover {
-  background-color: #fafbfc;
-  padding: 20px 15px;
-  margin: 0 -15px;
-  border-radius: 8px;
-}
-
 .item-details {
   display: flex;
   flex-direction: column;

@@ -71,7 +71,7 @@
 }
 
 .image-zoom-wrapper:hover .product-image {
-  transform: scale(1.15);
+  transform: scale(1.4);
 }
 
 /* Details Section */
@@ -164,12 +164,6 @@
   transition: all 0.3s ease;
 }
 
-.description-box:hover,
-.style-tags-box:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
-}
-
 .section-title {
   margin: 0 0 12px 0;
   color: var(--color-primary);
@@ -200,11 +194,6 @@
   font-size: 0.85em;
   font-weight: 600;
   transition: all 0.3s ease;
-}
-
-.tag:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(206, 190, 102, 0.3);
 }
 
 /* Purchase Section */

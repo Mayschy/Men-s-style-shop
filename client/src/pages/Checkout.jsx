@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import "./Checkout.css";
 
 const Checkout = () => {
   const [step, setStep] = useState(1);
@@ -38,93 +39,120 @@ const Checkout = () => {
     switch (step) {
       case 1:
         return (
-          <div>
-            <h2>Step 1: Shipping Information</h2>
-            <p>
-              Using saved address for **{user?.firstName}** in **
-              {user?.shippingAddress?.city || "Not specified"}**.
+          <div className="checkout-section">
+            <h2 className="section-title">📍 Shipping Information</h2>
+            <div className="shipping-info">
+              <div className="shipping-info-label">
+                <span className="shipping-info-icon">✓</span>
+                Delivery Address
+              </div>
+              <div className="shipping-info-value">
+                {user?.firstName} {user?.lastName}
+                <br />
+                {user?.shippingAddress?.street || "Not specified"}
+                <br />
+                {user?.shippingAddress?.city || "City"}, {user?.shippingAddress?.zip || "ZIP"}
+              </div>
+            </div>
+            <p style={{ color: "var(--color-text-light)", marginBottom: "20px" }}>
+              We'll deliver this order to your saved address. You can update your address in your profile.
             </p>
-
-            <button
-              onClick={() =>
-                shippingInfoComplete
-                  ? setStep(2)
-                  : alert(
-                      "Please update your shipping address in your profile first."
-                    )
-              }
-              style={{
-                padding: "10px 20px",
-                backgroundColor: shippingInfoComplete ? "green" : "#999",
-                color: "white",
-                border: "none",
-                cursor: shippingInfoComplete ? "pointer" : "not-allowed",
-              }}
-            >
-              Continue to Payment →
-            </button>
+            <div className="button-group">
+              <button
+                onClick={() =>
+                  shippingInfoComplete
+                    ? setStep(2)
+                    : alert(
+                        "Please update your shipping address in your profile first."
+                      )
+                }
+                className="btn-checkout-next"
+                disabled={!shippingInfoComplete}
+              >
+                Continue to Payment →
+              </button>
+            </div>
           </div>
         );
       case 2:
         return (
-          <div>
-            <h2>Step 2: Payment Method</h2>
-            <p>Using simulated payment (default method).</p>
-            <button
-              onClick={() => setStep(3)}
-              style={{
-                padding: "10px 20px",
-                backgroundColor: "blue",
-                color: "white",
-                border: "none",
-                marginRight: "10px",
-              }}
-            >
-              Review Order →
-            </button>
-            <button
-              onClick={() => setStep(1)}
-              style={{ padding: "10px 20px", border: "1px solid #333" }}
-            >
-              ← Back
-            </button>
+          <div className="checkout-section">
+            <h2 className="section-title">💳 Payment Method</h2>
+            <div className="payment-method">
+              <div className="payment-icon">💳</div>
+              <div className="payment-info">
+                <h4>Secure Payment (Simulated)</h4>
+                <p>Your payment information is encrypted and secure.</p>
+              </div>
+            </div>
+            <p style={{ color: "var(--color-text-light)", marginBottom: "20px" }}>
+              We accept all major credit cards. Your payment is processed securely through our payment gateway.
+            </p>
+            <div className="button-group">
+              <button
+                onClick={() => setStep(3)}
+                className="btn-checkout-next"
+              >
+                Review Order →
+              </button>
+              <button
+                onClick={() => setStep(1)}
+                className="btn-checkout-back"
+              >
+                ← Back
+              </button>
+            </div>
           </div>
         );
       case 3:
         return (
-          <div>
-            <h2>Step 3: Review & Place Order</h2>
+          <div className="checkout-section">
+            <h2 className="section-title">✅ Review & Place Order</h2>
 
-            <h3>Order Summary</h3>
-            <p>Total Items: **{cart.length}**</p>
-            <p>
-              Shipping Address: **{user?.shippingAddress?.street}**,{" "}
-              {user?.shippingAddress?.city}
-            </p>
-            <p
-              style={{
-                fontSize: "1.5em",
-                fontWeight: "bold",
-                borderTop: "1px solid #333",
-                paddingTop: "10px",
-              }}
-            >
-              Order Total: **${totalAmount.toFixed(2)}**
+            <div className="order-review">
+              <div className="review-item">
+                <span className="review-item-label">Order Items</span>
+                <span className="review-item-value">{cart.length} item(s)</span>
+              </div>
+              <div className="review-item">
+                <span className="review-item-label">Subtotal</span>
+                <span className="review-item-value">${totalAmount.toFixed(2)}</span>
+              </div>
+              <div className="review-item">
+                <span className="review-item-label">Shipping</span>
+                <span className="review-item-value" style={{ color: "#4caf50" }}>
+                  FREE
+                </span>
+              </div>
+              <div className="review-item">
+                <span className="review-item-label">Delivery to</span>
+                <span className="review-item-value" style={{ fontSize: "0.9em" }}>
+                  {user?.shippingAddress?.city}
+                </span>
+              </div>
+            </div>
+
+            <p style={{ color: "var(--color-text-light)", marginBottom: "20px", fontSize: "0.9em" }}>
+              ✓ All items are in stock<br />
+              ✓ Free shipping included<br />
+              ✓ Secure payment processing
             </p>
 
-            <button
-              onClick={handlePlaceOrder}
-              disabled={cart.length === 0}
-              style={{
-                padding: "15px 30px",
-                backgroundColor: cart.length > 0 ? "darkred" : "#999",
-                color: "white",
-                border: "none",
-                cursor: cart.length > 0 ? "pointer" : "not-allowed",
-              }}
-            >
-              PLACE ORDER NOW (Simulated Payment)
-            </button>
+            <div className="button-group">
+              <button
+                onClick={handlePlaceOrder}
+                disabled={cart.length === 0}
+                className="btn-place-order"
+              >
+                🎉 PLACE ORDER NOW
+              </button>
+              <button
+                onClick={() => setStep(2)}
+                className="btn-checkout-back"
+              >
+                ← Back
+              </button>
+            </div>
           </div>
         );
       default:
@@ -134,62 +162,95 @@ const Checkout = () => {
 
   if (!user || cart === null) {
     return (
-      <p
-        className="page-content"
-        style={{ textAlign: "center", marginTop: "50px" }}
-      >
-        Loading or not authorized...
-      </p>
+      <div className="checkout-container">
+        <div className="checkout-unauthorized">
+          <p>Loading or not authorized...</p>
+        </div>
+      </div>
     );
   }
 
   if (cart.length === 0 && step !== 3) {
     return (
-      <p
-        className="page-content"
-        style={{ textAlign: "center", marginTop: "50px" }}
-      >
-        Your cart is empty. Cannot proceed to checkout.
-      </p>
+      <div className="checkout-container">
+        <div className="empty-checkout">
+          <div className="empty-checkout-icon">🛒</div>
+          <h2>Your Cart is Empty</h2>
+          <p>Add items to your cart before proceeding to checkout.</p>
+          <button
+            onClick={() => navigate("/shop")}
+            className="btn-return-shop"
+          >
+            Continue Shopping
+          </button>
+        </div>
+      </div>
     );
   }
 
   return (
-    <div
-      className="page-content"
-      style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}
-    >
-      <h1>Finalizing Your Order</h1>
-
-      <div
-        style={{
-          marginBottom: "40px",
-          borderBottom: "1px solid #ccc",
-          paddingBottom: "10px",
-        }}
-      >
-        <span
-          style={{
-            fontWeight: step === 1 ? "bold" : "normal",
-            marginRight: "15px",
-          }}
-        >
-          1. Shipping
-        </span>
-        <span
-          style={{
-            fontWeight: step === 2 ? "bold" : "normal",
-            marginRight: "15px",
-          }}
-        >
-          2. Payment
-        </span>
-        <span style={{ fontWeight: step === 3 ? "bold" : "normal" }}>
-          3. Review
-        </span>
+    <div className="checkout-container">
+      <div className="checkout-header">
+        <h1>🛍️ Complete Your Order</h1>
+        <p>Secure checkout in 3 simple steps</p>
       </div>
 
-      {renderStepContent()}
+      <div className="steps-container">
+        <div className={`step ${step >= 1 ? "active" : ""} ${step > 1 ? "completed" : ""}`}>
+          <div className="step-circle">{step > 1 ? "✓" : "1"}</div>
+          <div className="step-label">Shipping</div>
+        </div>
+        <div className={`step ${step >= 2 ? "active" : ""} ${step > 2 ? "completed" : ""}`}>
+          <div className="step-circle">{step > 2 ? "✓" : "2"}</div>
+          <div className="step-label">Payment</div>
+        </div>
+        <div className={`step ${step >= 3 ? "active" : ""}`}>
+          <div className="step-circle">3</div>
+          <div className="step-label">Review</div>
+        </div>
+      </div>
+
+      <div className="checkout-content">
+        {renderStepContent()}
+
+        <div className="checkout-summary">
+          <h2>Order Summary</h2>
+
+          {cart.map((item) => (
+            <div key={item.productId._id} className="summary-item">
+              <div className="summary-item-name">
+                {item.productId.name}
+                <br />
+                <span style={{ fontSize: "0.85em", color: "var(--color-text-light)" }}>
+                  x{item.quantity}
+                </span>
+              </div>
+              <div className="summary-item-price">
+                ${(item.productId.price * item.quantity).toFixed(2)}
+              </div>
+            </div>
+          ))}
+
+          <div className="summary-divider"></div>
+
+          <div className="summary-item">
+            <span className="summary-item-label">Subtotal</span>
+            <span className="summary-item-price">${totalAmount.toFixed(2)}</span>
+          </div>
+
+          <div className="summary-item">
+            <span className="summary-item-label">Shipping</span>
+            <span style={{ color: "#4caf50", fontWeight: "700" }}>FREE</span>
+          </div>
+
+          <div className="summary-divider"></div>
+
+          <div className="summary-total">
+            <span className="summary-total-label">Total</span>
+            <span>${totalAmount.toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
