@@ -13,6 +13,38 @@ const cartItemSchema = new mongoose.Schema({
     min: 1,
   },
 });
+
+const orderItemSchema = new mongoose.Schema({
+  productId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product",
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+    min: 1,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+});
+
+const orderSchema = new mongoose.Schema({
+  orderNumber: { type: String, required: true, unique: true },
+  items: [orderItemSchema],
+  totalAmount: { type: Number, required: true },
+  shippingAddress: {
+    street: { type: String },
+    city: { type: String },
+    zip: { type: String },
+    country: { type: String },
+  },
+  status: { type: String, default: "Completed", enum: ["Pending", "Processing", "Shipped", "Completed", "Cancelled"] },
+  createdAt: { type: Date, default: Date.now },
+});
+
 const userSchema = new mongoose.Schema(
   {
     email: { type: String, required: true, unique: true },
@@ -28,6 +60,7 @@ const userSchema = new mongoose.Schema(
     },
 
     cart: [cartItemSchema],
+    orders: [orderSchema],
 
     role: { type: String, default: "user" },
   },

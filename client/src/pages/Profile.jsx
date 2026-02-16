@@ -35,7 +35,7 @@ const cardStyle = {
 
 
 const Profile = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, orders, fetchOrders } = useAuth();
 
   const [profileData, setProfileData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -99,11 +99,14 @@ const Profile = () => {
   useEffect(() => {
     if (user && user.token) {
       fetchProfile();
+      if (activeTab === "orders") {
+        fetchOrders(user.token);
+      }
     } else {
       setProfileData(null);
       setLoading(false);
     }
-  }, [user]);
+  }, [user, activeTab]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -277,7 +280,7 @@ const Profile = () => {
         <section style={{ flexGrow: 1, minWidth: "600px" }}>
           <h2 style={{ color: "var(--color-text-dark)", marginBottom: "30px" }}>
             {activeTab === "details" && "Personal Details"}
-            {activeTab === "orders" && "Order History (TODO)"}
+            {activeTab === "orders" && "Order History"}
             {activeTab === "addresses" && "Saved Addresses (TODO)"}
           </h2>
 
@@ -458,7 +461,138 @@ const Profile = () => {
               )}
             </div>
           )}
-          {activeTab !== "details" && (
+
+          {activeTab === "orders" && (
+            <div style={cardStyle}>
+              {orders && orders.length > 0 ? (
+                <div>
+                  {orders.map((order, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        borderBottom: "1px solid #E0E0E0",
+                        paddingBottom: "20px",
+                        marginBottom: "20px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: "10px",
+                        }}
+                      >
+                        <h4
+                          style={{
+                            color: "var(--color-primary)",
+                            fontSize: "1.1em",
+                            margin: 0,
+                          }}
+                        >
+                          Order #{order.orderNumber}
+                        </h4>
+                        <span
+                          style={{
+                            backgroundColor:
+                              order.status === "Completed"
+                                ? "#4CAF50"
+                                : order.status === "Shipped"
+                                ? "#2196F3"
+                                : order.status === "Processing"
+                                ? "#FF9800"
+                                : "#f44336",
+                            color: "white",
+                            padding: "5px 12px",
+                            borderRadius: "20px",
+                            fontSize: "0.85em",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {order.status}
+                        </span>
+                      </div>
+
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "1fr 1fr",
+                          gap: "15px",
+                          fontSize: "0.95em",
+                          marginBottom: "15px",
+                        }}
+                      >
+                        <div>
+                          <p style={{ color: "var(--color-text-light)", margin: "5px 0" }}>
+                            <strong>Order Date:</strong>{" "}
+                            {new Date(order.createdAt).toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })}
+                          </p>
+                          <p style={{ color: "var(--color-text-light)", margin: "5px 0" }}>
+                            <strong>Total Amount:</strong> ${order.totalAmount.toFixed(2)}
+                          </p>
+                        </div>
+                        <div>
+                          <p style={{ color: "var(--color-text-light)", margin: "5px 0" }}>
+                            <strong>Items:</strong> {order.items.length}
+                          </p>
+                          <p style={{ color: "var(--color-text-light)", margin: "5px 0" }}>
+                            <strong>Delivery to:</strong> {order.shippingAddress?.city}, {order.shippingAddress?.country}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div style={{ marginTop: "15px" }}>
+                        <h5 style={{ color: "var(--color-text-dark)", marginBottom: "10px" }}>
+                          Items:
+                        </h5>
+                        <div style={{ maxHeight: "200px", overflowY: "auto" }}>
+                          {order.items.map((item, itemIndex) => (
+                            <div
+                              key={itemIndex}
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                padding: "8px 0",
+                                fontSize: "0.9em",
+                                borderBottom: "1px solid #f0f0f0",
+                              }}
+                            >
+                              <span style={{ color: "var(--color-text-dark)" }}>
+                                {item.productId?.name || "Product"} x {item.quantity}
+                              </span>
+                              <span
+                                style={{
+                                  color: "var(--color-primary)",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                ${(item.price * item.quantity).toFixed(2)}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div style={{ textAlign: "center", padding: "40px 0" }}>
+                  <p style={{ fontSize: "1.1em", color: "var(--color-text-light)" }}>
+                    📦 No orders yet
+                  </p>
+                  <p style={{ color: "var(--color-text-light)", marginTop: "10px" }}>
+                    Start shopping to see your order history here.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab !== "details" && activeTab !== "orders" && (
             <div style={cardStyle}>
               <p style={{ color: "var(--color-text-light)" }}>
                 Content for **

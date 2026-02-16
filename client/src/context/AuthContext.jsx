@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [cart, setCart] = useState([]);
+    const [orders, setOrders] = useState([]);
 
     const fetchUserProfile = async (token) => {
         if (!token) return;
@@ -53,6 +54,21 @@ export const AuthProvider = ({ children }) => {
             }
         } catch (error) {
             console.error("Error fetching cart:", error);
+        }
+    };
+
+    const fetchOrders = async (token) => {
+        if (!token) return;
+        try {
+            const response = await fetch(`${API_BASE_URL}/user/orders`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setOrders(data);
+            }
+        } catch (error) {
+            console.error("Error fetching orders:", error);
         }
     };
 
@@ -118,6 +134,7 @@ export const AuthProvider = ({ children }) => {
             
             if (response.ok) {
                 setCart([]);
+                await fetchOrders(user.token);
                 return { success: true, message: "Order successfully placed." };
             } else {
                 const errorData = await response.json();
@@ -149,6 +166,7 @@ export const AuthProvider = ({ children }) => {
 
                 await fetchUserProfile(data.token);
                 await fetchCart(data.token);
+                await fetchOrders(data.token);
                 
                 return { success: true };
             } else {
@@ -174,6 +192,7 @@ export const AuthProvider = ({ children }) => {
                 
                 fetchUserProfile(userData.token);
                 fetchCart(userData.token);
+                fetchOrders(userData.token);
             } catch (error) {
                 console.error("Error parsing user from localStorage:", error);
                 localStorage.removeItem('user');
@@ -188,10 +207,12 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         cart,
+        orders,
         addToCart,
         removeFromCart,
         processCheckout,
-        fetchUserProfile
+        fetchUserProfile,
+        fetchOrders
     };
 
     return (

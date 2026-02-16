@@ -146,7 +146,7 @@ router.delete("/cart/:productId", auth, async (req, res) => {
 //(POST /api/user/checkout)
 router.post("/checkout", auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id).populate("cart.productId");
 
     if (!user) {
       return res.status(404).json({ message: "User not found." });
@@ -156,13 +156,61 @@ router.post("/checkout", auth, async (req, res) => {
       return res.status(400).json({ message: "Cart is empty." });
     }
 
+    // Calculate total amount and create order items
+    let totalAmount = 0;
+    const orderItems = user.cart.map(cartItem => {
+      const price = cartItem.productId.price;
+      totalAmount += price * cartItem.quantity;
+      return {
+        productId: cartItem.productId._id,
+        quantity: cartItem.quantity,
+        price: price
+      };
+    });
+
+    // Generate unique order number
+    const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
+
+    // Create new order
+    const newOrder = {
+      orderNumber,
+      items: orderItems,
+      totalAmount,
+      shippingAddress: user.shippingAddress,
+      status: "Completed",
+      createdAt: new Date()
+    };
+
+    // Add order to user's orders array
+    user.orders.push(newOrder);
+
+    // Clear cart
     user.cart = [];
     await user.save();
 
-    res.json({ message: "Order successfully placed and cart cleared." });
+    res.json({ 
+      message: "Order successfully placed and cart cleared.",
+      order: newOrder
+    });
 
   } catch (err) {
     res.status(500).json({ message: "Error during checkout.", error: err.message });
+  }
+});
+
+//(GET /api/user/orders)
+router.get("/orders", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).populate("orders.items.productId");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    res.json(user.orders);
+
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching orders.", error: err.message });
   }
 });
 
