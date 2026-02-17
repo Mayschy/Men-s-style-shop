@@ -30,7 +30,8 @@ exports.addProduct = async (req, res) => {
         category: req.body.category,
         imageUrl: req.body.imageUrl,
         stock: req.body.stock || 0,
-        styleTags: req.body.styleTags || []
+        styleTags: req.body.styleTags || [],
+        isAvailable: (req.body.stock || 0) > 0
     });
 
     try {
@@ -54,7 +55,8 @@ exports.updateProduct = async (req, res) => {
                 category,
                 imageUrl,
                 stock: stock || 0,
-                styleTags: styleTags || []
+                styleTags: styleTags || [],
+                isAvailable: (stock || 0) > 0
             },
             { new: true, runValidators: true }
         );
