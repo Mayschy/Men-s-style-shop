@@ -6,6 +6,7 @@ const Shop = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -32,8 +33,12 @@ const Shop = () => {
     fetchProducts();
   }, []);
 
-  const filteredProducts =
-    filter === "all" ? products : products.filter((p) => p.category === filter);
+  const filteredProducts = products.filter((p) => {
+    const matchesCategory = filter === "all" || p.category === filter;
+    const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         p.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   const filterButtonStyle = (currentFilter) => ({
     padding: "8px 15px",
@@ -47,6 +52,19 @@ const Shop = () => {
     transition: "all 0.3s ease",
     fontWeight: "500",
   });
+
+  const searchStyle = {
+    width: "100%",
+    maxWidth: "500px",
+    padding: "10px 15px",
+    margin: "0 auto 20px",
+    display: "block",
+    border: "2px solid var(--color-secondary)",
+    borderRadius: "5px",
+    fontSize: "1em",
+    transition: "border-color 0.3s ease",
+    boxSizing: "border-box",
+  };
 
   if (isLoading) {
     return (
@@ -83,6 +101,18 @@ const Shop = () => {
         Product Catalog
       </h1>
 
+      {/* Search Bar */}
+      <input
+        type="text"
+        placeholder="🔍 Search products..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        style={searchStyle}
+        onFocus={(e) => e.target.style.borderColor = "var(--color-primary)"}
+        onBlur={(e) => e.target.style.borderColor = "var(--color-secondary)"}
+      />
+
+      {/* Category Filter */}
       <div style={{ textAlign: "center", marginBottom: "40px" }}>
         <button
           style={filterButtonStyle("all")}
@@ -101,6 +131,12 @@ const Shop = () => {
         ))}
       </div>
 
+      {/* Results Counter */}
+      <div style={{ textAlign: "center", marginBottom: "20px", color: "#666" }}>
+        <p>Showing {filteredProducts.length} of {products.length} products</p>
+      </div>
+
+      {/* Products Grid */}
       <div
         style={{
           display: "grid",
@@ -118,9 +154,9 @@ const Shop = () => {
 
       {filteredProducts.length === 0 && (
         <p
-          style={{ textAlign: "center", marginTop: "50px", fontSize: "1.2em" }}
+          style={{ textAlign: "center", marginTop: "50px", fontSize: "1.2em", color: "#999" }}
         >
-          No products found for this category.
+          ❌ No products found {searchTerm ? `matching "${searchTerm}"` : "in this category"}.
         </p>
       )}
     </div>

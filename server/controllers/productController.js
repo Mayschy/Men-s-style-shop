@@ -41,6 +41,34 @@ exports.addProduct = async (req, res) => {
     }
 };
 
+exports.updateProduct = async (req, res) => {
+    try {
+        const { name, description, price, category, imageUrl, stock, styleTags } = req.body;
+        
+        const product = await Product.findByIdAndUpdate(
+            req.params.id,
+            {
+                name,
+                description,
+                price,
+                category,
+                imageUrl,
+                stock: stock || 0,
+                styleTags: styleTags || []
+            },
+            { new: true, runValidators: true }
+        );
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        res.json(product);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
 exports.deleteProduct = async (req, res) => {
     try {
         const result = await Product.findByIdAndDelete(req.params.id);
