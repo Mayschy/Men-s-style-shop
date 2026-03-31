@@ -1,11 +1,13 @@
 import React from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { ToastContext } from "../App";
 import "./Cart.css";
 
 const Cart = () => {
   const { user, cart, removeFromCart } = useAuth();
   const navigate = useNavigate();
+  const { showToast } = React.useContext(ToastContext);
 
   if (!user) {
     return (
@@ -32,9 +34,9 @@ const Cart = () => {
     if (window.confirm(`Remove ${productName} from cart?`)) {
       const result = await removeFromCart(productId);
       if (result.success) {
-        alert(`✅ ${productName} removed.`);
+        showToast(`${productName} removed from cart`, 'success');
       } else {
-        alert(`❌ Error: ${result.error}`);
+        showToast(`Error removing item: ${result.error}`, 'error');
       }
     }
   };

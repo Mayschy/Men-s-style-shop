@@ -1,12 +1,14 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { ToastContext } from '../App';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useAuth();
+  const { showToast } = useContext(ToastContext);
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,10 +39,10 @@ const ProductDetail = () => {
   const handleAddToCart = async () => {
     const result = await addToCart(product._id, quantity);
     if (result.success) {
-      alert(`✅ Added ${quantity} item(s) to cart`);
+      showToast(`Added ${quantity} item(s) to cart`, 'success');
       setQuantity(1);
     } else {
-      alert(`❌ ${result.error}`);
+      showToast(`${result.error}`, 'error');
     }
   };
 

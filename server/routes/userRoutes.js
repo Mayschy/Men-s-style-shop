@@ -8,7 +8,9 @@ const Product = require("../models/Product");
 router.get("/profile", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
-    if (!user) return res.status(404).json({ message: "User not found." });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
     res.json(user);
   } catch (err) {
     res.status(500).json({ message: "Server error while fetching profile.", error: err.message });
@@ -34,7 +36,9 @@ router.put("/profile", auth, async (req, res) => {
       { new: true, runValidators: true }
     ).select("-password");
 
-    if (!user) return res.status(404).json({ message: "User not found." });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
     res.json({ message: "Profile updated successfully", user });
   } catch (err) {
     res.status(500).json({ message: "Server error while updating profile.", error: err.message });
@@ -45,7 +49,9 @@ router.put("/profile", auth, async (req, res) => {
 router.get("/cart", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).populate("cart.productId");
-    if (!user) return res.status(404).json({ message: "User not found." });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
 
     const cartItems = user.cart.filter(item => item.productId !== null);
     res.json(cartItems);
@@ -65,7 +71,9 @@ router.post("/cart", auth, async (req, res) => {
 
   try {
     const user = await User.findById(req.user.id);
-    if (!user) return res.status(404).json({ message: "User not found." });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
 
     // Attempt to decrement stock only if enough stock exists
     const updatedProduct = await Product.findOneAndUpdate(
@@ -110,10 +118,14 @@ router.delete("/cart/:productId", auth, async (req, res) => {
     const user = await User.findById(req.user.id);
     const productId = req.params.productId;
 
-    if (!user) return res.status(404).json({ message: "User not found." });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
 
     const cartItem = user.cart.find(item => item.productId.toString() === productId);
-    if (!cartItem) return res.status(404).json({ message: 'Item not found in cart.' });
+    if (!cartItem) {
+      return res.status(404).json({ message: 'Item not found in cart.' });
+    }
 
     const restoreQuantity = cartItem.quantity || 0;
 
@@ -139,8 +151,12 @@ router.post("/checkout", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).populate("cart.productId");
 
-    if (!user) return res.status(404).json({ message: "User not found." });
-    if (user.cart.length === 0) return res.status(400).json({ message: "Cart is empty." });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    if (user.cart.length === 0) {
+      return res.status(400).json({ message: "Cart is empty." });
+    }
 
     // Verify that reserved items still exist
     for (const cartItem of user.cart) {
@@ -188,7 +204,9 @@ router.post("/checkout", auth, async (req, res) => {
 router.get("/orders", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).populate("orders.items.productId");
-    if (!user) return res.status(404).json({ message: "User not found." });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
     res.json(user.orders);
   } catch (err) {
     res.status(500).json({ message: "Error fetching orders.", error: err.message });

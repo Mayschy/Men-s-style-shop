@@ -22,7 +22,6 @@ exports.getProductById = async (req, res) => {
 };
 
 exports.addProduct = async (req, res) => {
-    
     const product = new Product({
         name: req.body.name,
         description: req.body.description,

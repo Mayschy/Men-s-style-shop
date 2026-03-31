@@ -7,6 +7,14 @@ const Shop = () => {
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [inStockOnly, setInStockOnly] = useState(false);
+
+  // Get all unique style tags
+  const allStyleTags = Array.from(
+    new Set(products.flatMap(p => p.styleTags || []))
+  );
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -21,6 +29,13 @@ const Shop = () => {
 
         const data = await response.json();
         setProducts(data);
+        
+        // Set initial price range based on products
+        if (data.length > 0) {
+          const prices = data.map(p => p.price);
+          const maxPrice = Math.max(...prices);
+          setPriceRange([0, Math.ceil(maxPrice)]);
+        }
       } catch (err) {
         setError(
           err.message || "Something went wrong while fetching products."
@@ -37,8 +52,21 @@ const Shop = () => {
     const matchesCategory = filter === "all" || p.category === filter;
     const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          p.description.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
+    const matchesPrice = p.price >= priceRange[0] && p.price <= priceRange[1];
+   const matchesTags = selectedTags.length === 0 || 
+                        selectedTags.some(tag => (p.styleTags || []).includes(tag));
+    const matchesStock = !inStockOnly || p.isAvailable;
+    
+    return matchesCategory && matchesSearch && matchesPrice && matchesTags && matchesStock;
   });
+
+  const toggleTag = (tag) => {
+    setSelectedTags(prev => 
+      prev.includes(tag) 
+        ? prev.filter(t => t !== tag)
+        : [...prev, tag]
+    );
+  };
 
   const filterButtonStyle = (currentFilter) => ({
     padding: "8px 15px",
@@ -94,11 +122,11 @@ const Shop = () => {
       <h1
         style={{
           textAlign: "center",
-          marginBottom: "10px",
+          marginBottom: "30px",
           color: "var(--color-text-dark)",
         }}
       >
-        Product Catalog
+        🛍️ Product Catalog
       </h1>
 
       {/* Search Bar */}
@@ -112,28 +140,120 @@ const Shop = () => {
         onBlur={(e) => e.target.style.borderColor = "var(--color-secondary)"}
       />
 
-      {/* Category Filter */}
-      <div style={{ textAlign: "center", marginBottom: "40px" }}>
-        <button
-          style={filterButtonStyle("all")}
-          onClick={() => setFilter("all")}
-        >
-          All Products
-        </button>
-        {["t-shirts", "jackets", "jeans", "accessories"].map((cat) => (
-          <button
-            key={cat}
-            style={filterButtonStyle(cat)}
-            onClick={() => setFilter(cat)}
-          >
-            {cat.charAt(0).toUpperCase() + cat.slice(1)}
-          </button>
-        ))}
+      {/* Filters Container */}
+      <div style={{ 
+        backgroundColor: "#f8f9fa", 
+        padding: "20px", 
+        borderRadius: "8px", 
+        marginBottom: "30px",
+        border: "1px solid #e0e0e0"
+      }}>
+        
+        {/* Category Filter */}
+        <div style={{ marginBottom: "20px" }}>
+          <h4 style={{ marginTop: 0, marginBottom: "10px", color: "#333" }}>📂 Category</h4>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            <button
+              style={filterButtonStyle("all")}
+              onClick={() => setFilter("all")}
+            >
+              All Products
+            </button>
+            {["t-shirts", "jackets", "jeans", "accessories"].map((cat) => (
+              <button
+                key={cat}
+                style={filterButtonStyle(cat)}
+                onClick={() => setFilter(cat)}
+              >
+                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Price Range Filter */}
+        <div style={{ marginBottom: "20px" }}>
+          <h4 style={{ marginTop: 0, marginBottom: "10px", color: "#333" }}>💰 Price Range</h4>
+          <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
+            <div>
+              <label style={{ fontSize: "0.9em", display: "block", marginBottom: "5px" }}>
+                Min: ${priceRange[0]}
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="1000"
+                value={priceRange[0]}
+                onChange={(e) => {
+                  const newMin = Math.min(Number(e.target.value), priceRange[1]);
+                  setPriceRange([newMin, priceRange[1]]);
+                }}
+                style={{ width: "150px" }}
+              />
+            </div>
+            <div>
+              <label style={{ fontSize: "0.9em", display: "block", marginBottom: "5px" }}>
+                Max: ${priceRange[1]}
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="1000"
+                value={priceRange[1]}
+                onChange={(e) => {
+                  const newMax = Math.max(Number(e.target.value), priceRange[0]);
+                  setPriceRange([priceRange[0], newMax]);
+                }}
+                style={{ width: "150px" }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Style Tags Filter */}
+        {allStyleTags.length > 0 && (
+          <div style={{ marginBottom: "20px" }}>
+            <h4 style={{ marginTop: 0, marginBottom: "10px", color: "#333" }}>🏷️ Style Tags</h4>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+              {allStyleTags.map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => toggleTag(tag)}
+                  style={{
+                    padding: "6px 12px",
+                    border: `2px solid ${selectedTags.includes(tag) ? "var(--color-primary)" : "#ddd"}`,
+                    borderRadius: "20px",
+                    backgroundColor: selectedTags.includes(tag) ? "var(--color-primary)" : "white",
+                    color: selectedTags.includes(tag) ? "white" : "#666",
+                    cursor: "pointer",
+                    fontSize: "0.9em",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Stock Filter */}
+        <div>
+          <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+            <input
+              type="checkbox"
+              checked={inStockOnly}
+              onChange={(e) => setInStockOnly(e.target.checked)}
+              style={{ width: "18px", height: "18px", cursor: "pointer" }}
+            />
+            <span style={{ fontSize: "0.95em" }}>📦 In Stock Only</span>
+          </label>
+        </div>
       </div>
 
       {/* Results Counter */}
       <div style={{ textAlign: "center", marginBottom: "20px", color: "#666" }}>
-        <p>Showing {filteredProducts.length} of {products.length} products</p>
+        <p>Showing <strong>{filteredProducts.length}</strong> of <strong>{products.length}</strong> products</p>
       </div>
 
       {/* Products Grid */}
@@ -144,21 +264,37 @@ const Shop = () => {
           gap: "30px",
         }}
       >
-        {filteredProducts.map((product) => (
-          <ProductCard
-            key={product._id}
-            product={product}
-          />
-        ))}
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map((product) => (
+            <ProductCard
+              key={product._id}
+      {/* Products Grid */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+          gap: "30px",
+        }}
+      >
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map((product) => (
+            <ProductCard
+              key={product._id}
+              product={product}
+            />
+          ))
+        ) : (
+          <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "50px 20px" }}>
+            <p style={{ fontSize: "3em", margin: "0 0 10px" }}>📭</p>
+            <p style={{ fontSize: "1.2em", color: "#999", margin: 0 }}>
+              ❌ No products found {searchTerm ? `matching "${searchTerm}"` : "in this category"}.
+            </p>
+            <p style={{ fontSize: "0.95em", color: "#bbb", marginTop: "10px" }}>
+              Try adjusting your filters or search terms
+            </p>
+          </div>
+        )}
       </div>
-
-      {filteredProducts.length === 0 && (
-        <p
-          style={{ textAlign: "center", marginTop: "50px", fontSize: "1.2em", color: "#999" }}
-        >
-          ❌ No products found {searchTerm ? `matching "${searchTerm}"` : "in this category"}.
-        </p>
-      )}
     </div>
   );
 };

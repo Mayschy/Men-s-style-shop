@@ -1,14 +1,16 @@
 // src/pages/Checkout.jsx
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { ToastContext } from "../App";
 import "./Checkout.css";
 
 const Checkout = () => {
   const [step, setStep] = useState(1);
 
   const { cart, processCheckout, user } = useAuth();
+  const { showToast } = useContext(ToastContext);
   const navigate = useNavigate();
 
   const shippingInfoComplete = user?.shippingAddress?.city;
@@ -20,7 +22,7 @@ const Checkout = () => {
 
   const handlePlaceOrder = async () => {
     if (cart.length === 0) {
-      alert("Your cart is empty. Cannot place an order.");
+      showToast("Your cart is empty. Cannot place an order.", 'error');
       navigate("/");
       return;
     }
@@ -28,10 +30,10 @@ const Checkout = () => {
     const result = await processCheckout();
 
     if (result.success) {
-      alert("🎉 Order Placed Successfully! Your cart has been cleared.");
+      showToast("Order Placed Successfully! Your cart has been cleared.", 'success');
       navigate("/shop");
     } else {
-      alert(`❌ Payment failed: ${result.error}`);
+      showToast(`Payment failed: ${result.error}`, 'error');
     }
   };
 
@@ -59,13 +61,13 @@ const Checkout = () => {
             </p>
             <div className="button-group">
               <button
-                onClick={() =>
-                  shippingInfoComplete
-                    ? setStep(2)
-                    : alert(
-                        "Please update your shipping address in your profile first."
-                      )
-                }
+                onClick={() => {
+                  if (!shippingInfoComplete) {
+                    showToast("Please update your shipping address in your profile first.", 'warning');
+                  } else {
+                    setStep(2);
+                  }
+                }}
                 className="btn-checkout-next"
                 disabled={!shippingInfoComplete}
               >

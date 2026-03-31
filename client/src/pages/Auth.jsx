@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { ToastContext } from "../App";
 
 const buttonStyle = {
   padding: "8px 15px",
@@ -26,6 +27,7 @@ const Auth = () => {
 
   const [error, setError] = useState("");
   const { login } = useAuth();
+  const { showToast } = useContext(ToastContext);
   const navigate = useNavigate();
 
   const formTitle = isLogin
@@ -42,6 +44,7 @@ const Auth = () => {
       const result = await login(email, password);
 
       if (result.success) {
+        showToast("Login successful!", 'success');
         navigate("/");
       } else {
         setError(result.error || "Login failed. Please try again.");
@@ -69,7 +72,7 @@ const Auth = () => {
         const data = await response.json();
 
         if (response.ok) {
-          alert("Registration successful! Please sign in now.");
+          showToast("Registration successful! Please sign in now.", 'success');
           setIsLogin(true);
           setFirstName("");
           setLastName("");
