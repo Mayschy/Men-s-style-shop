@@ -1,0 +1,122 @@
+[33mcommit 0beb6f9d0952f397fe9e7b7242f717ccbdb7739c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Mayschy <mvasilyev2016@gmail.com>
+Date:   Tue Mar 31 13:42:27 2026 +0300
+
+    revert
+
+[33mcommit a4c0940425f29080b1bac82585391092612f2e84[m
+Author: Mayschy <mvasilyev2016@gmail.com>
+Date:   Tue Mar 31 13:35:42 2026 +0300
+
+    update filter system
+
+[33mcommit 4b69a8f562f95b6c7d96e4b47528b6a1ddf03256[m
+Author: Mayschy <mvasilyev2016@gmail.com>
+Date:   Tue Mar 31 13:25:14 2026 +0300
+
+    update bot window
+
+[33mcommit 989021285698242df9b088beb8aa45649404c955[m
+Author: Mayschy <mvasilyev2016@gmail.com>
+Date:   Tue Mar 31 13:21:44 2026 +0300
+
+    update filter and add chat bot window
+
+[33mcommit c78050cc515b40aadd6e4c4a512be97594676f2d[m
+Author: Mayschy <mvasilyev2016@gmail.com>
+Date:   Tue Feb 17 12:24:54 2026 +0200
+
+    stock databse update
+
+[33mcommit f0e1ab904f171dd152d2dece276be423b77dfd57[m
+Author: Mayschy <mvasilyev2016@gmail.com>
+Date:   Tue Feb 17 12:14:55 2026 +0200
+
+    stock databse update
+
+[33mcommit d9c9793ad55e6d7ded665ae0dd42cc64f8c74615[m
+Author: Mayschy <mvasilyev2016@gmail.com>
+Date:   Tue Feb 17 10:52:05 2026 +0200
+
+    out of stock update
+
+[33mcommit 8c887444409734791d9be64431d9f4b81be662da[m
+Author: Mayschy <mvasilyev2016@gmail.com>
+Date:   Tue Feb 17 10:42:32 2026 +0200
+
+    new search update + new admin panel
+
+[33mcommit 4c87db46257658e7faed7037e6ccbc5f4ee3291b[m
+Author: Mayschy <mvasilyev2016@gmail.com>
+Date:   Mon Feb 16 21:21:27 2026 +0200
+
+    checkout update
+
+[33mcommit b09441ee8e75ae9896d7606fcf9108b30f09e9fd[m
+Author: Mayschy <mvasilyev2016@gmail.com>
+Date:   Sun Feb 15 14:16:36 2026 +0200
+
+    checkout update
+
+[33mcommit 885e1867bb9a8ddc5bb5813b527b54f27044045d[m
+Author: Mayschy <mvasilyev2016@gmail.com>
+Date:   Sat Feb 14 17:36:56 2026 +0200
+
+    cart update
+
+[33mcommit 92c837bdc87a5e85aa58d045be602724d84026e5[m
+Author: Mayschy <mvasilyev2016@gmail.com>
+Date:   Sat Feb 14 17:28:22 2026 +0200
+
+    product update
+
+[33mcommit 5334a0e6897514e66d67b013c97f809741ba60fa[m
+Author: Mayschy <mvasilyev2016@gmail.com>
+Date:   Wed Feb 11 19:36:17 2026 +0200
+
+    product update
+
+[33mcommit 7d61963a724023c8826c3ef18fd5e3119dce8710[m
+Merge: 704faed 9a3a3e0
+Author: Mayschy <mvasilyev2016@gmail.com>
+Date:   Wed Feb 11 15:59:55 2026 +0200
+
+    Merge branch 'master' of https://github.com/Mayschy/Men-s-style-shop
+
+[33mcommit 704faed22425a700596d83348c27a3dfee9c7ef2[m
+Author: Mayschy <mvasilyev2016@gmail.com>
+Date:   Wed Feb 11 15:58:56 2026 +0200
+
+    new about us page
+
+[33mcommit 9a3a3e050ab23aa97e0e0216ceceb274cec7c70b[m
+Author: Mishail Vasiluev Kn-222b <167981278+Mayschy@users.noreply.github.com>
+Date:   Wed Oct 22 20:39:37 2025 +0300
+
+    Add README with project details and setup instructions
+    
+    Added project overview, features, and local setup instructions.
+
+[33mcommit a40d842f3b3667cb89a4bddfc678f6de0679fedf[m
+Author: Mayschy <fiercewarrior2005@gmail.com>
+Date:   Wed Oct 22 18:49:55 2025 +0300
+
+    Fix: Route imports and remove hardcoded secrets
+
+[33mcommit 67dd22d24fcf1d6203cb2703b18f0fc238bd986e[m
+Author: Mayschy <fiercewarrior2005@gmail.com>
+Date:   Wed Oct 22 18:37:11 2025 +0300
+
+    Add render.yaml Blueprint for Render deployment
+
+[33mcommit 034290198eb0ee721f32b3fde5406beb9e4d1094[m
+Author: Mayschy <fiercewarrior2005@gmail.com>
+Date:   Wed Oct 22 18:04:46 2025 +0300
+
+    Add render.yaml Blueprint for Render deployment
+
+[33mcommit aa715805d8e92f34aa295c1d2e313fda88c6ddb1[m
+Author: Mayschy <fiercewarrior2005@gmail.com>
+Date:   Wed Oct 22 17:56:26 2025 +0300
+
+    Fix CRLF/LF line endings warning
