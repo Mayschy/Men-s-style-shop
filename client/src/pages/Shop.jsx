@@ -257,17 +257,6 @@ const Shop = () => {
       </div>
 
       {/* Products Grid */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-          gap: "30px",
-        }}
-      >
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
-            <ProductCard
-              key={product._id}
       {/* Products Grid */}
       <div
         style={{
