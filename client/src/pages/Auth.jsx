@@ -31,10 +31,9 @@ const Auth = () => {
   const { login } = useAuth();
   const { showToast } = useContext(ToastContext);
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
-  const("signInForm")
-    : t("signUp")nt"
-    : "Create a New Account";
+  const formTitle = isLogin ? t("signInForm") : t("signUp");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
