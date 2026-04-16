@@ -2,12 +2,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { ToastContext } from '../App';
+import { useLanguage } from '../context/LanguageContext';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useAuth();
+  const { t } = useLanguage();
   const { showToast } = useContext(ToastContext);
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,12 +25,12 @@ const ProductDetail = () => {
           `https://men-style-shop.onrender.com/api/products/${id}`
         );
         if (!response.ok) {
-          throw new Error('Product not found');
+          throw new Error(t("productNotFound") || 'Product not found');
         }
         const data = await response.json();
         setProduct(data);
       } catch (err) {
-        setError(err.message || 'Failed to fetch product');
+        setError(err.message || t("failedFetchProduct") || 'Failed to fetch product');
       } finally {
         setIsLoading(false);
       }
@@ -50,7 +52,7 @@ const ProductDetail = () => {
     return (
       <div className="loading-container">
         <div className="spinner"></div>
-        <p>Loading product...</p>
+        <p>{t("loadingProducts")}</p>
       </div>
     );
   }
@@ -58,18 +60,18 @@ const ProductDetail = () => {
   if (error) {
     return (
       <div className="error-container">
-        <p className="error-text">Error: {error}</p>
+        <p className="error-text">{t("error")}: {error}</p>
         <button
           onClick={() => navigate('/shop')}
           className="btn-primary"
         >
-          Back to Shop
+          {t("backToShop")}
         </button>
       </div>
     );
   }
 
-  if (!product) return <div className="not-found">Product not found</div>;
+  if (!product) return <div className="not-found">{t("productNotFound")}</div>;
 
   return (
     <div className="product-detail-container">
@@ -77,7 +79,7 @@ const ProductDetail = () => {
         onClick={() => navigate('/shop')}
         className="btn-back"
       >
-        ← Back to Shop
+        ← {t("goBack")}
       </button>
 
       <div className="product-layout">
@@ -102,18 +104,18 @@ const ProductDetail = () => {
                 ${product.price.toFixed(2)}
               </p>
               <span className={`stock-badge ${product.isAvailable ? 'in-stock' : 'out-of-stock'}`}>
-                {product.isAvailable ? '✓ In Stock' : '✗ Out of Stock'}
+                {product.isAvailable ? `✓ ${t("inStock")}` : `✗ ${t("outOfStock")}`}
               </span>
             </div>
 
             <div className="category-pill">
-              Category: {product.category}
+              {t("category")}: {product.category}
             </div>
 
             <div className="divider"></div>
 
             <div className="description-box">
-              <h3 className="section-title">Description</h3>
+              <h3 className="section-title">{t("description")}</h3>
               <p className="description-text">
                 {product.description}
               </p>
@@ -121,7 +123,7 @@ const ProductDetail = () => {
 
             {product.styleTags && product.styleTags.length > 0 && (
               <div className="style-tags-box">
-                <h3 className="section-title">Style Tags</h3>
+                <h3 className="section-title">{t("styleTags")}</h3>
                 <div className="tags-container">
                   {product.styleTags.map((tag, idx) => (
                     <span key={idx} className="tag">
@@ -136,7 +138,7 @@ const ProductDetail = () => {
           {/* Purchase Section */}
           <div className="purchase-section">
             <div className="quantity-row">
-              <label className="quantity-label">Quantity:</label>
+              <label className="quantity-label">{t("quantity")}:</label>
               <div className="quantity-control">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -166,7 +168,7 @@ const ProductDetail = () => {
               disabled={!product.isAvailable}
               className={`btn-add-to-cart ${!product.isAvailable ? 'disabled' : ''}`}
             >
-              {product.isAvailable ? '🛒 Add to Cart' : 'Out of Stock'}
+              {product.isAvailable ? `🛒 ${t("addToCart")}` : t("outOfStock")}
             </button>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext"; 
+import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext"; 
 
 
 const primaryButtonStyle = {
@@ -36,6 +37,7 @@ const cardStyle = {
 
 const Profile = () => {
   const { user, logout, orders, fetchOrders } = useAuth();
+  const { t } = useLanguage();
 
   const [profileData, setProfileData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -133,7 +135,7 @@ const Profile = () => {
 
       setProfileData(data.user);
       setIsEditing(false);
-      alert("Profile updated successfully!");
+      alert(t("profileUpdatedSuccess"));
     } catch (err) {
       setError(err.message);
     }
@@ -142,21 +144,21 @@ const Profile = () => {
   if (loading)
     return (
       <div style={{ padding: "50px", textAlign: "center" }}>
-        Loading profile...
+        {t("loadingProfile")}
       </div>
     );
 
   if (error)
     return (
       <div style={{ padding: "50px", textAlign: "center", color: "red" }}>
-        Error: {error}
+        {t("error")}: {error}
       </div>
     );
 
   if (!profileData && !user)
     return (
       <div style={{ padding: "50px", textAlign: "center" }}>
-        Please sign in to view your profile.
+        {t("pleaseSignIn")}
       </div>
     );
 
@@ -171,7 +173,7 @@ const Profile = () => {
     >
       <span style={{ color: "var(--color-text-light)" }}>{label}</span>
       <span style={{ fontWeight: 600, color: "var(--color-text-dark)" }}>
-        {value || "Not specified"}
+        {value || t("notSpecified")}
       </span>
     </div>
   );
@@ -216,14 +218,14 @@ const Profile = () => {
           fontSize: "2.2em",
         }}
       >
-        My Account Dashboard
+        {t("myAccountDashboard")}
       </h1>
       <p style={{ color: "var(--color-text-light)", marginBottom: "30px" }}>
-        Welcome back,{" "}
+        {t("welcomeBack")}{" "}
         <strong style={{ color: "var(--color-secondary)" }}>
           {profileData.firstName || profileData.email}
         </strong>
-        ! Manage your personal details, orders, and addresses.
+        ! {t("managePersonalDetails")}
       </p>
 
       <div style={{ display: "flex", gap: "60px", marginTop: "40px" }}>
@@ -240,21 +242,21 @@ const Profile = () => {
               fontSize: "1.1em",
             }}
           >
-            Profile Navigation
+            {t("profileNavigation")}
           </h3>
           <ul style={{ listStyle: "none", padding: 0 }}>
             <NavItem
-              name="Personal Details"
+              name={t("personalDetails")}
               isActive={activeTab === "details"}
               onClick={() => setActiveTab("details")}
             />
             <NavItem
-              name="Order History"
+              name={t("orderHistory")}
               isActive={activeTab === "orders"}
               onClick={() => setActiveTab("orders")}
             />
             <NavItem
-              name="Saved Addresses"
+              name={t("savedAddresses")}
               isActive={activeTab === "addresses"}
               onClick={() => setActiveTab("addresses")}
             />
@@ -272,16 +274,16 @@ const Profile = () => {
               onMouseEnter={(e) => (e.currentTarget.style.color = "#FF0000")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "red")}
             >
-              Log Out
+              {t("logOut")}
             </li>
           </ul>
         </aside>
 
         <section style={{ flexGrow: 1, minWidth: "600px" }}>
           <h2 style={{ color: "var(--color-text-dark)", marginBottom: "30px" }}>
-            {activeTab === "details" && "Personal Details"}
-            {activeTab === "orders" && "Order History"}
-            {activeTab === "addresses" && "Saved Addresses (TODO)"}
+            {activeTab === "details" && t("personalDetails")}
+            {activeTab === "orders" && t("orderHistory")}
+            {activeTab === "addresses" && t("savedAddresses")}
           </h2>
 
           {activeTab === "details" && profileData && (

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 import { ToastContext } from "../App";
 
 const buttonStyle = {
@@ -14,6 +15,7 @@ const buttonStyle = {
 };
 
 const Auth = () => {
+  const { t } = useLanguage();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,8 +32,8 @@ const Auth = () => {
   const { showToast } = useContext(ToastContext);
   const navigate = useNavigate();
 
-  const formTitle = isLogin
-    ? "Sign In to Your Account"
+  const("signInForm")
+    : t("signUp")nt"
     : "Create a New Account";
 
   const handleSubmit = async (e) => {
@@ -44,10 +46,10 @@ const Auth = () => {
       const result = await login(email, password);
 
       if (result.success) {
-        showToast("Login successful!", 'success');
+        showToast(t("success"), 'success');
         navigate("/");
       } else {
-        setError(result.error || "Login failed. Please try again.");
+        setError(result.error || t("error"));
       }
     } else {
       const endpoint = `${API_BASE_URL}/api/auth/register`;
@@ -72,7 +74,7 @@ const Auth = () => {
         const data = await response.json();
 
         if (response.ok) {
-          showToast("Registration successful! Please sign in now.", 'success');
+          showToast(t("success"), 'success');
           setIsLogin(true);
           setFirstName("");
           setLastName("");
@@ -83,12 +85,12 @@ const Auth = () => {
           setPassword("");
         } else {
           setError(
-            data.message || "Registration failed. Please check your data."
+            data.message || t("error")
           );
         }
       } catch (err) {
         setError(
-          "An error occurred during registration. Check if the backend is running."
+          t("error")
         );
         console.error(err);
       }
@@ -120,7 +122,7 @@ const Auth = () => {
       >
         <input
           type="email"
-          placeholder="Email Address"
+          placeholder={t("email")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -132,7 +134,7 @@ const Auth = () => {
         />
         <input
           type="password"
-          placeholder="Password"
+          placeholder={t("password")}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
@@ -150,7 +152,7 @@ const Auth = () => {
             <div style={{ display: "flex", gap: "10px" }}>
               <input
                 type="text"
-                placeholder="First Name"
+                placeholder={t("firstName")}
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required
@@ -163,7 +165,7 @@ const Auth = () => {
               />
               <input
                 type="text"
-                placeholder="Last Name"
+                placeholder={t("lastName")}
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 required
@@ -178,7 +180,7 @@ const Auth = () => {
 
             <input
               type="text"
-              placeholder="Street Address"
+              placeholder={t("street")}
               value={street}
               onChange={(e) => setStreet(e.target.value)}
               style={{
@@ -196,7 +198,7 @@ const Auth = () => {
             >
               <input
                 type="text"
-                placeholder="City"
+                placeholder={t("city")}
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 style={{
@@ -207,7 +209,7 @@ const Auth = () => {
               />
               <input
                 type="text"
-                placeholder="ZIP/Postal Code"
+                placeholder={t("zip")}
                 value={zip}
                 onChange={(e) => setZip(e.target.value)}
                 style={{
@@ -218,7 +220,7 @@ const Auth = () => {
               />
               <input
                 type="text"
-                placeholder="Country"
+                placeholder={t("country")}
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
                 style={{
@@ -243,12 +245,12 @@ const Auth = () => {
             color: "white",
           }}
         >
-          {isLogin ? "Sign In" : "Register"}
+          {isLogin ? t("signInForm") : t("register")}
         </button>
       </form>
 
       <p style={{ marginTop: "20px", textAlign: "center", fontSize: "0.9em" }}>
-        {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+        {isLogin ? t("dontHaveAccount") : t("alreadyHaveAccount")}{" "}
         <span
           onClick={() => setIsLogin(!isLogin)}
           style={{
@@ -257,7 +259,7 @@ const Auth = () => {
             fontWeight: "bold",
           }}
         >
-          {isLogin ? "Register Here" : "Sign In Here"}
+          {isLogin ? t("signUp") : t("signInForm")}
         </span>
       </p>
     </div>

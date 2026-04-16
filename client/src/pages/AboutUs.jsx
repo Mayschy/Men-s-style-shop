@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useLanguage } from "../context/LanguageContext";
 
 const AboutUs = () => {
+  const { t } = useLanguage();
   const [hoveredCard, setHoveredCard] = useState(null);
 
   const sectionStyle = {
@@ -76,10 +78,10 @@ const AboutUs = () => {
             letterSpacing: "2px",
             textTransform: "uppercase"
           }}>
-            Elevating <span style={{ color: "var(--color-secondary)" }}>Male</span> Essentials
+            {t("elevatingMaleEssentials")}
           </h1>
           <p style={{ fontSize: "1.2em", maxWidth: "600px", margin: "20px auto 0", opacity: 0.9 }}>
-            Where cutting-edge AI meets timeless sartorial elegance.
+            {t("cuttingEdgeAI")}
           </p>
         </div>
       </div>
@@ -91,11 +93,9 @@ const AboutUs = () => {
         borderRadius: "20px",
         marginBottom: "60px"
       }}>
-        <h2 style={{ fontSize: "2.5rem", fontWeight: "800", marginBottom: "20px" }}>Our Philosophy</h2>
+        <h2 style={{ fontSize: "2.5rem", fontWeight: "800", marginBottom: "20px" }}>{t("ourPhilosophy")}</h2>
         <p style={{ maxWidth: "800px", margin: "0 auto", fontSize: "1.1rem", color: "#555", lineHeight: "1.8" }}>
-          Founded at the intersection of classic tailoring and digital innovation, 
-          we bridge the gap between traditional craftsmanship and the future of fashion. 
-          Our mission is to simplify your style journey without compromising on character.
+          {t("philosophyText")}
         </p>
       </div>
       <div style={gridStyle}>
@@ -103,17 +103,19 @@ const AboutUs = () => {
           { 
             title: "Premium Curation", 
             text: "Sourcing the world's finest fabrics from Italy to Japan.",
+            phase: t("premiumCuration"), 
+            text: t("premiumCurationText"),
             phase: "01" 
           },
           { 
-            title: "AI Stylist", 
-            text: "Personalized wardrobe algorithms tailored to your unique fit.",
+            title: t("aiStylist"), 
+            text: t("aiStylistText"),
             phase: "02" 
           },
           { 
-            title: "Timeless Design", 
-            text: "Engineered staples that outlast any fleeting fashion trend.",
-            phase: "03" 
+            title: t("timelessDesign"), 
+            text: t("timelessDesignText"),
+            phase: "03"
           }
         ].map((item, index) => (
           <div 
