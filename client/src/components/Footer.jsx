@@ -90,8 +90,7 @@ const Footer = () => {
         </div>
 
         <div>
-          <h4 style={columnTitleStyle}>COMPANY</h4>
-          <Link{t("company")}</h4>
+          <h4 style={columnTitleStyle}>{t("company")}</h4>
           <Link
             to="/about"
             style={linkStyle}
@@ -147,7 +146,8 @@ const Footer = () => {
             +1 (234) 567-890
           </a>
           <p style={{ ...contactTextStyle, marginTop: "15px" }}>
-            {t("email")}
+            {t("email")}: info@mensstyle.com
+          </p>
         </div>
       </div>
 
