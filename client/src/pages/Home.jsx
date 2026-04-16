@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useLanguage } from "../context/LanguageContext";
 
 const Home = () => {
+  const { t } = useLanguage();
   const image1 =
     "https://st29.styapokupayu.ru/images/blog_posts/covers/000/323/615_large.jpg?1691581059";
   const image2 =
@@ -106,10 +108,9 @@ const Home = () => {
 
         <div style={styles.heroContent}>
           <div style={styles.contentWrapper}>
-            <h1 style={styles.heroTitle}>THE NEW FRONTIER OF MEN'S STYLE</h1>
+            <h1 style={styles.heroTitle}>{t("homeTitle")}</h1>
             <p style={styles.heroSubtitle}>
-              Discover curated collections for the modern man. Elegance meets
-              simplicity.
+              {t("homeSubtitle")}
             </p>
             <Link
               to="/shop"
@@ -126,7 +127,7 @@ const Home = () => {
               }}
               style={styles.shopButton}
             >
-              SHOP NOW
+              {t("shopNow")}
             </Link>
           </div>
         </div>

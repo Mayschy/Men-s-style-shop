@@ -2,10 +2,12 @@ import React from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { ToastContext } from "../App";
+import { useLanguage } from "../context/LanguageContext";
 import "./Cart.css";
 
 const Cart = () => {
   const { user, cart, removeFromCart } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { showToast } = React.useContext(ToastContext);
 
@@ -13,12 +15,12 @@ const Cart = () => {
     return (
       <div className="cart-container">
         <div className="auth-message">
-          <p>Please log in to view your cart.</p>
+          <p>{t("pleaseLogIn")}</p>
           <button 
             className="btn-primary"
             onClick={() => navigate("/auth")}
           >
-            Go to Login
+            {t("goToLogin")}
           </button>
         </div>
       </div>
@@ -44,20 +46,20 @@ const Cart = () => {
   return (
     <div className="cart-container">
       <div className="cart-header">
-        <h1>🛒 Shopping Cart</h1>
-        <p className="cart-subtitle">Review your items before checkout</p>
+        <h1>🛒 {t("shoppingCart")}</h1>
+        <p className="cart-subtitle">{t("reviewItems")}</p>
       </div>
 
       {cart.length === 0 ? (
         <div className="empty-cart">
           <div className="empty-cart-icon">📭</div>
-          <h2>Your cart is empty</h2>
-          <p>Discover our collection of premium men's fashion</p>
+          <h2>{t("emptyCart")}</h2>
+          <p>{t("discoverCollection")}</p>
           <button 
             className="btn-primary"
             onClick={() => navigate("/shop")}
           >
-            Continue Shopping
+            {t("continueShopping")}
           </button>
         </div>
       ) : (
@@ -70,10 +72,10 @@ const Cart = () => {
                     <h3 className="item-name">{item.productId.name}</h3>
                     <div className="item-meta">
                       <span className="item-price">
-                        ${item.productId.price.toFixed(2)} each
+                        ${item.productId.price.toFixed(2)} {t("each")}
                       </span>
                       <span className="item-quantity">
-                        Quantity: <strong>{item.quantity}</strong>
+                        {t("quantity")}: <strong>{item.quantity}</strong>
                       </span>
                     </div>
                   </div>
@@ -86,7 +88,7 @@ const Cart = () => {
                         handleRemove(item.productId._id, item.productId.name)
                       }
                       className="btn-remove"
-                      title="Remove from cart"
+                      title={t("removeFromCart")}
                     >
                       ✕
                     </button>
@@ -98,22 +100,22 @@ const Cart = () => {
 
           <div className="cart-summary-section">
             <div className="cart-summary">
-              <h2>Order Summary</h2>
+              <h2>{t("orderSummary")}</h2>
               
               <div className="summary-row">
-                <span>Subtotal</span>
+                <span>{t("subtotal")}</span>
                 <span>${totalAmount.toFixed(2)}</span>
               </div>
               
               <div className="summary-row">
-                <span>Shipping</span>
-                <span className="shipping-free">Free</span>
+                <span>{t("shipping")}</span>
+                <span className="shipping-free">{t("free")}</span>
               </div>
               
               <div className="summary-divider"></div>
               
               <div className="summary-total">
-                <span>Total Amount</span>
+                <span>{t("totalAmount")}</span>
                 <span>${totalAmount.toFixed(2)}</span>
               </div>
 
@@ -121,14 +123,14 @@ const Cart = () => {
                 onClick={() => navigate("/checkout")}
                 className="btn-checkout"
               >
-                Proceed to Checkout
+                {t("proceedCheckout")}
               </button>
 
               <button
                 onClick={() => navigate("/shop")}
                 className="btn-continue-shopping"
               >
-                Continue Shopping
+                {t("continueShopping")}
               </button>
             </div>
           </div>

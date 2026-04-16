@@ -2,8 +2,10 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
+import { useLanguage } from "../context/LanguageContext";
 
 const ProductCard = ({ product }) => {
+  const { t } = useLanguage();
   const cardColors = {
     background: "white",
     shadow: "0 4px 12px rgba(0,0,0,0.1)",
@@ -75,7 +77,7 @@ const ProductCard = ({ product }) => {
               color: "white",
             }}
           >
-            ❌ OUT OF STOCK
+            ❌ {t("outOfStock")}
           </div>
         )}
       </div>
@@ -137,7 +139,7 @@ const ProductCard = ({ product }) => {
             opacity: product.stock > 0 ? 1 : 0.6,
           }}
         >
-          {product.stock > 0 ? `✓ In Stock (${product.stock})` : "✗ Out of Stock"}
+          {product.stock > 0 ? `✓ ${t("inStock")} (${product.stock})` : `✗ ${t("outOfStock")}`}
         </div>
       </div>
     </div>

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
+import { useLanguage } from "../context/LanguageContext";
 
 const Shop = () => {
+  const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -97,7 +99,7 @@ const Shop = () => {
   if (isLoading) {
     return (
       <p style={{ textAlign: "center", marginTop: "50px", fontSize: "1.5em" }}>
-        Loading products...
+        {t("loadingProducts")}
       </p>
     );
   }
@@ -112,7 +114,7 @@ const Shop = () => {
           color: "red",
         }}
       >
-        Error: {error}
+        {t("errorFetching")}: {error}
       </p>
     );
   }
@@ -126,13 +128,13 @@ const Shop = () => {
           color: "var(--color-text-dark)",
         }}
       >
-        🛍️ Product Catalog
+        🛍️ {t("productCatalog")}
       </h1>
 
       {/* Search Bar */}
       <input
         type="text"
-        placeholder="🔍 Search products..."
+        placeholder={`🔍 ${t("searchProducts")}`}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         style={searchStyle}
@@ -151,13 +153,13 @@ const Shop = () => {
         
         {/* Category Filter */}
         <div style={{ marginBottom: "20px" }}>
-          <h4 style={{ marginTop: 0, marginBottom: "10px", color: "#333" }}>📂 Category</h4>
+          <h4 style={{ marginTop: 0, marginBottom: "10px", color: "#333" }}>📂 {t("categoryFilter")}</h4>
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
             <button
               style={filterButtonStyle("all")}
               onClick={() => setFilter("all")}
             >
-              All Products
+              {t("allProducts")}
             </button>
             {["t-shirts", "jackets", "jeans", "accessories"].map((cat) => (
               <button
@@ -173,11 +175,11 @@ const Shop = () => {
 
         {/* Price Range Filter */}
         <div style={{ marginBottom: "20px" }}>
-          <h4 style={{ marginTop: 0, marginBottom: "10px", color: "#333" }}>💰 Price Range</h4>
+          <h4 style={{ marginTop: 0, marginBottom: "10px", color: "#333" }}>💰 {t("priceRange")}</h4>
           <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
             <div>
               <label style={{ fontSize: "0.9em", display: "block", marginBottom: "5px" }}>
-                Min: ${priceRange[0]}
+                {t("min")}: ${priceRange[0]}
               </label>
               <input
                 type="range"
@@ -193,7 +195,7 @@ const Shop = () => {
             </div>
             <div>
               <label style={{ fontSize: "0.9em", display: "block", marginBottom: "5px" }}>
-                Max: ${priceRange[1]}
+                {t("max")}: ${priceRange[1]}
               </label>
               <input
                 type="range"
@@ -213,7 +215,7 @@ const Shop = () => {
         {/* Style Tags Filter */}
         {allStyleTags.length > 0 && (
           <div style={{ marginBottom: "20px" }}>
-            <h4 style={{ marginTop: 0, marginBottom: "10px", color: "#333" }}>🏷️ Style Tags</h4>
+            <h4 style={{ marginTop: 0, marginBottom: "10px", color: "#333" }}>🏷️ {t("styleTags")}</h4>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               {allStyleTags.map((tag) => (
                 <button
@@ -246,14 +248,14 @@ const Shop = () => {
               onChange={(e) => setInStockOnly(e.target.checked)}
               style={{ width: "18px", height: "18px", cursor: "pointer" }}
             />
-            <span style={{ fontSize: "0.95em" }}>📦 In Stock Only</span>
+            <span style={{ fontSize: "0.95em" }}>📦 {t("inStockOnly")}</span>
           </label>
         </div>
       </div>
 
       {/* Results Counter */}
       <div style={{ textAlign: "center", marginBottom: "20px", color: "#666" }}>
-        <p>Showing <strong>{filteredProducts.length}</strong> of <strong>{products.length}</strong> products</p>
+        <p>{t("showing")} <strong>{filteredProducts.length}</strong> {t("of")} <strong>{products.length}</strong> {t("products")}</p>
       </div>
 
       {/* Products Grid */}
@@ -276,10 +278,10 @@ const Shop = () => {
           <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "50px 20px" }}>
             <p style={{ fontSize: "3em", margin: "0 0 10px" }}>📭</p>
             <p style={{ fontSize: "1.2em", color: "#999", margin: 0 }}>
-              ❌ No products found {searchTerm ? `matching "${searchTerm}"` : "in this category"}.
+              ❌ {t("noProductsFound")} {searchTerm ? `${t("matchingSearch")} "${searchTerm}"` : t("inThisCategory")}.
             </p>
             <p style={{ fontSize: "0.95em", color: "#bbb", marginTop: "10px" }}>
-              Try adjusting your filters or search terms
+              {t("tryAdjusting")}
             </p>
           </div>
         )}

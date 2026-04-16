@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const { language, toggleLanguage, t } = useLanguage();
   const navigate = useNavigate();
 
   const [isButtonHovered, setIsButtonHovered] = useState(false);
+  const [isLanguageButtonHovered, setIsLanguageButtonHovered] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -87,9 +90,9 @@ const Navbar = () => {
         <NavLinkWithHover to="/" isLogo={true}>
           MEN'S STYLE
         </NavLinkWithHover>
-        <NavLinkWithHover to="/shop">Shop</NavLinkWithHover> {" "}
+        <NavLinkWithHover to="/shop">{t("shop")}</NavLinkWithHover> {" "}
         {user && user.role === "admin" && (
-          <NavLinkWithHover to="/admin/products">Admin Panel</NavLinkWithHover>
+          <NavLinkWithHover to="/admin/products">{t("adminPanel")}</NavLinkWithHover>
         )}
       </div>{" "}
       <div
@@ -100,23 +103,46 @@ const Navbar = () => {
         }}
       >
         {" "}
+        <button
+          onClick={toggleLanguage}
+          style={{
+            padding: "8px 14px",
+            backgroundColor: isLanguageButtonHovered ? "#BFA54F" : "#F5F5F5",
+            color: "var(--color-text-dark)",
+            border: "1px solid var(--color-primary)",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontWeight: "600",
+            fontSize: "0.9em",
+            transition: "all 0.3s ease",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+          }}
+          onMouseEnter={() => setIsLanguageButtonHovered(true)}
+          onMouseLeave={() => setIsLanguageButtonHovered(false)}
+          title={t("language")}
+        >
+          🌐 {language.toUpperCase()}
+        </button>
+        {" "}
         <NavLinkWithHover to="/cart">
-          <span style={{ fontSize: "1.2em" }}>🛒 Cart</span>
+          <span style={{ fontSize: "1.2em" }}>🛒 {t("cart")}</span>
         </NavLinkWithHover>{" "}
         {user ? (
           <>
             {" "}
             <span style={{ color: "var(--color-primary)", fontWeight: "bold" }}>
-              Welcome, {user.name}
+              {t("welcome")}, {user.name}
             </span>
-            <NavLinkWithHover to="/profile">Profile</NavLinkWithHover> {" "}
+            <NavLinkWithHover to="/profile">{t("profile")}</NavLinkWithHover> {" "}
             <button
               onClick={handleLogout}
               style={dynamicButtonStyle}
               onMouseEnter={() => setIsButtonHovered(true)}
               onMouseLeave={() => setIsButtonHovered(false)}
             >
-              Log Out{" "}
+              {t("logOut")}{" "}
             </button>{" "}
           </>
         ) : (
@@ -126,7 +152,7 @@ const Navbar = () => {
             onMouseEnter={() => setIsButtonHovered(true)}
             onMouseLeave={() => setIsButtonHovered(false)}
           >
-            Sign In / Register{" "}
+            {t("signIn")}{" "}
           </Link>
         )}{" "}
       </div>{" "}

@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useLanguage } from "../context/LanguageContext";
 
 const Footer = () => {
+  const { t } = useLanguage();
   const footerStyle = {
     backgroundColor: "var(--color-prim2)",
     color: "white",
@@ -83,20 +85,20 @@ const Footer = () => {
             MEN'S STYLE
           </p>
           <p style={sloganStyle}>
-            "DRESS SHARP. <br />
-            LIVE BOLD."
+            "{t("slogan")}"
           </p>
         </div>
 
         <div>
           <h4 style={columnTitleStyle}>COMPANY</h4>
+          <Link{t("company")}</h4>
           <Link
             to="/about"
             style={linkStyle}
             onMouseEnter={linkStyle.onMouseEnter}
             onMouseLeave={linkStyle.onMouseLeave}
           >
-            About Us
+            {t("aboutUs")}
           </Link>
           <Link
             to="/careers"
@@ -104,19 +106,19 @@ const Footer = () => {
             onMouseEnter={linkStyle.onMouseEnter}
             onMouseLeave={linkStyle.onMouseLeave}
           >
-            Careers (TODO)
+            {t("careers")}
           </Link>
         </div>
 
         <div>
-          <h4 style={columnTitleStyle}>HELP</h4>
+          <h4 style={columnTitleStyle}>{t("help")}</h4>
           <Link
             to="/faq"
             style={linkStyle}
             onMouseEnter={linkStyle.onMouseEnter}
             onMouseLeave={linkStyle.onMouseLeave}
           >
-            FAQ (TODO)
+            {t("faq")}
           </Link>
           <Link
             to="/shipping"
@@ -124,16 +126,16 @@ const Footer = () => {
             onMouseEnter={linkStyle.onMouseEnter}
             onMouseLeave={linkStyle.onMouseLeave}
           >
-            Shipping & Returns
+            {t("shippingReturns")}
           </Link>
         </div>
 
         <div>
-          <h4 style={columnTitleStyle}>CONTACT US</h4>
-          <p style={contactTextStyle}>Need assistance with your order?</p>
+          <h4 style={columnTitleStyle}>{t("contactUs")}</h4>
+          <p style={contactTextStyle}>{t("needAssistance")}</p>
           <p style={contactTextStyle}>
             <strong style={{ color: "var(--color-secondary)" }}>
-              CALL US:
+              {t("callUs")}
             </strong>
           </p>
           <a
@@ -145,13 +147,12 @@ const Footer = () => {
             +1 (234) 567-890
           </a>
           <p style={{ ...contactTextStyle, marginTop: "15px" }}>
-            Email: info@mensstyle.com
-          </p>
+            {t("email")}
         </div>
       </div>
 
       <div style={copyrightStyle}>
-        &copy; {new Date().getFullYear()} MEN'S STYLE. All Rights Reserved.
+        &copy; {new Date().getFullYear()} MEN'S STYLE. {t("copyright")}
       </div>
     </footer>
   );
