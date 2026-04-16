@@ -31,7 +31,6 @@ const Auth = () => {
   const { login } = useAuth();
   const { showToast } = useContext(ToastContext);
   const navigate = useNavigate();
-  const { t } = useLanguage();
 
   const formTitle = isLogin ? t("signInForm") : t("signUp");
 

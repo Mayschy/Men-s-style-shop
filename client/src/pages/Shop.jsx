@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import ProductCard from "../components/ProductCard";
 import { useLanguage } from "../context/LanguageContext";
+import { API_ENDPOINTS } from "../config/api";
 
 const Shop = () => {
   const { t } = useLanguage();
@@ -13,9 +14,10 @@ const Shop = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [inStockOnly, setInStockOnly] = useState(false);
 
-  // Get all unique style tags
-  const allStyleTags = Array.from(
-    new Set(products.flatMap(p => p.styleTags || []))
+  // Get all unique style tags - memoized to avoid recalculation
+  const allStyleTags = useMemo(() => 
+    Array.from(new Set(products.flatMap(p => p.styleTags || []))),
+    [products]
   );
 
   useEffect(() => {
@@ -23,7 +25,7 @@ const Shop = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch("https://men-style-shop.onrender.com/api/products");
+        const response = await fetch(API_ENDPOINTS.PRODUCTS_ALL);
 
         if (!response.ok) {
           throw new Error("Failed to fetch products from server");
@@ -50,17 +52,19 @@ const Shop = () => {
     fetchProducts();
   }, []);
 
-  const filteredProducts = products.filter((p) => {
-    const matchesCategory = filter === "all" || p.category === filter;
-    const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         p.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesPrice = p.price >= priceRange[0] && p.price <= priceRange[1];
-   const matchesTags = selectedTags.length === 0 || 
-                        selectedTags.some(tag => (p.styleTags || []).includes(tag));
-    const matchesStock = !inStockOnly || p.isAvailable;
-    
-    return matchesCategory && matchesSearch && matchesPrice && matchesTags && matchesStock;
-  });
+  const filteredProducts = useMemo(() => {
+    return products.filter((p) => {
+      const matchesCategory = filter === "all" || p.category === filter;
+      const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                           p.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesPrice = p.price >= priceRange[0] && p.price <= priceRange[1];
+      const matchesTags = selectedTags.length === 0 || 
+                          selectedTags.some(tag => (p.styleTags || []).includes(tag));
+      const matchesStock = !inStockOnly || p.isAvailable;
+      
+      return matchesCategory && matchesSearch && matchesPrice && matchesTags && matchesStock;
+    });
+  }, [products, filter, searchTerm, priceRange, selectedTags, inStockOnly]);
 
   const toggleTag = (tag) => {
     setSelectedTags(prev => 

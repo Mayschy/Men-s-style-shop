@@ -4,7 +4,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 
-const ProductCard = ({ product }) => {
+// Memoize to prevent unnecessary re-renders when parent updates
+const ProductCard = React.memo(({ product }) => {
   const { t } = useLanguage();
   const cardColors = {
     background: "white",
@@ -161,6 +162,6 @@ const ProductCard = ({ product }) => {
       )}
     </>
   );
-};
+}, (prev, next) => prev.product._id === next.product._id);
 
 export default ProductCard;
