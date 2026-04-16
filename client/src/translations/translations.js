@@ -309,6 +309,7 @@ const translations = {
     email: 'Email',
     slogan: 'ОДЯГАЙСЯ ПO ГАРЯЧОМУ. ЖИИ СМІЛИВО.',
     copyright: 'Всі права захищені.',
+  }
 };
 
 export default translations;
