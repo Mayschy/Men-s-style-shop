@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 
 const Footer = () => {
   const { t } = useLanguage();
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const footerStyle = {
     backgroundColor: "var(--color-prim2)",
     color: "white",
-    padding: "30px var(--space-lg) 20px",
+    padding: isMobile ? "20px 15px 15px" : "30px var(--space-lg) 20px",
     marginTop: "30px",
     borderTop: "5px solid var(--color-secondary)",
   };
@@ -16,14 +26,14 @@ const Footer = () => {
     maxWidth: "1100px",
     margin: "0 auto",
     display: "grid",
-    gridTemplateColumns: "1fr 1fr 1fr 1fr",
-    gap: "40px",
+    gridTemplateColumns: isMobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr",
+    gap: isMobile ? "20px" : "40px",
   };
 
   const columnTitleStyle = {
-    fontSize: "1em",
+    fontSize: isMobile ? "0.9em" : "1em",
     fontWeight: "700",
-    marginBottom: "15px",
+    marginBottom: "12px",
     color: "var(--color-secondary)",
     letterSpacing: "0.8px",
   };
@@ -31,42 +41,42 @@ const Footer = () => {
   const linkStyle = {
     color: "white",
     textDecoration: "none",
-    marginBottom: "8px",
+    marginBottom: "6px",
     display: "block",
-    fontSize: "0.9em",
+    fontSize: isMobile ? "0.8em" : "0.9em",
     transition: "color 0.2s ease",
     onMouseEnter: (e) => (e.target.style.color = "var(--color-secondary)"),
     onMouseLeave: (e) => (e.target.style.color = "white"),
   };
 
   const contactTextStyle = {
-    marginBottom: "8px",
-    fontSize: "0.95em",
+    marginBottom: "6px",
+    fontSize: isMobile ? "0.85em" : "0.95em",
     color: "#F0F0F0",
   };
 
   const sloganBoxStyle = {
-    paddingRight: "20px",
+    paddingRight: isMobile ? "0" : "20px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
   };
 
   const sloganStyle = {
-    fontSize: "1.4em",
+    fontSize: isMobile ? "1em" : "1.4em",
     fontWeight: "900",
     color: "var(--color-secondary)",
     lineHeight: "1.1",
     letterSpacing: "1px",
-    marginBottom: "5px",
+    marginBottom: isMobile ? "8px" : "5px",
   };
 
   const copyrightStyle = {
-    marginTop: "30px",
-    paddingTop: "15px",
+    marginTop: isMobile ? "15px" : "30px",
+    paddingTop: isMobile ? "10px" : "15px",
     borderTop: "1px solid rgba(255, 255, 255, 0.2)",
     textAlign: "center",
-    fontSize: "0.8em",
+    fontSize: isMobile ? "0.7em" : "0.8em",
     color: "rgba(255, 255, 255, 0.7)",
   };
 

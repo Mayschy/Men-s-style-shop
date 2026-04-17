@@ -176,7 +176,7 @@ a[class*="btn"] {
 .tag-button:hover,
 .btn-small:hover {
   border-color: var(--color-primary);
-  background-color: rgba(102, 126, 234, 0.1);
+  background-color: rgba(83, 48, 22, 0.1);
   color: var(--color-primary);
 }
 
@@ -214,14 +214,16 @@ a[class*="btn"] {
 
 .button-group {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   align-items: center;
   flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .button-group.vertical {
   flex-direction: column;
   width: 100%;
+  gap: 12px;
 }
 
 .button-group.vertical button,

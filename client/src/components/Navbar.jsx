@@ -128,18 +128,19 @@ const Navbar = () => {
         <button
           onClick={toggleLanguage}
           style={{
-            padding: "8px 14px",
+            padding: "6px 10px",
             backgroundColor: isLanguageButtonHovered ? "#BFA54F" : "#F5F5F5",
             color: "var(--color-text-dark)",
             border: "1px solid var(--color-primary)",
             borderRadius: "6px",
             cursor: "pointer",
             fontWeight: "600",
-            fontSize: "0.9em",
+            fontSize: "0.8em",
             transition: "all 0.3s ease",
             display: "flex",
             alignItems: "center",
-            gap: "4px",
+            gap: "3px",
+            whiteSpace: "nowrap",
           }}
           onMouseEnter={() => setIsLanguageButtonHovered(true)}
           onMouseLeave={() => setIsLanguageButtonHovered(false)}

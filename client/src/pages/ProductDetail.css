@@ -201,43 +201,59 @@
 .quantity-control {
   display: flex;
   align-items: center;
+  background: linear-gradient(135deg, var(--color-secondary) 0%, rgba(191, 165, 79, 0.1) 100%);
   border: 2px solid var(--color-primary);
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
-  background: white;
+  box-shadow: 0 4px 12px rgba(83, 48, 22, 0.15);
+  transition: all 0.3s ease;
 }
 
- qty-btn {
-  padding: 10px 14px;
-  background-color: white;
+.quantity-control:hover {
+  box-shadow: 0 6px 16px rgba(83, 48, 22, 0.25);
+}
+
+.qty-btn {
+  padding: 12px 16px;
+  background-color: rgba(255, 255, 255, 0.9);
   border: none;
   cursor: pointer;
+  font-size: 1.3em;
+  font-weight: 700;
+  color: var(--color-primary);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+}
+
+.qty-btn:hover {
+  background-color: var(--color-secondary);
+  color: white;
+  transform: scale(1.15);
+}
+
+.qty-btn:active {
+  transform: scale(0.95);
+}
+
+.qty-input {
+  width: 70px;
+  text-align: center;
   font-size: 1.2em;
   font-weight: 700;
-  color: var(--color-primary);
-  transition: all 0.2s ease;
-  flex: 0 0 auto;
-}
-
- qty-btn:hover {
-  background-color: var(--color-secondary);
-  color: var(--color-primary);
-  transform: scale(1.1);
-}
-
- qty-input {
-  width: 60px;
-  text-align: center;
-  font-size: 1.1em;
-  font-weight: 700;
   border: none;
-  padding: 10px 8px;
-  color: var(--color-text-dark);
+  padding: 12px 10px;
+  color: var(--color-primary);
+  background-color: white;
+  letter-spacing: 0.5px;
 }
 
- qty-input:focus {
+.qty-input:focus {
   outline: none;
-  background-color: #f9f9f9;
+  background-color: rgba(255, 255, 255, 1);
 }
 
 /* Buttons - Consolidated in buttons.css */
