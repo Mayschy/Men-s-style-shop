@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
+import "./Home.css";
 
 const Home = () => {
   const { t } = useLanguage();
@@ -101,18 +102,19 @@ const Home = () => {
 
   return (
     <div className="page-content" style={styles.container}>
-      <div style={styles.hero}>
-        <div style={styles.dynamicBackground}></div>
+      <div className="home-hero" style={styles.hero}>
+        <div className="home-background" style={styles.dynamicBackground}></div>
 
         <div style={styles.heroOverlay}></div>
 
-        <div style={styles.heroContent}>
-          <div style={styles.contentWrapper}>
-            <h1 style={styles.heroTitle}>{t("homeTitle")}</h1>
-            <p style={styles.heroSubtitle}>
+        <div className="home-hero-content" style={styles.heroContent}>
+          <div className="home-content-wrapper" style={styles.contentWrapper}>
+            <h1 className="home-hero-title" style={styles.heroTitle}>{t("homeTitle")}</h1>
+            <p className="home-hero-subtitle" style={styles.heroSubtitle}>
               {t("homeSubtitle")}
             </p>
             <Link
+              className="home-shop-button"
               to="/shop"
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = "white";

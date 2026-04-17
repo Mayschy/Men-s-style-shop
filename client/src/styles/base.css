@@ -1,3 +1,4 @@
+/* Reset and Base Styles */
 @import './_vars.css';
 
 *, *::before, *::after {
@@ -24,4 +25,81 @@ a:hover {
 /* Скрываем стандартные маркеры у списков */
 ul, ol {
     list-style: none;
+}
+
+/* ===== RESPONSIVE BASE STYLES ===== */
+
+/* Root container adjustments */
+#root {
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Tablet responsive */
+@media (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+
+    body {
+        line-height: 1.4;
+    }
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+    html {
+        font-size: 13px;
+    }
+
+    body {
+        line-height: 1.3;
+    }
+
+    /* Remove margin/padding from default elements */
+    p {
+        margin: 0.5em 0;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        margin: 0.5em 0 0.25em 0;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+        font-size: inherit;
+    }
+
+    /* Make images responsive */
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+}
+
+/* Responsive Design */
+
+/* Tablet (768px and below) */
+@media (max-width: 768px) {
+  body {
+    font-size: 0.9em;
+  }
+
+  a {
+    font-size: 0.9em;
+  }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+  body {
+    font-size: 0.8em;
+  }
+
+  a {
+    font-size: 0.8em;
+  }
 }

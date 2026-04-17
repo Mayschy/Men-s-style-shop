@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useLanguage } from "../context/LanguageContext"; 
+import { useLanguage } from "../context/LanguageContext";
+import "./Profile.css";
 
 
 const primaryButtonStyle = {
@@ -204,7 +205,7 @@ const Profile = () => {
 
   return (
     <div
-      className="page-content"
+      className="page-content profile-container"
       style={{
         padding: "60px 40px",
         maxWidth: "1100px",
@@ -212,6 +213,7 @@ const Profile = () => {
       }}
     >
       <h1
+        className="profile-header-title"
         style={{
           color: "var(--color-primary)",
           marginBottom: "10px",
@@ -220,7 +222,7 @@ const Profile = () => {
       >
         {t("myAccountDashboard")}
       </h1>
-      <p style={{ color: "var(--color-text-light)", marginBottom: "30px" }}>
+      <p className="profile-header-subtitle" style={{ color: "var(--color-text-light)", marginBottom: "30px" }}>
         {t("welcomeBack")}{" "}
         <strong style={{ color: "var(--color-secondary)" }}>
           {profileData.firstName || profileData.email}
@@ -228,14 +230,16 @@ const Profile = () => {
         ! {t("managePersonalDetails")}
       </p>
 
-      <div style={{ display: "flex", gap: "60px", marginTop: "40px" }}>
+      <div className="profile-content" style={{ display: "flex", gap: "60px", marginTop: "40px" }}>
         <aside
+          className="profile-sidebar"
           style={{
             width: "250px",
             paddingRight: "40px",
           }}
         >
           <h3
+            className="profile-nav-title"
             style={{
               marginBottom: "20px",
               color: "var(--color-text-dark)",

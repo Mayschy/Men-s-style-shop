@@ -1,0 +1,126 @@
+/* Navbar Mobile Responsive Styles */
+
+/* Tablet (768px and below) */
+@media (max-width: 768px) {
+  .navbar-left {
+    gap: 15px;
+  }
+
+  .navbar-left a {
+    margin-right: 10px !important;
+    font-size: 0.9em;
+  }
+
+  .navbar-right {
+    gap: 8px;
+  }
+
+  .navbar-right a,
+  .navbar-right button {
+    font-size: 0.85em;
+    padding: 6px 10px !important;
+  }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+  .navbar-hamburger {
+    display: block !important;
+    z-index: 1001;
+  }
+
+  .navbar-left {
+    display: none;
+  }
+
+  .navbar-right {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background: var(--color-navbar-bg);
+    flex-direction: column;
+    gap: 0;
+    padding: 10px 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    border-bottom: 1px solid var(--color-primary);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .navbar-right.mobile-open {
+    max-height: 500px;
+    padding: 10px 0;
+  }
+
+  .navbar-right a,
+  .navbar-right button {
+    width: 100%;
+    text-align: left;
+    padding: 12px 16px !important;
+    margin: 0 !important;
+    border-radius: 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: block;
+    font-size: 0.9em;
+  }
+
+  .navbar-right a:last-child,
+  .navbar-right button:last-child {
+    border-bottom: none;
+  }
+
+  .navbar-right a:hover,
+  .navbar-right button:hover {
+    background-color: #f5f5f5;
+  }
+
+  /* Language toggle button */
+  .navbar-right button:first-child {
+    justify-content: flex-start;
+    flex-direction: row;
+  }
+
+  /* Cart link */
+  .navbar-right a {
+    color: var(--color-text-dark);
+  }
+
+  .navbar-right a span {
+    font-size: 1em !important;
+  }
+
+  /* User welcome message on mobile */
+  .navbar-right span {
+    display: block;
+    padding: 12px 16px;
+    color: var(--color-primary);
+    font-weight: bold;
+    font-size: 0.85em;
+  }
+
+  /* Sign in button styling */
+  .navbar-right a[style*="backgroundColor"],
+  .navbar-right button[style*="backgroundColor"] {
+    background-color: var(--color-secondary) !important;
+    padding: 12px 16px !important;
+    margin: 5px 10px !important;
+    width: auto;
+    border-radius: 6px !important;
+    text-align: center;
+  }
+}
+
+/* Very small phones (320px and below) */
+@media (max-width: 320px) {
+  .navbar-right {
+    font-size: 0.85em;
+  }
+
+  .navbar-right a,
+  .navbar-right button {
+    padding: 10px 12px !important;
+    font-size: 0.8em;
+  }
+}

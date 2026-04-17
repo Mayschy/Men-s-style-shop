@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
+import "./AboutUs.css";
 
 const AboutUs = () => {
   const { t } = useLanguage();
@@ -67,11 +68,11 @@ const AboutUs = () => {
   });
 
   return (
-    <div style={sectionStyle}>
-      <div style={heroSectionStyle}>
+    <div className="aboutus-container" style={sectionStyle}>
+      <div className="aboutus-hero" style={heroSectionStyle}>
         <div style={overlayStyle}></div>
         <div style={heroContentStyle}>
-          <h1 style={{ 
+          <h1 className="aboutus-hero-title" style={{ 
             fontSize: "clamp(2.5rem, 6vw, 4rem)", 
             fontWeight: "900", 
             margin: 0,
@@ -80,25 +81,25 @@ const AboutUs = () => {
           }}>
             {t("elevatingMaleEssentials")}
           </h1>
-          <p style={{ fontSize: "1.2em", maxWidth: "600px", margin: "20px auto 0", opacity: 0.9 }}>
+          <p className="aboutus-hero-subtitle" style={{ fontSize: "1.2em", maxWidth: "600px", margin: "20px auto 0", opacity: 0.9 }}>
             {t("cuttingEdgeAI")}
           </p>
         </div>
       </div>
 
-      <div style={{
+      <div className="aboutus-philosophy" style={{
         padding: "60px",
         textAlign: "center",
         background: "linear-gradient(135deg, var(--color-navbar-bg) 0%, #f0f0f0 100%)",
         borderRadius: "20px",
         marginBottom: "60px"
       }}>
-        <h2 style={{ fontSize: "2.5rem", fontWeight: "800", marginBottom: "20px" }}>{t("ourPhilosophy")}</h2>
-        <p style={{ maxWidth: "800px", margin: "0 auto", fontSize: "1.1rem", color: "#555", lineHeight: "1.8" }}>
+        <h2 className="aboutus-philosophy-title" style={{ fontSize: "2.5rem", fontWeight: "800", marginBottom: "20px" }}>{t("ourPhilosophy")}</h2>
+        <p className="aboutus-philosophy-text" style={{ maxWidth: "800px", margin: "0 auto", fontSize: "1.1rem", color: "#555", lineHeight: "1.8" }}>
           {t("philosophyText")}
         </p>
       </div>
-      <div style={gridStyle}>
+      <div className="aboutus-grid" style={gridStyle}>
         {[
           { 
             title: "Premium Curation", 
@@ -120,23 +121,24 @@ const AboutUs = () => {
         ].map((item, index) => (
           <div 
             key={index}
+            className="aboutus-card"
             style={getCardStyle(index)}
             onMouseEnter={() => setHoveredCard(index)}
             onMouseLeave={() => setHoveredCard(null)}
           >
-            <span style={{ 
+            <span className="aboutus-card-phase" style={{ 
               color: "var(--color-primary)", 
               fontWeight: "900", 
               fontSize: "0.9rem",
               letterSpacing: "3px" 
             }}>PHASE {item.phase}</span>
-            <h3 style={{ marginTop: "15px", fontSize: "1.5rem" }}>{item.title}</h3>
-            <p style={{ color: "#666", marginTop: "10px" }}>{item.text}</p>
+            <h3 className="aboutus-card-title" style={{ marginTop: "15px", fontSize: "1.5rem" }}>{item.title}</h3>
+            <p className="aboutus-card-text" style={{ color: "#666", marginTop: "10px" }}>{item.text}</p>
           </div>
         ))}
       </div>
 
-      <div style={{
+      <div className="aboutus-quote-section" style={{
         marginTop: "80px",
         padding: "80px 20px",
         textAlign: "center",

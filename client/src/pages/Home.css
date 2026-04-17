@@ -1,0 +1,86 @@
+/* Home Page Responsive Styles */
+
+/* Tablet (768px and below) */
+@media (max-width: 768px) {
+  .home-hero-title {
+    font-size: 3em !important;
+    letter-spacing: 3px !important;
+  }
+
+  .home-hero-subtitle {
+    font-size: 1.2em !important;
+  }
+
+  .home-hero {
+    height: 80vh !important;
+  }
+
+  .home-background {
+    background-size: 50% auto, 45% auto, 50% auto !important;
+    top: -15% !important;
+  }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+  .home-hero {
+    height: 100vh !important;
+    min-height: 500px;
+  }
+
+  .home-hero-title {
+    font-size: 2em !important;
+    letter-spacing: 2px !important;
+    margin-bottom: 10px !important;
+    text-shadow: 0 3px 8px rgba(0, 0, 0, 0.9) !important;
+  }
+
+  .home-hero-subtitle {
+    font-size: 1em !important;
+    margin-bottom: 25px !important;
+    font-weight: 400 !important;
+  }
+
+  .home-hero-content {
+    padding: 15px !important;
+  }
+
+  .home-shop-button {
+    padding: 12px 30px !important;
+    font-size: 0.9em !important;
+    border-width: 2px !important;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  .home-background {
+    background-size: 60% auto, 55% auto, 60% auto !important;
+    top: -10% !important;
+    left: -10% !important;
+    right: -10% !important;
+    bottom: -10% !important;
+  }
+
+  .home-content-wrapper {
+    max-width: 100% !important;
+  }
+}
+
+/* Very small phones (320px and below) */
+@media (max-width: 320px) {
+  .home-hero-title {
+    font-size: 1.5em !important;
+    letter-spacing: 1px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .home-hero-subtitle {
+    font-size: 0.85em !important;
+    margin-bottom: 20px !important;
+  }
+
+  .home-shop-button {
+    padding: 10px 20px !important;
+    font-size: 0.8em !important;
+  }
+}

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
+import "../styles/navbar.css";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -10,10 +11,16 @@ const Navbar = () => {
 
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const [isLanguageButtonHovered, setIsLanguageButtonHovered] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     navigate("/");
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleNavClick = () => {
+    setIsMobileMenuOpen(false);
   };
   const navStyle = {
     padding: "var(--space-md) var(--space-lg)",
@@ -76,8 +83,7 @@ const Navbar = () => {
         to={to}
         style={currentStyle}
         onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
+        onMouseLeave={() => setIsHovered(false)}        onClick={handleNavClick}      >
         {children} {" "}
       </Link>
     );
@@ -85,7 +91,7 @@ const Navbar = () => {
   return (
     <nav style={navStyle}>
       {" "}
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div className="navbar-left" style={{ display: "flex", alignItems: "center" }}>
         {" "}
         <NavLinkWithHover to="/" isLogo={true}>
           MEN'S STYLE
@@ -95,7 +101,23 @@ const Navbar = () => {
           <NavLinkWithHover to="/admin/products">{t("adminPanel")}</NavLinkWithHover>
         )}
       </div>{" "}
+      {/* Hamburger Menu Button for Mobile */}
+      <button
+        className="navbar-hamburger"
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        aria-label="Toggle menu"
+        style={{
+          display: "none",
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          fontSize: "24px",
+        }}
+      >
+        ☰
+      </button>
       <div
+        className={`navbar-right ${isMobileMenuOpen ? "mobile-open" : ""}`}
         style={{
           display: "flex",
           alignItems: "center",
@@ -151,6 +173,7 @@ const Navbar = () => {
             style={dynamicButtonStyle}
             onMouseEnter={() => setIsButtonHovered(true)}
             onMouseLeave={() => setIsButtonHovered(false)}
+            onClick={handleNavClick}
           >
             {t("signIn")}{" "}
           </Link>

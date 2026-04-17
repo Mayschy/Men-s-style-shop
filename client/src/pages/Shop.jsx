@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import ProductCard from "../components/ProductCard";
 import { useLanguage } from "../context/LanguageContext";
 import { API_ENDPOINTS } from "../config/api";
+import "./Shop.css";
 
 const Shop = () => {
   const { t } = useLanguage();
@@ -124,8 +125,9 @@ const Shop = () => {
   }
 
   return (
-    <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "20px" }}>
+    <div className="shop-container" style={{ maxWidth: "1200px", margin: "0 auto", padding: "20px" }}>
       <h1
+        className="shop-title"
         style={{
           textAlign: "center",
           marginBottom: "30px",
@@ -137,6 +139,7 @@ const Shop = () => {
 
       {/* Search Bar */}
       <input
+        className="shop-search"
         type="text"
         placeholder={`🔍 ${t("searchProducts")}`}
         value={searchTerm}
@@ -147,7 +150,7 @@ const Shop = () => {
       />
 
       {/* Filters Container */}
-      <div style={{ 
+      <div className="shop-filters" style={{ 
         backgroundColor: "#f8f9fa", 
         padding: "20px", 
         borderRadius: "8px", 
@@ -156,10 +159,11 @@ const Shop = () => {
       }}>
         
         {/* Category Filter */}
-        <div style={{ marginBottom: "20px" }}>
+        <div className="shop-filter-section" style={{ marginBottom: "20px" }}>
           <h4 style={{ marginTop: 0, marginBottom: "10px", color: "#333" }}>📂 {t("categoryFilter")}</h4>
-          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+          <div className="shop-filter-buttons" style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
             <button
+              className="shop-filter-button"
               style={filterButtonStyle("all")}
               onClick={() => setFilter("all")}
             >
@@ -167,6 +171,7 @@ const Shop = () => {
             </button>
             {["t-shirts", "jackets", "jeans", "accessories"].map((cat) => (
               <button
+                className="shop-filter-button"
                 key={cat}
                 style={filterButtonStyle(cat)}
                 onClick={() => setFilter(cat)}
@@ -178,14 +183,15 @@ const Shop = () => {
         </div>
 
         {/* Price Range Filter */}
-        <div style={{ marginBottom: "20px" }}>
+        <div className="shop-filter-section" style={{ marginBottom: "20px" }}>
           <h4 style={{ marginTop: 0, marginBottom: "10px", color: "#333" }}>💰 {t("priceRange")}</h4>
-          <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
+          <div className="shop-price-controls" style={{ display: "flex", gap: "15px", alignItems: "center" }}>
             <div>
-              <label style={{ fontSize: "0.9em", display: "block", marginBottom: "5px" }}>
+              <label className="shop-price-label" style={{ fontSize: "0.9em", display: "block", marginBottom: "5px" }}>
                 {t("min")}: ${priceRange[0]}
               </label>
               <input
+                className="shop-price-range"
                 type="range"
                 min="0"
                 max="1000"
@@ -218,11 +224,12 @@ const Shop = () => {
 
         {/* Style Tags Filter */}
         {allStyleTags.length > 0 && (
-          <div style={{ marginBottom: "20px" }}>
+          <div className="shop-filter-section" style={{ marginBottom: "20px" }}>
             <h4 style={{ marginTop: 0, marginBottom: "10px", color: "#333" }}>🏷️ {t("styleTags")}</h4>
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            <div className="shop-style-tags" style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               {allStyleTags.map((tag) => (
                 <button
+                  className="shop-tag-button"
                   key={tag}
                   onClick={() => toggleTag(tag)}
                   style={{
@@ -244,9 +251,10 @@ const Shop = () => {
         )}
 
         {/* Stock Filter */}
-        <div>
-          <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+        <div className="shop-filter-section">
+          <label className="shop-stock-filter" style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
             <input
+              className="shop-stock-checkbox"
               type="checkbox"
               checked={inStockOnly}
               onChange={(e) => setInStockOnly(e.target.checked)}
@@ -258,13 +266,14 @@ const Shop = () => {
       </div>
 
       {/* Results Counter */}
-      <div style={{ textAlign: "center", marginBottom: "20px", color: "#666" }}>
+      <div className="shop-results-counter" style={{ textAlign: "center", marginBottom: "20px", color: "#666" }}>
         <p>{t("showing")} <strong>{filteredProducts.length}</strong> {t("of")} <strong>{products.length}</strong> {t("products")}</p>
       </div>
 
       {/* Products Grid */}
       {/* Products Grid */}
       <div
+        className="shop-grid"
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
