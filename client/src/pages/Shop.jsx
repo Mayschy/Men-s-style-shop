@@ -15,6 +15,10 @@ const Shop = () => {
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [inStockOnly, setInStockOnly] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const limit = 12;
 
   // Get all unique style tags - memoized to avoid recalculation
   const allStyleTags = useMemo(() => 
@@ -24,14 +28,18 @@ const Shop = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const data = await get(API_ENDPOINTS.PRODUCTS_ALL);
-      
+      const data = await get(`${API_ENDPOINTS.PRODUCTS_ALL}?page=${currentPage}&limit=${limit}`);
+
       if (data) {
-        setProducts(data);
-        
+        setProducts(data.products || []);
+        if (data.pagination) {
+          setTotalPages(data.pagination.totalPages);
+          setTotalCount(data.pagination.totalCount);
+        }
+
         // Set initial price range based on products
-        if (data.length > 0) {
-          const prices = data.map(p => p.price);
+        if (data.products && data.products.length > 0) {
+          const prices = data.products.map(p => p.price);
           const maxPrice = Math.max(...prices);
           setPriceRange([0, Math.ceil(maxPrice)]);
         }
@@ -42,7 +50,7 @@ const Shop = () => {
       }
     };
     fetchProducts();
-  }, [get, apiError]);
+  }, [get, apiError, currentPage]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
@@ -258,8 +266,47 @@ const Shop = () => {
 
       {/* Results Counter */}
       <div className="shop-results-counter" style={{ textAlign: "center", marginBottom: "20px", color: "#666" }}>
-        <p>{t("showing")} <strong>{filteredProducts.length}</strong> {t("of")} <strong>{products.length}</strong> {t("products")}</p>
+        <p>{t("showing")} <strong>{filteredProducts.length}</strong> {t("of")} <strong>{totalCount}</strong> {t("products")}</p>
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="shop-pagination" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+            style={{
+              padding: "8px 16px",
+              backgroundColor: currentPage === 1 ? "#e0e0e0" : "var(--color-primary)",
+              color: currentPage === 1 ? "#999" : "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: currentPage === 1 ? "not-allowed" : "pointer",
+              fontSize: "0.9em",
+            }}
+          >
+            {t("previous") || "Previous"}
+          </button>
+          <span style={{ color: "#666", fontSize: "0.95em" }}>
+            {t("page") || "Page"} {currentPage} {t("of") || "of"} {totalPages}
+          </span>
+          <button
+            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+            disabled={currentPage === totalPages}
+            style={{
+              padding: "8px 16px",
+              backgroundColor: currentPage === totalPages ? "#e0e0e0" : "var(--color-primary)",
+              color: currentPage === totalPages ? "#999" : "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+              fontSize: "0.9em",
+            }}
+          >
+            {t("next") || "Next"}
+          </button>
+        </div>
+      )}
 
       {/* Products Grid */}
       {/* Products Grid */}

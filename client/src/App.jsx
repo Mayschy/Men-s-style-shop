@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
@@ -9,17 +9,17 @@ import { ChatWidget } from "./components/ChatWidget";
 import { ToastContainer, useToast } from "./components/Toast";
 import { LanguageProvider } from "./context/LanguageContext";
 
-import Shop from "./pages/Shop";
-import Auth from "./pages/Auth";
-import Profile from "./pages/Profile";
-import Cart from "./pages/Cart";
-import Checkout from "./pages/Checkout";
-import Home from "./pages/Home";
-import About from "./pages/AboutUs";
-import AdminProductManager from "./pages/AdminProductManager";
-import ProductDetail from "./pages/ProductDetail";
+const Home = lazy(() => import("./pages/Home"));
+const Shop = lazy(() => import("./pages/Shop"));
+const ProductDetail = lazy(() => import("./pages/ProductDetail"));
+const Auth = lazy(() => import("./pages/Auth"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Cart = lazy(() => import("./pages/Cart"));
+const Checkout = lazy(() => import("./pages/Checkout"));
+const About = lazy(() => import("./pages/AboutUs"));
+const AdminProductManager = lazy(() => import("./pages/AdminProductManager"));
+const ErrorPage = lazy(() => import("./pages/ErrorPage"));
 
-// Create a context for toast
 export const ToastContext = React.createContext();
 
 const App = () => {
@@ -38,31 +38,34 @@ const App = () => {
           >
             <Navbar />
             <main style={{ flexGrow: 1 }}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/shop" element={<Shop />} />
-                <Route path="/product/:id" element={<ProductDetail />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/cart" element={<Cart />} />{" "}
-                <Route path="/about" element={<About />} />
-                <Route
-                  path="/checkout"
-                  element={
-                    <ProtectedRoute>
-                      <Checkout />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/admin/products"
-                  element={
-                    <AdminRoute>
-                      <AdminProductManager />
-                    </AdminRoute>
-                  }
-                />
-              </Routes>
+              <Suspense fallback={<div style={{ textAlign: "center", marginTop: "50px" }}>Loading...</div>}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/shop" element={<Shop />} />
+                  <Route path="/product/:id" element={<ProductDetail />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/about" element={<About />} />
+                  <Route
+                    path="/checkout"
+                    element={
+                      <ProtectedRoute>
+                        <Checkout />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/products"
+                    element={
+                      <AdminRoute>
+                        <AdminProductManager />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route path="*" element={<ErrorPage />} />
+                </Routes>
+              </Suspense>
             </main>
             <Footer />
             <ChatWidget />
