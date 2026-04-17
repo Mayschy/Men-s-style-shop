@@ -42,6 +42,12 @@ const ProductDetail = () => {
     return sizeData ? sizeData.stock : 0;
   };
 
+  const handleQuantityChange = (newQuantity) => {
+    const stock = selectedSize ? getStockForSize(selectedSize) : Infinity;
+    const clampedQuantity = Math.max(1, Math.min(newQuantity, stock));
+    setQuantity(clampedQuantity);
+  };
+
   const handleAddToCart = async () => {
     if (!selectedSize) {
       showToast('Please select a size before adding to cart', 'error');
@@ -191,7 +197,7 @@ const ProductDetail = () => {
               <label className="quantity-label">{t("quantity")}:</label>
               <div className="quantity-control">
                 <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  onClick={() => handleQuantityChange(quantity - 1)}
                   className="qty-btn"
                 >
                   −
@@ -199,18 +205,21 @@ const ProductDetail = () => {
                 <input
                   type="number"
                   value={quantity}
-                  onChange={(e) =>
-                    setQuantity(Math.max(1, parseInt(e.target.value) || 1))
-                  }
+                  onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
                   className="qty-input"
                 />
                 <button
-                  onClick={() => setQuantity(quantity + 1)}
+                  onClick={() => handleQuantityChange(quantity + 1)}
                   className="qty-btn"
                 >
                   +
                 </button>
               </div>
+              {selectedSize && (
+                <span style={{ fontSize: "0.85em", color: "var(--color-text-light)" }}>
+                  (Max: {getStockForSize(selectedSize)})
+                </span>
+              )}
             </div>
 
             <button

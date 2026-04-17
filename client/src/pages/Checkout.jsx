@@ -221,12 +221,12 @@ const Checkout = () => {
           <h2>{t("orderSummary")}</h2>
 
           {cart.map((item) => (
-            <div key={item.productId._id} className="summary-item">
+            <div key={`${item.productId._id}-${item.size}`} className="summary-item">
               <div className="summary-item-name">
                 {item.productId.name}
                 <br />
                 <span style={{ fontSize: "0.85em", color: "var(--color-text-light)" }}>
-                  x{item.quantity}
+                  Size: {item.size} | Qty: {item.quantity}
                 </span>
               </div>
               <div className="summary-item-price">
