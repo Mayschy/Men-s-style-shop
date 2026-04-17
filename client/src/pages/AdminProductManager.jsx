@@ -3,14 +3,15 @@ import { useAuth } from '../context/AuthContext';
 
 const BASE_URL = 'https://men-style-shop.onrender.com/api/products';
 
-const colorPrimary = '#333A40'; 
+const colorPrimary = '#333A40';
 const colorSecondary = '#A67C52';
-const colorDanger = '#D9534F'; 
+const colorDanger = '#D9534F';
 const colorSuccess = '#5CB85C';
-const colorBackground = '#F7F7F7'; 
+const colorBackground = '#F7F7F7';
 const colorText = '#555';
 
-// Modal Styles
+const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
+
 const modalStyles = {
     overlay: {
         position: 'fixed',
@@ -137,10 +138,6 @@ const styles = {
         borderBottom: '1px solid #eee',
         color: colorText,
     },
-    tableRow: {
-        transition: 'background-color 0.2s',
-        cursor: 'pointer',
-    },
     input: {
         width: '100%',
         padding: '12px',
@@ -212,14 +209,13 @@ const AdminProductManager = () => {
     const { user } = useAuth();
     const token = user?.token;
 
-    // Form States
     const [productData, setProductData] = useState({
         name: '',
         price: '',
         category: 't-shirts',
         imageUrl: '',
         description: '',
-        stock: 0,
+        sizes: SIZES.map(s => ({ size: s, stock: 0 })),
         styleTags: '',
     });
 
@@ -231,7 +227,7 @@ const AdminProductManager = () => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [modalMessage, setModalMessage] = useState('');
-    const [messageType, setMessageType] = useState(''); // 'success' или 'error'
+    const [messageType, setMessageType] = useState('');
 
     const fetchProducts = async () => {
         setIsLoading(true);
@@ -242,7 +238,9 @@ const AdminProductManager = () => {
                 throw new Error('Failed to fetch products');
             }
             const data = await response.json();
-            setProducts(data);
+            // Handle both paginated { products: [...] } and plain array responses
+            const productArray = Array.isArray(data) ? data : (data.products || []);
+            setProducts(productArray);
         } catch (err) {
             setError(err.message);
         } finally {
@@ -259,6 +257,15 @@ const AdminProductManager = () => {
         setProductData(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleSizeStockChange = (size, stock) => {
+        setProductData(prev => ({
+            ...prev,
+            sizes: prev.sizes.map(s =>
+                s.size === size ? { ...s, stock: parseInt(stock) || 0 } : s
+            )
+        }));
+    };
+
     const resetForm = () => {
         setProductData({
             name: '',
@@ -266,7 +273,7 @@ const AdminProductManager = () => {
             category: 't-shirts',
             imageUrl: '',
             description: '',
-            stock: 0,
+            sizes: SIZES.map(s => ({ size: s, stock: 0 })),
             styleTags: '',
         });
         setIsEditMode(false);
@@ -280,13 +287,17 @@ const AdminProductManager = () => {
     };
 
     const openEditModal = (product) => {
+        const productSizes = product.sizes && product.sizes.length > 0
+            ? product.sizes
+            : SIZES.map(s => ({ size: s, stock: s === 'L' ? (product.stock || 0) : 0 }));
+
         setProductData({
             name: product.name,
             price: product.price,
             category: product.category,
             imageUrl: product.imageUrl,
             description: product.description,
-            stock: product.stock,
+            sizes: productSizes,
             styleTags: Array.isArray(product.styleTags) ? product.styleTags.join(', ') : '',
         });
         setEditingId(product._id);
@@ -300,13 +311,17 @@ const AdminProductManager = () => {
         resetForm();
     };
 
+    const getTotalStock = (product) => {
+        if (!product.sizes || product.sizes.length === 0) return 0;
+        return product.sizes.reduce((sum, s) => sum + (s.stock || 0), 0);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         const dataToSend = {
             ...productData,
             price: Number(productData.price),
-            stock: Number(productData.stock),
             styleTags: productData.styleTags.split(',').map(tag => tag.trim()).filter(tag => tag),
         };
 
@@ -319,7 +334,6 @@ const AdminProductManager = () => {
         try {
             let response;
             if (isEditMode) {
-                // Update product
                 response = await fetch(`${BASE_URL}/${editingId}`, {
                     method: 'PUT',
                     headers: {
@@ -329,7 +343,6 @@ const AdminProductManager = () => {
                     body: JSON.stringify(dataToSend),
                 });
             } else {
-                // Add new product
                 response = await fetch(BASE_URL, {
                     method: 'POST',
                     headers: {
@@ -346,7 +359,7 @@ const AdminProductManager = () => {
             }
 
             const updatedProduct = await response.json();
-            
+
             if (isEditMode) {
                 setProducts(prev => prev.map(p => p._id === editingId ? updatedProduct : p));
                 setModalMessage(`✓ Product "${updatedProduct.name}" updated successfully!`);
@@ -354,7 +367,7 @@ const AdminProductManager = () => {
                 setProducts(prev => [...prev, updatedProduct]);
                 setModalMessage(`✓ Product "${updatedProduct.name}" added successfully!`);
             }
-            
+
             setMessageType('success');
             setTimeout(() => {
                 closeModal();
@@ -397,16 +410,46 @@ const AdminProductManager = () => {
         }
     };
 
-    // Filter products based on search
-    const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const handleMigrate = async () => {
+        if (!token) {
+            alert("Authentication token missing. Please log in as Admin.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${BASE_URL}/migrate`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Migration failed');
+            }
+
+            const result = await response.json();
+            alert(`✓ ${result.message}`);
+            fetchProducts();
+
+        } catch (error) {
+            console.error("Migration error:", error);
+            alert(`Migration error: ${error.message}`);
+        }
+    };
+
+    // Filter products based on search - ensure products is always an array
+    const filteredProducts = Array.isArray(products)
+        ? products.filter(product =>
+            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.category.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        : [];
 
     if (isLoading) {
         return <p style={{ textAlign: 'center', marginTop: '50px', fontSize: '1.2em' }}>Loading products for management...</p>;
     }
-    
+
     if (error) {
         return <p style={styles.errorMessage}>Error loading data: {error}</p>;
     }
@@ -418,7 +461,7 @@ const AdminProductManager = () => {
     return (
         <div style={styles.container}>
             <h1 style={styles.heading}>🛍️ Admin Dashboard: Product Management</h1>
-            
+
             {/* Stats Section */}
             <div style={styles.statsBar}>
                 <div style={styles.statCard}>
@@ -431,7 +474,7 @@ const AdminProductManager = () => {
                 </div>
             </div>
 
-            {/* Search and Add Button */}
+            {/* Search, Add Button, and Migrate */}
             <div style={styles.searchBar}>
                 <input
                     type="text"
@@ -440,6 +483,13 @@ const AdminProductManager = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     style={styles.searchInput}
                 />
+                <button
+                    onClick={handleMigrate}
+                    style={{ ...styles.buttonPrimary, backgroundColor: '#8B4513' }}
+                    title="Migrate old products to sizes format"
+                >
+                    🔄 Migrate
+                </button>
                 <button
                     onClick={openAddModal}
                     style={styles.buttonPrimary}
@@ -465,59 +515,87 @@ const AdminProductManager = () => {
                                 <th style={styles.tableHeader}>Product Name</th>
                                 <th style={styles.tableHeader}>Category</th>
                                 <th style={styles.tableHeader}>Price</th>
-                                <th style={styles.tableHeader}>Stock</th>
+                                <th style={styles.tableHeader}>Stock by Size</th>
+                                <th style={styles.tableHeader}>Total</th>
                                 <th style={styles.tableHeader}>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredProducts.map(product => (
-                                <tr key={product._id} style={styles.tableRow}>
-                                    <td style={styles.tableCell}>
-                                        <strong>{product.name}</strong>
-                                    </td>
-                                    <td style={styles.tableCell}>
-                                        <span style={{
-                                            backgroundColor: colorSecondary,
-                                            color: 'white',
-                                            padding: '4px 8px',
-                                            borderRadius: '4px',
-                                            fontSize: '0.85em'
-                                        }}>
-                                            {product.category}
-                                        </span>
-                                    </td>
-                                    <td style={styles.tableCell}>${product.price.toFixed(2)}</td>
-                                    <td style={styles.tableCell}>
-                                        <span style={{
-                                            backgroundColor: product.stock > 0 ? '#E8F5E9' : '#FFEBEE',
-                                            color: product.stock > 0 ? '#2E7D32' : colorDanger,
-                                            padding: '4px 8px',
-                                            borderRadius: '4px',
-                                            fontSize: '0.85em'
-                                        }}>
-                                            {product.stock}
-                                        </span>
-                                    </td>
-                                    <td style={styles.tableCell}>
-                                        <button
-                                            style={styles.buttonSecondary}
-                                            onClick={() => openEditModal(product)}
-                                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#8B6239'}
-                                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colorSecondary}
-                                        >
-                                            ✏️ Edit
-                                        </button>
-                                        <button
-                                            style={styles.buttonDelete}
-                                            onClick={() => handleDeleteProduct(product._id, product.name)}
-                                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#B0413C'}
-                                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colorDanger}
-                                        >
-                                            🗑️ Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
+                            {filteredProducts.map(product => {
+                                const totalStock = getTotalStock(product);
+                                return (
+                                    <tr key={product._id}>
+                                        <td style={styles.tableCell}>
+                                            <strong>{product.name}</strong>
+                                        </td>
+                                        <td style={styles.tableCell}>
+                                            <span style={{
+                                                backgroundColor: colorSecondary,
+                                                color: 'white',
+                                                padding: '4px 8px',
+                                                borderRadius: '4px',
+                                                fontSize: '0.85em'
+                                            }}>
+                                                {product.category}
+                                            </span>
+                                        </td>
+                                        <td style={styles.tableCell}>${product.price.toFixed(2)}</td>
+                                        <td style={styles.tableCell}>
+                                            <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                                                {SIZES.map(size => {
+                                                    const sizeData = product.sizes?.find(s => s.size === size);
+                                                    const stock = sizeData?.stock || 0;
+                                                    return (
+                                                        <span
+                                                            key={size}
+                                                            style={{
+                                                                backgroundColor: stock > 0 ? '#E8F5E9' : '#FFEBEE',
+                                                                color: stock > 0 ? '#2E7D32' : colorDanger,
+                                                                padding: '2px 6px',
+                                                                borderRadius: '3px',
+                                                                fontSize: '0.75em',
+                                                                fontWeight: 'bold'
+                                                            }}
+                                                        >
+                                                            {size}:{stock}
+                                                        </span>
+                                                    );
+                                                })}
+                                            </div>
+                                        </td>
+                                        <td style={styles.tableCell}>
+                                            <span style={{
+                                                backgroundColor: totalStock > 0 ? '#E8F5E9' : '#FFEBEE',
+                                                color: totalStock > 0 ? '#2E7D32' : colorDanger,
+                                                padding: '4px 8px',
+                                                borderRadius: '4px',
+                                                fontSize: '0.85em',
+                                                fontWeight: 'bold'
+                                            }}>
+                                                {totalStock}
+                                            </span>
+                                        </td>
+                                        <td style={styles.tableCell}>
+                                            <button
+                                                style={styles.buttonSecondary}
+                                                onClick={() => openEditModal(product)}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#8B6239'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colorSecondary}
+                                            >
+                                                ✏️ Edit
+                                            </button>
+                                            <button
+                                                style={styles.buttonDelete}
+                                                onClick={() => handleDeleteProduct(product._id, product.name)}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#B0413C'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colorDanger}
+                                            >
+                                                🗑️ Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </table>
                 )}
@@ -548,7 +626,7 @@ const AdminProductManager = () => {
                                 style={styles.input}
                                 required
                             />
-                            
+
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                                 <input
                                     type="number"
@@ -561,30 +639,45 @@ const AdminProductManager = () => {
                                     min="0.01"
                                     step="0.01"
                                 />
-                                <input
-                                    type="number"
-                                    name="stock"
-                                    placeholder="Stock Quantity"
-                                    value={productData.stock}
+                                <select
+                                    name="category"
+                                    value={productData.category}
                                     onChange={handleChange}
                                     style={styles.input}
-                                    required
-                                    min="0"
-                                />
+                                >
+                                    <option value="t-shirts">T-Shirts</option>
+                                    <option value="jackets">Jackets</option>
+                                    <option value="jeans">Jeans</option>
+                                    <option value="accessories">Accessories</option>
+                                </select>
                             </div>
 
-                            <select
-                                name="category"
-                                value={productData.category}
-                                onChange={handleChange}
-                                style={styles.input}
-                            >
-                                <option value="t-shirts">T-Shirts</option>
-                                <option value="jackets">Jackets</option>
-                                <option value="jeans">Jeans</option>
-                                <option value="accessories">Accessories</option>
-                            </select>
-                            
+                            {/* Size Stock Inputs */}
+                            <div style={{ margin: '15px 0' }}>
+                                <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold', color: colorPrimary }}>
+                                    Stock by Size:
+                                </label>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px' }}>
+                                    {SIZES.map(size => {
+                                        const sizeData = productData.sizes.find(s => s.size === size);
+                                        return (
+                                            <div key={size} style={{ textAlign: 'center' }}>
+                                                <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px', fontSize: '0.9em' }}>
+                                                    {size}
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    value={sizeData?.stock || 0}
+                                                    onChange={(e) => handleSizeStockChange(size, e.target.value)}
+                                                    style={{ ...styles.input, textAlign: 'center', padding: '8px' }}
+                                                />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
                             <input
                                 type="text"
                                 name="imageUrl"
@@ -594,7 +687,7 @@ const AdminProductManager = () => {
                                 style={styles.input}
                                 required
                             />
-                            
+
                             <textarea
                                 name="description"
                                 placeholder="Product Description"
@@ -604,7 +697,7 @@ const AdminProductManager = () => {
                                 rows="3"
                                 required
                             />
-                            
+
                             <input
                                 type="text"
                                 name="styleTags"
@@ -627,7 +720,7 @@ const AdminProductManager = () => {
                                     {modalMessage}
                                 </div>
                             )}
-                            
+
                             <button
                                 type="submit"
                                 style={styles.submitButton}

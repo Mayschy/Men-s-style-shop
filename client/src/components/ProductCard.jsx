@@ -13,7 +13,9 @@ const ProductCard = React.memo(({ product }) => {
     hoverShadow: "0 8px 16px rgba(0,0,0,0.2)",
   };
 
-  const isOutOfStock = product.stock === 0 || product.stock < 0;
+  // Use totalStock virtual property (sum of all sizes) or fallback to old stock field
+  const totalStock = product.totalStock ?? (product.stock || 0);
+  const isOutOfStock = totalStock === 0 || totalStock < 0;
 
   const cardStyle = {
     border: "1px solid var(--color-border)",
@@ -131,16 +133,16 @@ const ProductCard = React.memo(({ product }) => {
           style={{
             marginTop: "10px",
             padding: "8px",
-            backgroundColor: product.stock > 0 ? "#E8F5E9" : "#FFEBEE",
+            backgroundColor: totalStock > 0 ? "#E8F5E9" : "#FFEBEE",
             borderRadius: "4px",
             fontSize: "0.85em",
             fontWeight: "bold",
-            color: product.stock > 0 ? "#2E7D32" : "#D32F2F",
-            cursor: product.stock > 0 ? 'pointer' : 'not-allowed',
-            opacity: product.stock > 0 ? 1 : 0.6,
+            color: totalStock > 0 ? "#2E7D32" : "#D32F2F",
+            cursor: totalStock > 0 ? 'pointer' : 'not-allowed',
+            opacity: totalStock > 0 ? 1 : 0.6,
           }}
         >
-          {product.stock > 0 ? `✓ ${t("inStock")} (${product.stock})` : `✗ ${t("outOfStock")}`}
+          {totalStock > 0 ? `✓ ${t("inStock")} (${totalStock})` : `✗ ${t("outOfStock")}`}
         </div>
       </div>
     </div>

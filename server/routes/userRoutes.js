@@ -61,12 +61,15 @@ router.get("/cart", auth, async (req, res) => {
 });
 
 // POST /api/user/cart
-// Reserve stock when adding to cart: decrement Product.stock atomically.
+// Reserve stock when adding to cart: decrement specific size stock atomically.
 router.post("/cart", auth, async (req, res) => {
-  const { productId, quantity = 1 } = req.body;
+  const { productId, quantity = 1, size } = req.body;
 
-  if (!productId || typeof quantity !== 'number' || quantity < 1) {
-    return res.status(400).json({ message: "Invalid product ID or quantity." });
+  if (!productId || !size) {
+    return res.status(400).json({ message: "Product ID and size are required." });
+  }
+  if (typeof quantity !== 'number' || quantity < 1) {
+    return res.status(400).json({ message: "Invalid quantity." });
   }
 
   try {
@@ -75,31 +78,39 @@ router.post("/cart", auth, async (req, res) => {
       return res.status(404).json({ message: "User not found." });
     }
 
-    // Attempt to decrement stock only if enough stock exists
-    const updatedProduct = await Product.findOneAndUpdate(
-      { _id: productId, stock: { $gte: quantity } },
-      { $inc: { stock: -quantity } },
-      { new: true }
+    // Find product and check stock for specific size
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found." });
+    }
+
+    const sizeStock = product.sizes.find(s => s.size === size);
+    if (!sizeStock || sizeStock.stock < quantity) {
+      return res.status(400).json({ message: `Not enough stock for size ${size}.` });
+    }
+
+    // Decrement stock for specific size only
+    await Product.updateOne(
+      { _id: productId, "sizes.size": size },
+      { $inc: { "sizes.$.stock": -quantity } }
     );
 
-    if (!updatedProduct) {
-      return res.status(400).json({ message: 'Not enough stock to add to cart.' });
+    // Check if all sizes are out of stock
+    const updatedProduct = await Product.findById(productId);
+    const allOutOfStock = updatedProduct.sizes.every(s => s.stock === 0);
+    if (allOutOfStock) {
+      await Product.findByIdAndUpdate(productId, { isAvailable: false });
     }
 
-    // Update availability flag if needed
-    if (updatedProduct.stock <= 0 && updatedProduct.isAvailable) {
-      await Product.findByIdAndUpdate(productId, { $set: { isAvailable: false } });
-    }
-
-    // Add or update item in user's cart
+    // Add or update item in user's cart (distinguish by productId + size)
     const itemIndex = user.cart.findIndex(
-      (item) => item.productId.toString() === productId
+      (item) => item.productId.toString() === productId && item.size === size
     );
 
     if (itemIndex > -1) {
       user.cart[itemIndex].quantity += quantity;
     } else {
-      user.cart.push({ productId, quantity });
+      user.cart.push({ productId, quantity, size });
     }
 
     await user.save();
@@ -112,29 +123,39 @@ router.post("/cart", auth, async (req, res) => {
 });
 
 // DELETE /api/user/cart/:productId
-// Restore reserved stock when removing from cart: increment Product.stock.
+// Restore reserved stock when removing from cart: increment specific size stock.
 router.delete("/cart/:productId", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    const productId = req.params.productId;
+    const { productId } = req.params;
+    const { size } = req.query;
 
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
 
-    const cartItem = user.cart.find(item => item.productId.toString() === productId);
+    const cartItem = user.cart.find(
+      item => item.productId.toString() === productId && item.size === size
+    );
     if (!cartItem) {
       return res.status(404).json({ message: 'Item not found in cart.' });
     }
 
     const restoreQuantity = cartItem.quantity || 0;
+    const restoreSize = cartItem.size;
 
-    // Restore the stock
-    await Product.findByIdAndUpdate(productId, { $inc: { stock: restoreQuantity }, $set: { isAvailable: true } });
+    // Restore the stock for the specific size
+    await Product.updateOne(
+      { _id: productId, "sizes.size": restoreSize },
+      { $inc: { "sizes.$.stock": restoreQuantity } }
+    );
+
+    // Update availability
+    await Product.findByIdAndUpdate(productId, { isAvailable: true });
 
     // Remove item from user's cart
     user.cart = user.cart.filter(
-      (item) => item.productId.toString() !== productId
+      (item) => !(item.productId.toString() === productId && item.size === size)
     );
 
     await user.save();
@@ -173,6 +194,7 @@ router.post("/checkout", auth, async (req, res) => {
       return {
         productId: cartItem.productId._id,
         quantity: cartItem.quantity,
+        size: cartItem.size,
         price: price
       };
     });

@@ -1,5 +1,7 @@
 const Product = require('../models/Product');
 
+const DEFAULT_SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
+
 exports.getProducts = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -38,15 +40,16 @@ exports.getProductById = async (req, res) => {
 };
 
 exports.addProduct = async (req, res) => {
+    const sizes = req.body.sizes || DEFAULT_SIZES.map(size => ({ size, stock: req.body.stock || 0 }));
+
     const product = new Product({
         name: req.body.name,
         description: req.body.description,
         price: req.body.price,
         category: req.body.category,
         imageUrl: req.body.imageUrl,
-        stock: req.body.stock || 0,
-        styleTags: req.body.styleTags || [],
-        isAvailable: (req.body.stock || 0) > 0
+        sizes,
+        styleTags: req.body.styleTags || []
     });
 
     try {
@@ -59,20 +62,24 @@ exports.addProduct = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
     try {
-        const { name, description, price, category, imageUrl, stock, styleTags } = req.body;
-        
+        const { name, description, price, category, imageUrl, sizes, styleTags } = req.body;
+
+        const updateData = {
+            name,
+            description,
+            price,
+            category,
+            imageUrl,
+            styleTags: styleTags || []
+        };
+
+        if (sizes) {
+            updateData.sizes = sizes;
+        }
+
         const product = await Product.findByIdAndUpdate(
             req.params.id,
-            {
-                name,
-                description,
-                price,
-                category,
-                imageUrl,
-                stock: stock || 0,
-                styleTags: styleTags || [],
-                isAvailable: (stock || 0) > 0
-            },
+            updateData,
             { new: true, runValidators: true }
         );
 
@@ -93,6 +100,30 @@ exports.deleteProduct = async (req, res) => {
             return res.status(404).json({ message: "Product not found" });
         }
         res.json({ message: "Product successfully deleted" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Migration endpoint to convert old stock format to new sizes format
+exports.migrateProducts = async (req, res) => {
+    try {
+        const products = await Product.find({ sizes: { $exists: false } });
+
+        let migratedCount = 0;
+        for (const product of products) {
+            product.sizes = DEFAULT_SIZES.map(size => ({
+                size,
+                stock: size === 'L' ? (product.stock || 0) : 0
+            }));
+            await product.save();
+            migratedCount++;
+        }
+
+        res.json({
+            message: `Successfully migrated ${migratedCount} products to sizes format`,
+            migratedCount
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

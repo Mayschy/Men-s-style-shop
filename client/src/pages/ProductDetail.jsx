@@ -7,6 +7,8 @@ import { API_ENDPOINTS } from '../config/api';
 import { useApi } from '../hooks/useApi';
 import './ProductDetail.css';
 
+const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
+
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -17,12 +19,13 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
       const endpoint = `${API_ENDPOINTS.PRODUCTS_ALL}/${id}`;
       const data = await get(endpoint);
-      
+
       if (data) {
         setProduct(data);
         setError(null);
@@ -33,10 +36,27 @@ const ProductDetail = () => {
     fetchProduct();
   }, [id, get, apiError, t]);
 
+  const getStockForSize = (size) => {
+    if (!product || !product.sizes) return 0;
+    const sizeData = product.sizes.find(s => s.size === size);
+    return sizeData ? sizeData.stock : 0;
+  };
+
   const handleAddToCart = async () => {
-    const result = await addToCart(product._id, quantity);
+    if (!selectedSize) {
+      showToast('Please select a size before adding to cart', 'error');
+      return;
+    }
+
+    const stock = getStockForSize(selectedSize);
+    if (stock < quantity) {
+      showToast(`Not enough stock for size ${selectedSize}`, 'error');
+      return;
+    }
+
+    const result = await addToCart(product._id, quantity, selectedSize);
     if (result.success) {
-      showToast(`Added ${quantity} item(s) to cart`, 'success');
+      showToast(`Added ${quantity} item(s) of size ${selectedSize} to cart`, 'success');
       setQuantity(1);
     } else {
       showToast(`${result.error}`, 'error');
@@ -68,6 +88,11 @@ const ProductDetail = () => {
 
   if (!product) return <div className="not-found">{t("productNotFound")}</div>;
 
+  const totalStock = product.sizes
+    ? product.sizes.reduce((sum, s) => sum + (s.stock || 0), 0)
+    : 0;
+  const isAvailable = totalStock > 0;
+
   return (
     <div className="product-detail-container">
       <button
@@ -98,8 +123,8 @@ const ProductDetail = () => {
               <p className="product-price">
                 ${product.price.toFixed(2)}
               </p>
-              <span className={`stock-badge ${product.isAvailable ? 'in-stock' : 'out-of-stock'}`}>
-                {product.isAvailable ? `✓ ${t("inStock")}` : `✗ ${t("outOfStock")}`}
+              <span className={`stock-badge ${isAvailable ? 'in-stock' : 'out-of-stock'}`}>
+                {isAvailable ? `✓ ${t("inStock")}` : `✗ ${t("outOfStock")}`}
               </span>
             </div>
 
@@ -132,6 +157,36 @@ const ProductDetail = () => {
 
           {/* Purchase Section */}
           <div className="purchase-section">
+            {/* Size Selection */}
+            <div className="size-selector">
+              <label className="size-label">{t("selectSize") || "Select Size"}:</label>
+              <div className="size-buttons">
+                {SIZES.map(size => {
+                  const stock = getStockForSize(size);
+                  const isOutOfStock = stock === 0;
+                  const isSelected = selectedSize === size;
+
+                  return (
+                    <button
+                      key={size}
+                      onClick={() => !isOutOfStock && setSelectedSize(size)}
+                      disabled={isOutOfStock}
+                      className={`size-btn ${isSelected ? 'selected' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`}
+                      title={isOutOfStock ? 'Out of stock' : `${stock} in stock`}
+                    >
+                      {size}
+                    </button>
+                  );
+                })}
+              </div>
+              {selectedSize && (
+                <p className="selected-stock">
+                  {t("inStock")}: {getStockForSize(selectedSize)}
+                </p>
+              )}
+            </div>
+
+            {/* Quantity Selection */}
             <div className="quantity-row">
               <label className="quantity-label">{t("quantity")}:</label>
               <div className="quantity-control">
@@ -160,10 +215,15 @@ const ProductDetail = () => {
 
             <button
               onClick={handleAddToCart}
-              disabled={!product.isAvailable}
-              className={`btn-add-to-cart ${!product.isAvailable ? 'disabled' : ''}`}
+              disabled={!isAvailable || !selectedSize}
+              className={`btn-add-to-cart ${!isAvailable || !selectedSize ? 'disabled' : ''}`}
             >
-              {product.isAvailable ? `🛒 ${t("addToCart")}` : t("outOfStock")}
+              {!isAvailable
+                ? t("outOfStock")
+                : !selectedSize
+                ? t("selectSize") || "Select a Size"
+                : `🛒 ${t("addToCart")}`
+              }
             </button>
           </div>
         </div>

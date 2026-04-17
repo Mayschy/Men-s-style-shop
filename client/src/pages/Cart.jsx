@@ -16,7 +16,7 @@ const Cart = () => {
       <div className="cart-container">
         <div className="auth-message">
           <p>{t("pleaseLogIn")}</p>
-          <button 
+          <button
             className="btn-primary"
             onClick={() => navigate("/auth")}
           >
@@ -32,11 +32,11 @@ const Cart = () => {
     0
   );
 
-  const handleRemove = async (productId, productName) => {
-    if (window.confirm(`Remove ${productName} from cart?`)) {
-      const result = await removeFromCart(productId);
+  const handleRemove = async (productId, productName, size) => {
+    if (window.confirm(`Remove ${productName} (Size: ${size}) from cart?`)) {
+      const result = await removeFromCart(productId, size);
       if (result.success) {
-        showToast(`${productName} removed from cart`, 'success');
+        showToast(`${productName} (Size: ${size}) removed from cart`, 'success');
       } else {
         showToast(`Error removing item: ${result.error}`, 'error');
       }
@@ -55,7 +55,7 @@ const Cart = () => {
           <div className="empty-cart-icon">📭</div>
           <h2>{t("emptyCart")}</h2>
           <p>{t("discoverCollection")}</p>
-          <button 
+          <button
             className="btn-primary"
             onClick={() => navigate("/shop")}
           >
@@ -67,10 +67,13 @@ const Cart = () => {
           <div className="cart-items-section">
             <div className="cart-items">
               {cart.map((item) => (
-                <div key={item.productId._id} className="cart-item">
+                <div key={`${item.productId._id}-${item.size}`} className="cart-item">
                   <div className="item-details">
                     <h3 className="item-name">{item.productId.name}</h3>
                     <div className="item-meta">
+                      <span className="item-size">
+                        Size: <strong>{item.size}</strong>
+                      </span>
                       <span className="item-price">
                         ${item.productId.price.toFixed(2)} {t("each")}
                       </span>
@@ -85,7 +88,7 @@ const Cart = () => {
                     </span>
                     <button
                       onClick={() =>
-                        handleRemove(item.productId._id, item.productId.name)
+                        handleRemove(item.productId._id, item.productId.name, item.size)
                       }
                       className="btn-remove"
                       title={t("removeFromCart")}
@@ -101,19 +104,19 @@ const Cart = () => {
           <div className="cart-summary-section">
             <div className="cart-summary">
               <h2>{t("orderSummary")}</h2>
-              
+
               <div className="summary-row">
                 <span>{t("subtotal")}</span>
                 <span>${totalAmount.toFixed(2)}</span>
               </div>
-              
+
               <div className="summary-row">
                 <span>{t("shipping")}</span>
                 <span className="shipping-free">{t("free")}</span>
               </div>
-              
+
               <div className="summary-divider"></div>
-              
+
               <div className="summary-total">
                 <span>{t("totalAmount")}</span>
                 <span>${totalAmount.toFixed(2)}</span>

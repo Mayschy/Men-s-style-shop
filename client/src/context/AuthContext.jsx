@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const addToCart = async (productId, quantity = 1) => {
+    const addToCart = async (productId, quantity = 1, size) => {
         if (!user || !user.token) {
             return { success: false, error: "Please log in to add items to your cart." };
         }
@@ -80,11 +80,11 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await fetch(`${API_BASE_URL}/user/cart`, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}` 
+                    'Authorization': `Bearer ${user.token}`
                 },
-                body: JSON.stringify({ productId, quantity }),
+                body: JSON.stringify({ productId, quantity, size }),
             });
 
             if (response.ok) {
@@ -100,17 +100,17 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const removeFromCart = async (productId) => {
+    const removeFromCart = async (productId, size) => {
         if (!user || !user.token) return { success: false, error: "Not authenticated." };
 
         try {
-            const response = await fetch(`${API_BASE_URL}/user/cart/${productId}`, {
+            const response = await fetch(`${API_BASE_URL}/user/cart/${productId}?size=${size}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${user.token}` },
             });
 
             if (response.ok) {
-                setCart(prevCart => prevCart.filter(item => item.productId._id !== productId));
+                setCart(prevCart => prevCart.filter(item => !(item.productId._id === productId && item.size === size)));
                 return { success: true };
             } else {
                 const errorData = await response.json();
