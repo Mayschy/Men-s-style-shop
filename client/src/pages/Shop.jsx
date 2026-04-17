@@ -2,12 +2,13 @@ import React, { useState, useEffect, useMemo } from "react";
 import ProductCard from "../components/ProductCard";
 import { useLanguage } from "../context/LanguageContext";
 import { API_ENDPOINTS } from "../config/api";
+import { useApi } from "../hooks/useApi";
 import "./Shop.css";
 
 const Shop = () => {
   const { t } = useLanguage();
+  const { get, loading, error: apiError } = useApi();
   const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,16 +24,9 @@ const Shop = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(API_ENDPOINTS.PRODUCTS_ALL);
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch products from server");
-        }
-
-        const data = await response.json();
+      const data = await get(API_ENDPOINTS.PRODUCTS_ALL);
+      
+      if (data) {
         setProducts(data);
         
         // Set initial price range based on products
@@ -41,17 +35,14 @@ const Shop = () => {
           const maxPrice = Math.max(...prices);
           setPriceRange([0, Math.ceil(maxPrice)]);
         }
-      } catch (err) {
-        setError(
-          err.message || "Something went wrong while fetching products."
-        );
+        setError(null);
+      } else {
+        setError(apiError || "Something went wrong while fetching products.");
         setProducts([]);
-      } finally {
-        setIsLoading(false);
       }
     };
     fetchProducts();
-  }, []);
+  }, [get, apiError]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
@@ -101,7 +92,7 @@ const Shop = () => {
     boxSizing: "border-box",
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
       <p style={{ textAlign: "center", marginTop: "50px", fontSize: "1.5em" }}>
         {t("loadingProducts")}

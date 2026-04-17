@@ -1,0 +1,412 @@
+/* ===== UNIFIED RESPONSIVE STYLES ===== */
+/* This file consolidates all media query patterns to avoid duplication */
+/* Import this in addition to component-specific styles */
+
+/* ===== GLOBAL TABLET BREAKPOINT (768px) ===== */
+@media (max-width: 768px) {
+  /* Typography - Reduce sizes for tablet */
+  h1 {
+    font-size: 1.8em !important;
+  }
+
+  h2 {
+    font-size: 1.4em !important;
+  }
+
+  h3 {
+    font-size: 1.1em !important;
+  }
+
+  p {
+    font-size: 0.95em !important;
+  }
+
+  /* Containers - Full width with padding */
+  [class*="container"],
+  [class*="content"],
+  [class*="wrapper"] {
+    max-width: 100% !important;
+    padding: 20px !important;
+  }
+
+  /* Grids - Convert to single or 2-column */
+  [class*="grid"] {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+    gap: 20px !important;
+  }
+
+  /* Flexbox - Adjust gaps */
+  [class*="flex"] {
+    gap: 15px !important;
+  }
+
+  /* Navigation & Sidebar */
+  .navbar-left {
+    gap: 15px !important;
+  }
+
+  .navbar-right {
+    gap: 8px !important;
+  }
+
+  aside,
+  [class*="sidebar"] {
+    width: 100% !important;
+    padding-right: 0 !important;
+    border-right: none !important;
+    border-bottom: 2px solid #E0E0E0;
+    padding-bottom: 20px;
+  }
+
+  /* Cart & Checkout */
+  .cart-content,
+  .checkout-content {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  .cart-summary-section,
+  .checkout-summary {
+    position: static !important;
+  }
+
+  /* Sticky elements - Remove on tablet */
+  [class*="sticky"] {
+    position: static !important;
+  }
+
+  /* Buttons - Smaller padding */
+  button,
+  [class*="btn"] {
+    padding: 10px 15px !important;
+    font-size: 0.95em !important;
+  }
+
+  /* Forms - Full width inputs */
+  input,
+  textarea,
+  select {
+    width: 100% !important;
+    font-size: 1em !important;
+  }
+
+  /* Spacing - Reduce margins/padding */
+  .cart-items-section,
+  .checkout-section,
+  [class*="card"] {
+    padding: 15px !important;
+  }
+
+  /* Hero sections */
+  [class*="hero"] {
+    height: 60vh !important;
+    min-height: 300px;
+  }
+
+  [class*="hero"] h1 {
+    font-size: 2.5em !important;
+  }
+}
+
+/* ===== GLOBAL MOBILE BREAKPOINT (480px) ===== */
+@media (max-width: 480px) {
+  * {
+    font-size: 16px !important; /* Prevent zoom on iOS */
+  }
+
+  /* Typography - Aggressive reduction */
+  html {
+    font-size: 13px !important;
+  }
+
+  h1 {
+    font-size: 1.5em !important;
+    letter-spacing: 1px !important;
+    margin-bottom: 10px !important;
+  }
+
+  h2 {
+    font-size: 1.2em !important;
+    margin-bottom: 10px !important;
+  }
+
+  h3 {
+    font-size: 1em !important;
+  }
+
+  p {
+    font-size: 0.9em !important;
+    line-height: 1.4;
+  }
+
+  /* Main containers */
+  [class*="container"],
+  [class*="content"],
+  [class*="wrapper"] {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 10px !important;
+    margin: 0 !important;
+  }
+
+  /* Grids - Single column only */
+  [class*="grid"] {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  /* Flexbox layouts */
+  [class*="flex"] {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  /* Navigation */
+  .navbar-hamburger {
+    display: block !important;
+  }
+
+  .navbar-left {
+    display: none !important;
+  }
+
+  .navbar-right {
+    position: fixed !important;
+    top: 70px !important;
+    left: 0 !important;
+    right: 0 !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    max-height: 0;
+    overflow: hidden;
+    background: var(--color-navbar-bg);
+    border-bottom: 1px solid var(--color-primary);
+  }
+
+  .navbar-right.mobile-open {
+    max-height: 500px !important;
+  }
+
+  /* Sidebars - Mobile friendly */
+  aside,
+  [class*="sidebar"] {
+    width: 100% !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  /* Buttons - Touch-friendly sizing */
+  button,
+  [class*="btn"],
+  a[class*="btn"] {
+    padding: 12px 16px !important;
+    min-height: 44px !important;
+    font-size: 0.9em !important;
+    width: 100% !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* Forms - Mobile optimized */
+  input,
+  textarea,
+  select {
+    width: 100% !important;
+    padding: 12px !important;
+    font-size: 16px !important; /* Prevent zoom on iOS */
+    border-radius: 6px !important;
+    margin-bottom: 10px !important;
+  }
+
+  /* Cards, sections */
+  [class*="card"],
+  [class*="section"],
+  [class*="summary"] {
+    padding: 15px !important;
+    border-radius: 8px !important;
+    margin-bottom: 15px !important;
+  }
+
+  /* Hero sections */
+  [class*="hero"] {
+    height: 100vh !important;
+    min-height: 400px;
+    padding: 0 !important;
+  }
+
+  [class*="hero"] h1 {
+    font-size: 2em !important;
+    letter-spacing: 2px !important;
+  }
+
+  [class*="hero"] p {
+    font-size: 1em !important;
+  }
+
+  /* Images - Full width */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Cart items */
+  .cart-item,
+  .cart-item-row {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    padding: 12px 0 !important;
+  }
+
+  .cart-item-actions {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .item-total {
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  /* Checkout steps */
+  .checkout-step {
+    padding: 12px !important;
+  }
+
+  .checkout-step-circle {
+    width: 35px !important;
+    height: 35px !important;
+    font-size: 14px !important;
+  }
+
+  .checkout-step-label {
+    display: none !important;
+  }
+
+  /* Filter sections */
+  [class*="filter"] {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  [class*="filter-button"],
+  [class*="tag-button"] {
+    padding: 6px 10px !important;
+    font-size: 0.8em !important;
+  }
+
+  /* Toast notifications */
+  .toast-container {
+    bottom: 10px !important;
+    left: 10px !important;
+    right: 10px !important;
+    max-width: calc(100% - 20px) !important;
+  }
+
+  .toast {
+    width: 100% !important;
+    padding: 12px !important;
+  }
+
+  /* Chat widget */
+  .chat-widget {
+    bottom: 70px !important;
+    right: 10px !important;
+  }
+
+  .chat-widget.open {
+    position: fixed !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 16px 16px 0 0 !important;
+  }
+
+  /* Product cards */
+  [class*="product-card"],
+  [class*="product-item"] {
+    padding: 12px !important;
+  }
+
+  [class*="product-image"] {
+    max-height: 250px !important;
+  }
+
+  /* Profile tabs */
+  .profile-nav {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .profile-nav ul {
+    display: flex !important;
+    gap: 0;
+  }
+
+  .profile-nav li {
+    padding: 10px 12px !important;
+    font-size: 0.85em !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Data rows - Single column */
+  [class*="data-row"],
+  [class*="summary-row"] {
+    flex-direction: column !important;
+    gap: 5px !important;
+    font-size: 0.85em !important;
+  }
+
+  /* Spacing - Aggressive reduction */
+  margin {
+    margin: 0 !important;
+  }
+
+  section,
+  article {
+    margin-bottom: 20px !important;
+  }
+}
+
+/* ===== ULTRA-SMALL PHONES (320px and below) ===== */
+@media (max-width: 320px) {
+  h1 {
+    font-size: 1.2em !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  h2 {
+    font-size: 1em !important;
+  }
+
+  button,
+  [class*="btn"] {
+    padding: 10px 12px !important;
+    font-size: 0.8em !important;
+  }
+
+  [class*="cart-item"],
+  [class*="filter-button"] {
+    font-size: 0.75em !important;
+  }
+
+  [class*="grid"] {
+    gap: 8px !important;
+  }
+
+  /* Stack everything vertically */
+  .item-meta {
+    flex-direction: column !important;
+    gap: 3px !important;
+  }
+
+  .checkout-step-circle {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 12px !important;
+  }
+}

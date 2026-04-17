@@ -1,0 +1,374 @@
+/* ===== CONSOLIDATED BUTTON STYLES ===== */
+/* This file consolidates all button patterns to eliminate duplication */
+/* Import after component-specific styles to allow overrides */
+
+/* ===== BASE BUTTON STYLES ===== */
+
+/* Universal button defaults */
+button,
+[class*="btn"],
+a[class*="btn"] {
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* ===== PRIMARY BUTTONS ===== */
+/* Used for main actions (Submit, Buy, etc) */
+
+.btn-primary,
+.btn-checkout,
+.btn-place-order,
+.btn-checkout-next {
+  padding: 14px 24px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-prim2) 100%);
+  color: white;
+  border-radius: 8px;
+  font-size: 1em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(83, 48, 22, 0.2);
+}
+
+.btn-primary:hover:not(:disabled),
+.btn-checkout:hover:not(:disabled),
+.btn-place-order:hover:not(:disabled),
+.btn-checkout-next:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(83, 48, 22, 0.3);
+}
+
+.btn-primary:active:not(:disabled),
+.btn-checkout:active:not(:disabled),
+.btn-place-order:active:not(:disabled),
+.btn-checkout-next:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled,
+.btn-checkout:disabled,
+.btn-place-order:disabled,
+.btn-checkout-next:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== SECONDARY BUTTONS ===== */
+/* Used for secondary actions (Back, Cancel, etc) */
+
+.btn-continue-shopping,
+.btn-checkout-back,
+.btn-return-shop {
+  padding: 14px 24px;
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  border-radius: 8px;
+  font-size: 1em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-continue-shopping:hover:not(:disabled),
+.btn-checkout-back:hover:not(:disabled),
+.btn-return-shop:hover:not(:disabled) {
+  background-color: var(--color-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(83, 48, 22, 0.2);
+}
+
+.btn-continue-shopping:active:not(:disabled),
+.btn-checkout-back:active:not(:disabled),
+.btn-return-shop:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-continue-shopping:disabled,
+.btn-checkout-back:disabled,
+.btn-return-shop:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== ACTION BUTTONS ===== */
+/* Used for add to cart, remove, etc */
+
+.btn-add-to-cart,
+.btn-back {
+  padding: 12px 20px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-prim2) 100%);
+  color: white;
+  border-radius: 6px;
+  font-size: 0.95em;
+  font-weight: 700;
+  box-shadow: 0 3px 10px rgba(83, 48, 22, 0.15);
+}
+
+.btn-add-to-cart:hover:not(.disabled),
+.btn-back:hover:not(.disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(83, 48, 22, 0.25);
+}
+
+.btn-add-to-cart:active:not(.disabled),
+.btn-back:active:not(.disabled) {
+  transform: translateY(0);
+}
+
+.btn-add-to-cart.disabled,
+.btn-back.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== REMOVE/DELETE BUTTONS ===== */
+
+.btn-remove {
+  padding: 8px 12px;
+  background-color: transparent;
+  color: var(--color-text-light);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  font-weight: 600;
+}
+
+.btn-remove:hover {
+  background-color: #ffe8e8;
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+  transform: scale(1.1);
+}
+
+.btn-remove:active {
+  transform: scale(0.95);
+}
+
+/* ===== SMALL BUTTONS ===== */
+/* Used for filters, tags, minor actions */
+
+.filter-button,
+.tag-button,
+.btn-small {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  background-color: white;
+  color: #666;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-button:hover,
+.tag-button:hover,
+.btn-small:hover {
+  border-color: var(--color-primary);
+  background-color: rgba(102, 126, 234, 0.1);
+  color: var(--color-primary);
+}
+
+.filter-button.active,
+.tag-button.active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+  font-weight: 600;
+}
+
+/* ===== ICON BUTTONS ===== */
+
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-dark);
+}
+
+.btn-icon:hover {
+  background-color: var(--color-secondary);
+  border-color: var(--color-primary);
+  transform: scale(1.05);
+}
+
+/* ===== BUTTON GROUPS ===== */
+
+.button-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.button-group.vertical {
+  flex-direction: column;
+  width: 100%;
+}
+
+.button-group.vertical button,
+.button-group.vertical [class*="btn"] {
+  width: 100%;
+}
+
+/* ===== DISABLED STATE ===== */
+
+button:disabled,
+[class*="btn"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== FOCUS STATE FOR ACCESSIBILITY ===== */
+
+button:focus,
+[class*="btn"]:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ===== LOADING STATE ===== */
+
+.btn-loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.btn-loading::after {
+  content: " ...";
+  animation: dots 1.4s infinite;
+}
+
+@keyframes dots {
+  0%, 20% {
+    content: " ·";
+  }
+  40% {
+    content: " ··";
+  }
+  60%, 100% {
+    content: " ···";
+  }
+}
+
+/* ===== RESPONSIVE BUTTON STYLES ===== */
+
+/* Tablet (768px and below) */
+@media (max-width: 768px) {
+  .btn-primary,
+  .btn-checkout,
+  .btn-place-order,
+  .btn-checkout-next {
+    padding: 12px 18px;
+    font-size: 0.95em;
+  }
+
+  .btn-continue-shopping,
+  .btn-checkout-back,
+  .btn-return-shop {
+    padding: 12px 18px;
+    font-size: 0.95em;
+  }
+
+  .button-group {
+    gap: 10px;
+  }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+  button,
+  [class*="btn"],
+  a[class*="btn"] {
+    min-height: 44px;
+    font-size: 0.9em;
+  }
+
+  .btn-primary,
+  .btn-checkout,
+  .btn-place-order,
+  .btn-checkout-next,
+  .btn-continue-shopping,
+  .btn-checkout-back,
+  .btn-return-shop {
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .button-group button,
+  .button-group [class*="btn"] {
+    width: 100%;
+  }
+
+  .btn-add-to-cart,
+  .btn-back {
+    width: 100%;
+    padding: 12px 16px;
+  }
+
+  .btn-remove {
+    min-width: 35px;
+    min-height: 35px;
+    padding: 6px 8px;
+    font-size: 0.95em;
+  }
+
+  .filter-button,
+  .tag-button,
+  .btn-small {
+    padding: 6px 10px;
+    font-size: 0.8em;
+  }
+
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+}
+
+/* Ultra-small phones (320px and below) */
+@media (max-width: 320px) {
+  .btn-primary,
+  .btn-checkout,
+  .btn-place-order,
+  .btn-continue-shopping,
+  .btn-checkout-back {
+    padding: 10px 12px;
+    font-size: 0.8em;
+  }
+
+  .button-group {
+    gap: 4px;
+  }
+
+  .filter-button,
+  .tag-button {
+    padding: 4px 8px;
+    font-size: 0.7em;
+  }
+}

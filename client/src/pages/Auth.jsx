@@ -2,6 +2,8 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
+import { useFormState } from "../hooks/useFormState";
+import { API_ENDPOINTS } from "../config/api";
 import { ToastContext } from "../App";
 
 const buttonStyle = {
@@ -17,49 +19,49 @@ const buttonStyle = {
 const Auth = () => {
   const { t } = useLanguage();
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [zip, setZip] = useState("");
-  const [country, setCountry] = useState("");
-
-  const [error, setError] = useState("");
+  const [authError, setAuthError] = useState("");
   const { login } = useAuth();
   const { showToast } = useContext(ToastContext);
   const navigate = useNavigate();
+
+  // Form state management with useFormState hook
+  const { formData, updateField, resetForm } = useFormState({
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    street: "",
+    city: "",
+    zip: "",
+    country: "",
+  });
 
   const formTitle = isLogin ? t("signInForm") : t("signUp");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-
-    const API_BASE_URL = "https://men-style-shop.onrender.com";
+    setAuthError("");
 
     if (isLogin) {
-      const result = await login(email, password);
+      const result = await login(formData.email, formData.password);
 
       if (result.success) {
         showToast(t("success"), 'success');
         navigate("/");
       } else {
-        setError(result.error || t("error"));
+        setAuthError(result.error || t("error"));
       }
     } else {
-      const endpoint = `${API_BASE_URL}/api/auth/register`;
+      const endpoint = `${API_ENDPOINTS.BASE_URL}/api/auth/register`;
       const body = {
-        email,
-        password,
-        firstName,
-        lastName,
-        street,
-        city,
-        zip,
-        country,
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        street: formData.street,
+        city: formData.city,
+        zip: formData.zip,
+        country: formData.country,
       };
 
       try {
@@ -74,22 +76,12 @@ const Auth = () => {
         if (response.ok) {
           showToast(t("success"), 'success');
           setIsLogin(true);
-          setFirstName("");
-          setLastName("");
-          setStreet("");
-          setCity("");
-          setZip("");
-          setCountry("");
-          setPassword("");
+          resetForm();
         } else {
-          setError(
-            data.message || t("error")
-          );
+          setAuthError(data.message || t("error"));
         }
       } catch (err) {
-        setError(
-          t("error")
-        );
+        setAuthError(t("error"));
         console.error(err);
       }
     }
@@ -121,8 +113,8 @@ const Auth = () => {
         <input
           type="email"
           placeholder={t("email")}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={formData.email}
+          onChange={(e) => updateField("email", e.target.value)}
           required
           style={{
             padding: "10px",
@@ -133,8 +125,8 @@ const Auth = () => {
         <input
           type="password"
           placeholder={t("password")}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={formData.password}
+          onChange={(e) => updateField("password", e.target.value)}
           required
           style={{
             padding: "10px",
@@ -151,8 +143,8 @@ const Auth = () => {
               <input
                 type="text"
                 placeholder={t("firstName")}
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                value={formData.firstName}
+                onChange={(e) => updateField("firstName", e.target.value)}
                 required
                 style={{
                   flex: 1,
@@ -164,8 +156,8 @@ const Auth = () => {
               <input
                 type="text"
                 placeholder={t("lastName")}
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                value={formData.lastName}
+                onChange={(e) => updateField("lastName", e.target.value)}
                 required
                 style={{
                   flex: 1,
@@ -179,8 +171,8 @@ const Auth = () => {
             <input
               type="text"
               placeholder={t("street")}
-              value={street}
-              onChange={(e) => setStreet(e.target.value)}
+              value={formData.street}
+              onChange={(e) => updateField("street", e.target.value)}
               style={{
                 padding: "10px",
                 border: `1px solid var(--color-border)`,
@@ -197,8 +189,8 @@ const Auth = () => {
               <input
                 type="text"
                 placeholder={t("city")}
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
+                value={formData.city}
+                onChange={(e) => updateField("city", e.target.value)}
                 style={{
                   padding: "10px",
                   border: `1px solid var(--color-border)`,
@@ -208,8 +200,8 @@ const Auth = () => {
               <input
                 type="text"
                 placeholder={t("zip")}
-                value={zip}
-                onChange={(e) => setZip(e.target.value)}
+                value={formData.zip}
+                onChange={(e) => updateField("zip", e.target.value)}
                 style={{
                   padding: "10px",
                   border: `1px solid var(--color-border)`,
@@ -219,8 +211,8 @@ const Auth = () => {
               <input
                 type="text"
                 placeholder={t("country")}
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
+                value={formData.country}
+                onChange={(e) => updateField("country", e.target.value)}
                 style={{
                   padding: "10px",
                   border: `1px solid var(--color-border)`,
@@ -231,8 +223,8 @@ const Auth = () => {
           </div>
         )}
 
-        {error && (
-          <p style={{ color: "red", margin: 0, fontSize: "0.9em" }}>{error}</p>
+        {authError && (
+          <p style={{ color: "red", margin: 0, fontSize: "0.9em" }}>{authError}</p>
         )}
 
         <button

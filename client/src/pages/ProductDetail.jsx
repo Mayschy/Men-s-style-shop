@@ -3,6 +3,8 @@ import { useState, useEffect, useContext } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { ToastContext } from '../App';
 import { useLanguage } from '../context/LanguageContext';
+import { API_ENDPOINTS } from '../config/api';
+import { useApi } from '../hooks/useApi';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -11,32 +13,25 @@ const ProductDetail = () => {
   const { addToCart } = useAuth();
   const { t } = useLanguage();
   const { showToast } = useContext(ToastContext);
+  const { get, loading, error: apiError } = useApi();
   const [product, setProduct] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const fetchProduct = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(
-          `https://men-style-shop.onrender.com/api/products/${id}`
-        );
-        if (!response.ok) {
-          throw new Error(t("productNotFound") || 'Product not found');
-        }
-        const data = await response.json();
+      const endpoint = `${API_ENDPOINTS.PRODUCTS_ALL}/${id}`;
+      const data = await get(endpoint);
+      
+      if (data) {
         setProduct(data);
-      } catch (err) {
-        setError(err.message || t("failedFetchProduct") || 'Failed to fetch product');
-      } finally {
-        setIsLoading(false);
+        setError(null);
+      } else {
+        setError(apiError || t("failedFetchProduct") || 'Failed to fetch product');
       }
     };
     fetchProduct();
-  }, [id]);
+  }, [id, get, apiError, t]);
 
   const handleAddToCart = async () => {
     const result = await addToCart(product._id, quantity);
@@ -48,7 +43,7 @@ const ProductDetail = () => {
     }
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="loading-container">
         <div className="spinner"></div>
