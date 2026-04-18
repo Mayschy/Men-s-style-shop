@@ -54,15 +54,19 @@ ul, ol {
 
     body {
         line-height: 1.3;
+        overflow-x: hidden;
+        max-width: 100vw;
     }
 
     /* Remove margin/padding from default elements */
     p {
         margin: 0.5em 0;
+        word-break: break-word;
     }
 
     h1, h2, h3, h4, h5, h6 {
         margin: 0.5em 0 0.25em 0;
+        word-break: break-word;
     }
 
     button,

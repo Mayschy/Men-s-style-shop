@@ -283,7 +283,7 @@ const Profile = () => {
           </ul>
         </aside>
 
-        <section style={{ flexGrow: 1, minWidth: "600px" }}>
+        <section className="profile-main" style={{ flexGrow: 1 }}>
           <h2 style={{ color: "var(--color-text-dark)", marginBottom: "30px" }}>
             {activeTab === "details" && t("personalDetails")}
             {activeTab === "orders" && t("orderHistory")}

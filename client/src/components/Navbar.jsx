@@ -106,12 +106,6 @@ const Navbar = () => {
         className="navbar-hamburger"
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         aria-label="Toggle menu"
-        style={{
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          fontSize: "24px",
-        }}
       >
         ☰
       </button>
@@ -154,7 +148,7 @@ const Navbar = () => {
         {user ? (
           <>
             {" "}
-            <span style={{ color: "var(--color-primary)", fontWeight: "bold" }}>
+            <span className="welcome-msg">
               {t("welcome")}, {user.name}
             </span>
             <NavLinkWithHover to="/profile">{t("profile")}</NavLinkWithHover> {" "}

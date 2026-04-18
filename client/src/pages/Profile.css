@@ -5,6 +5,19 @@
   .profile-container {
     padding: 20px !important;
     max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  .profile-main {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .profile-content {
+    overflow-x: hidden !important;
   }
 
   .profile-header-title {
@@ -61,6 +74,27 @@
   .profile-container {
     padding: 10px !important;
     margin: 0 !important;
+    overflow-x: hidden !important;
+    word-break: break-word !important;
+  }
+
+  .profile-main {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    word-break: break-word !important;
+  }
+
+  .profile-content {
+    flex-direction: column !important;
+    overflow-x: hidden !important;
+  }
+
+  .profile-card {
+    max-width: 100% !important;
+    word-break: break-word !important;
+    overflow-x: hidden !important;
   }
 
   .profile-header-title {
