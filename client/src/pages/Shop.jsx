@@ -20,8 +20,7 @@ const Shop = () => {
   const [totalCount, setTotalCount] = useState(0);
   const limit = 12;
 
-  // Get all unique style tags - memoized to avoid recalculation
-  const allStyleTags = useMemo(() => 
+  const allStyleTags = useMemo(() =>
     Array.from(new Set(products.flatMap(p => p.styleTags || []))),
     [products]
   );
@@ -37,7 +36,6 @@ const Shop = () => {
           setTotalCount(data.pagination.totalCount);
         }
 
-        // Set initial price range based on products
         if (data.products && data.products.length > 0) {
           const prices = data.products.map(p => p.price);
           const maxPrice = Math.max(...prices);
@@ -55,269 +53,176 @@ const Shop = () => {
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       const matchesCategory = filter === "all" || p.category === filter;
-      const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            p.description.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesPrice = p.price >= priceRange[0] && p.price <= priceRange[1];
-      const matchesTags = selectedTags.length === 0 || 
+      const matchesTags = selectedTags.length === 0 ||
                           selectedTags.some(tag => (p.styleTags || []).includes(tag));
       const matchesStock = !inStockOnly || p.isAvailable;
-      
+
       return matchesCategory && matchesSearch && matchesPrice && matchesTags && matchesStock;
     });
   }, [products, filter, searchTerm, priceRange, selectedTags, inStockOnly]);
 
   const toggleTag = (tag) => {
-    setSelectedTags(prev => 
-      prev.includes(tag) 
+    setSelectedTags(prev =>
+      prev.includes(tag)
         ? prev.filter(t => t !== tag)
         : [...prev, tag]
     );
   };
 
-  const filterButtonStyle = (currentFilter) => ({
-    padding: "8px 15px",
-    margin: "0 5px",
-    border: "1px solid var(--color-primary)",
-    borderRadius: "4px",
-    cursor: "pointer",
-    backgroundColor:
-      filter === currentFilter ? "var(--color-primary)" : "white",
-    color: filter === currentFilter ? "white" : "var(--color-primary)",
-    transition: "all 0.3s ease",
-    fontWeight: "500",
-  });
-
-  const searchStyle = {
-    width: "100%",
-    maxWidth: "500px",
-    padding: "10px 15px",
-    margin: "0 auto 20px",
-    display: "block",
-    border: "2px solid var(--color-secondary)",
-    borderRadius: "5px",
-    fontSize: "1em",
-    transition: "border-color 0.3s ease",
-    boxSizing: "border-box",
-  };
+  const categories = ["t-shirts", "jackets", "jeans", "accessories"];
 
   if (loading) {
     return (
-      <p style={{ textAlign: "center", marginTop: "50px", fontSize: "1.5em" }}>
-        {t("loadingProducts")}
-      </p>
+      <div className="shop-loading">
+        <div className="shop-loading-spinner"></div>
+        <p>{t("loadingProducts")}</p>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <p
-        style={{
-          textAlign: "center",
-          marginTop: "50px",
-          fontSize: "1.2em",
-          color: "red",
-        }}
-      >
-        {t("errorFetching")}: {error}
-      </p>
+      <div className="shop-error">
+        <p>{t("errorFetching")}: {error}</p>
+      </div>
     );
   }
 
   return (
-    <div className="shop-container" style={{ maxWidth: "1200px", margin: "0 auto", padding: "20px" }}>
-      <h1
-        className="shop-title"
-        style={{
-          textAlign: "center",
-          marginBottom: "30px",
-          color: "var(--color-text-dark)",
-        }}
-      >
-        🛍️ {t("productCatalog")}
-      </h1>
+    <div className="shop-container">
+      <div className="shop-header">
+        <h1 className="shop-title">{t("productCatalog")}</h1>
 
-      {/* Search Bar */}
-      <input
-        className="shop-search"
-        type="text"
-        placeholder={`🔍 ${t("searchProducts")}`}
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={searchStyle}
-        onFocus={(e) => e.target.style.borderColor = "var(--color-primary)"}
-        onBlur={(e) => e.target.style.borderColor = "var(--color-secondary)"}
-      />
+        {/* Minimal Search Bar */}
+        <div className="shop-search-wrapper">
+          <svg className="shop-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
+          </svg>
+          <input
+            className="shop-search"
+            type="text"
+            placeholder={t("searchProducts") || "Search products..."}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+      </div>
 
-      {/* Filters Container */}
-      <div className="shop-filters" style={{ 
-        backgroundColor: "#f8f9fa", 
-        padding: "20px", 
-        borderRadius: "8px", 
-        marginBottom: "30px",
-        border: "1px solid #e0e0e0"
-      }}>
-        
-        {/* Category Filter */}
-        <div className="shop-filter-section" style={{ marginBottom: "20px" }}>
-          <h4 style={{ marginTop: 0, marginBottom: "10px", color: "#333" }}>📂 {t("categoryFilter")}</h4>
-          <div className="shop-filter-buttons" style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+      {/* Clean Filter Bar */}
+      <div className="shop-filter-bar">
+        {/* Category Links */}
+        <div className="shop-categories">
+          <button
+            className={`shop-category-link ${filter === "all" ? "active" : ""}`}
+            onClick={() => setFilter("all")}
+          >
+            All
+          </button>
+          {categories.map((cat) => (
             <button
-              className="shop-filter-button"
-              style={filterButtonStyle("all")}
-              onClick={() => setFilter("all")}
+              key={cat}
+              className={`shop-category-link ${filter === cat ? "active" : ""}`}
+              onClick={() => setFilter(cat)}
             >
-              {t("allProducts")}
+              {cat.charAt(0).toUpperCase() + cat.slice(1)}
             </button>
-            {["t-shirts", "jackets", "jeans", "accessories"].map((cat) => (
+          ))}
+        </div>
+
+        {/* Price Range */}
+        <div className="shop-price-filter">
+          <span className="shop-price-text">
+            ${priceRange[0]} — ${priceRange[1]}
+          </span>
+          <input
+            className="shop-price-range"
+            type="range"
+            min="0"
+            max="1000"
+            value={priceRange[0]}
+            onChange={(e) => {
+              const newMin = Math.min(Number(e.target.value), priceRange[1]);
+              setPriceRange([newMin, priceRange[1]]);
+            }}
+          />
+          <input
+            className="shop-price-range"
+            type="range"
+            min="0"
+            max="1000"
+            value={priceRange[1]}
+            onChange={(e) => {
+              const newMax = Math.max(Number(e.target.value), priceRange[0]);
+              setPriceRange([priceRange[0], newMax]);
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Style Tags & Stock Filter */}
+      <div className="shop-secondary-filters">
+        {allStyleTags.length > 0 && (
+          <div className="shop-tags">
+            {allStyleTags.map((tag) => (
               <button
-                className="shop-filter-button"
-                key={cat}
-                style={filterButtonStyle(cat)}
-                onClick={() => setFilter(cat)}
+                key={tag}
+                className={`shop-tag ${selectedTags.includes(tag) ? "active" : ""}`}
+                onClick={() => toggleTag(tag)}
               >
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                {tag}
               </button>
             ))}
           </div>
-        </div>
-
-        {/* Price Range Filter */}
-        <div className="shop-filter-section" style={{ marginBottom: "20px" }}>
-          <h4 style={{ marginTop: 0, marginBottom: "10px", color: "#333" }}>💰 {t("priceRange")}</h4>
-          <div className="shop-price-controls" style={{ display: "flex", gap: "15px", alignItems: "center" }}>
-            <div>
-              <label className="shop-price-label" style={{ fontSize: "0.9em", display: "block", marginBottom: "5px" }}>
-                {t("min")}: ${priceRange[0]}
-              </label>
-              <input
-                className="shop-price-range"
-                type="range"
-                min="0"
-                max="1000"
-                value={priceRange[0]}
-                onChange={(e) => {
-                  const newMin = Math.min(Number(e.target.value), priceRange[1]);
-                  setPriceRange([newMin, priceRange[1]]);
-                }}
-                style={{ width: "150px" }}
-              />
-            </div>
-            <div>
-              <label style={{ fontSize: "0.9em", display: "block", marginBottom: "5px" }}>
-                {t("max")}: ${priceRange[1]}
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="1000"
-                value={priceRange[1]}
-                onChange={(e) => {
-                  const newMax = Math.max(Number(e.target.value), priceRange[0]);
-                  setPriceRange([priceRange[0], newMax]);
-                }}
-                style={{ width: "150px" }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Style Tags Filter */}
-        {allStyleTags.length > 0 && (
-          <div className="shop-filter-section" style={{ marginBottom: "20px" }}>
-            <h4 style={{ marginTop: 0, marginBottom: "10px", color: "#333" }}>🏷️ {t("styleTags")}</h4>
-            <div className="shop-style-tags" style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-              {allStyleTags.map((tag) => (
-                <button
-                  className="shop-tag-button"
-                  key={tag}
-                  onClick={() => toggleTag(tag)}
-                  style={{
-                    padding: "6px 12px",
-                    border: `2px solid ${selectedTags.includes(tag) ? "var(--color-primary)" : "#ddd"}`,
-                    borderRadius: "20px",
-                    backgroundColor: selectedTags.includes(tag) ? "var(--color-primary)" : "white",
-                    color: selectedTags.includes(tag) ? "white" : "#666",
-                    cursor: "pointer",
-                    fontSize: "0.9em",
-                    transition: "all 0.2s",
-                  }}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
         )}
 
-        {/* Stock Filter */}
-        <div className="shop-filter-section">
-          <label className="shop-stock-filter" style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
-            <input
-              className="shop-stock-checkbox"
-              type="checkbox"
-              checked={inStockOnly}
-              onChange={(e) => setInStockOnly(e.target.checked)}
-              style={{ width: "18px", height: "18px", cursor: "pointer" }}
-            />
-            <span style={{ fontSize: "0.95em" }}>📦 {t("inStockOnly")}</span>
-          </label>
-        </div>
+        <label className="shop-stock-toggle">
+          <input
+            type="checkbox"
+            checked={inStockOnly}
+            onChange={(e) => setInStockOnly(e.target.checked)}
+          />
+          <span className="shop-stock-label">In Stock Only</span>
+        </label>
       </div>
 
       {/* Results Counter */}
-      <div className="shop-results-counter" style={{ textAlign: "center", marginBottom: "20px", color: "#666" }}>
-        <p>{t("showing")} <strong>{filteredProducts.length}</strong> {t("of")} <strong>{totalCount}</strong> {t("products")}</p>
+      <div className="shop-results-counter">
+        <span>Showing <strong>{filteredProducts.length}</strong> of <strong>{totalCount}</strong> products</span>
       </div>
 
-      {/* Pagination Controls */}
+      {/* Pagination */}
       {totalPages > 1 && (
-        <div className="shop-pagination" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
+        <div className="shop-pagination">
           <button
             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             disabled={currentPage === 1}
-            style={{
-              padding: "8px 16px",
-              backgroundColor: currentPage === 1 ? "#e0e0e0" : "var(--color-primary)",
-              color: currentPage === 1 ? "#999" : "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: currentPage === 1 ? "not-allowed" : "pointer",
-              fontSize: "0.9em",
-            }}
+            className="shop-pagination-btn"
           >
-            {t("previous") || "Previous"}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
           </button>
-          <span style={{ color: "#666", fontSize: "0.95em" }}>
-            {t("page") || "Page"} {currentPage} {t("of") || "of"} {totalPages}
+          <span className="shop-pagination-text">
+            Page {currentPage} of {totalPages}
           </span>
           <button
             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
             disabled={currentPage === totalPages}
-            style={{
-              padding: "8px 16px",
-              backgroundColor: currentPage === totalPages ? "#e0e0e0" : "var(--color-primary)",
-              color: currentPage === totalPages ? "#999" : "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: currentPage === totalPages ? "not-allowed" : "pointer",
-              fontSize: "0.9em",
-            }}
+            className="shop-pagination-btn"
           >
-            {t("next") || "Next"}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
           </button>
         </div>
       )}
 
       {/* Products Grid */}
-      {/* Products Grid */}
-      <div
-        className="shop-grid"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-          gap: "30px",
-        }}
-      >
+      <div className="shop-grid">
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product) => (
             <ProductCard
@@ -326,14 +231,13 @@ const Shop = () => {
             />
           ))
         ) : (
-          <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "50px 20px" }}>
-            <p style={{ fontSize: "3em", margin: "0 0 10px" }}>📭</p>
-            <p style={{ fontSize: "1.2em", color: "#999", margin: 0 }}>
-              ❌ {t("noProductsFound")} {searchTerm ? `${t("matchingSearch")} "${searchTerm}"` : t("inThisCategory")}.
-            </p>
-            <p style={{ fontSize: "0.95em", color: "#bbb", marginTop: "10px" }}>
-              {t("tryAdjusting")}
-            </p>
+          <div className="shop-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <p>No products found</p>
+            <span>Try adjusting your search or filters</span>
           </div>
         )}
       </div>
