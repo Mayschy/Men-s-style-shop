@@ -12,6 +12,10 @@ const cartItemSchema = new mongoose.Schema({
     default: 1,
     min: 1,
   },
+  size: {
+    type: String,
+    required: true,
+  },
 });
 
 const orderItemSchema = new mongoose.Schema({
@@ -28,6 +32,9 @@ const orderItemSchema = new mongoose.Schema({
   price: {
     type: Number,
     required: true,
+  },
+  size: {
+    type: String,
   },
 });
 
