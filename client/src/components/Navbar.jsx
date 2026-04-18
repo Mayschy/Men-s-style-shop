@@ -107,7 +107,6 @@ const Navbar = () => {
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         aria-label="Toggle menu"
         style={{
-          display: "none",
           background: "none",
           border: "none",
           cursor: "pointer",
