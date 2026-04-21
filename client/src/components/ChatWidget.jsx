@@ -3,6 +3,29 @@ import '../styles/ChatWidget.css';
 
 const API_URL = 'https://men-style-shop.onrender.com/api';
 
+// Parse markdown-style links [text](url) into anchor elements
+function renderMessageWithLinks(text) {
+  const parts = text.split(/(\[([^\]]+)\]\((https?:\/\/[^\)]+)\))/g);
+
+  return parts.map((part, i) => {
+    const linkMatch = part.match(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/);
+    if (linkMatch) {
+      return (
+        <a
+          key={i}
+          href={linkMatch[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="chat-link"
+        >
+          {linkMatch[1]}
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
 export const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -95,7 +118,7 @@ export const ChatWidget = () => {
                   key={message.id}
                   className={`message message-${message.sender}`}
                 >
-                  <p>{message.text}</p>
+                  <p>{renderMessageWithLinks(message.text)}</p>
                   {message.escalate && (
                     <a
                       href="https://t.me/mensstyleshop"

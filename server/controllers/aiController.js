@@ -8,6 +8,9 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// Base product page URL
+const PRODUCT_BASE_URL = "https://mens-style-shop.vercel.app/product/";
+
 // Escalation trigger phrases
 const ESCALATION_TRIGGERS = [
   "talk to a human",
@@ -25,14 +28,27 @@ const ESCALATION_TRIGGERS = [
   "talk to manager",
 ];
 
+// Build formatted stock string for a product
+function formatStock(sizes) {
+  if (!sizes || sizes.length === 0) return "No size data";
+  return sizes
+    .map((s) => `Size ${s.size}: ${s.stock > 0 ? s.stock + " in stock" : "OUT OF STOCK"}`)
+    .join(", ");
+}
+
 // Build product catalog string for the system prompt
 async function buildProductCatalog() {
-  const products = await Product.find({}, "name description price category styleTags imageUrl").lean();
+  const products = await Product.find(
+    {},
+    "name description price category styleTags sizes"
+  ).lean();
+
   return products
-    .map(
-      (p) =>
-        `- ${p.name} | Price: $${p.price} | Category: ${p.category} | Tags: ${(p.styleTags || []).join(", ")} | Description: ${p.description}`
-    )
+    .map((p) => {
+      const stockInfo = formatStock(p.sizes);
+      const tags = (p.styleTags || []).join(", ");
+      return `Product: ${p.name} | ID: ${p._id} | Category: ${p.category} | Price: $${p.price} | Stock: ${stockInfo} | Tags: ${tags || "none"} | Description: ${p.description}`;
+    })
     .join("\n");
 }
 
@@ -62,14 +78,28 @@ Your expertise covers two domains:
 2. **Digital Art & Paintings**: You can discuss styles, artists, and art theory in depth.
 
 ## Product Catalog
-The following products are available in our store:
 ${catalog || "No products available at the moment."}
+
+## Product Links
+When recommending a product, you MUST include its direct link in this format:
+[PRODUCT_NAME](https://mens-style-shop.vercel.app/product/PRODUCT_ID)
+
+Example: "Check out our **Lightweight Bomber Jacket** — here's the link: [Lightweight Bomber Jacket](https://mens-style-shop.vercel.app/product/64f1a2b3c4d5e6f7a8b9c0d1)"
+
+## Stock & Availability
+- When a user asks about availability or a specific size, check the "Stock" field in the catalog.
+- If a size shows "OUT OF STOCK", inform the user politely.
+- If a requested size is unavailable, ALWAYS suggest an available alternative size from the same product.
+- Example response for out-of-stock: "Unfortunately, Size M is currently OUT OF STOCK. However, Size L is available — want me to reserve one for you?"
 
 ## Guidelines
 - Use the product catalog above to make specific, relevant recommendations.
+- ALWAYS include a clickable product link when mentioning a specific product.
+- Check stock availability for any size mentioned before confirming.
+- If a requested size is unavailable, suggest an alternative and reference available sizes.
 - Ask clarifying questions about budget, occasion, or style preference to give better advice.
 - Keep responses concise (2-4 sentences for general questions, up to 2 paragraphs for detailed style advice).
-- If you mention a specific product, include its name and price.
+- If you mention a specific product, include its name, price, AND link.
 - Always be friendly, professional, and encouraging.
 
 ## Escalation
@@ -82,7 +112,7 @@ Do not explain, do not apologize, do not suggest alternatives. Just output __ESC
         { role: "system", content: systemPrompt },
         { role: "user", content: message },
       ],
-      max_tokens: 500,
+      max_tokens: 800,
       temperature: 0.8,
     });
 

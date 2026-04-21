@@ -298,6 +298,31 @@
   }
 }
 
+/* Chat link styling */
+.chat-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px dashed #667eea;
+  transition: all 0.2s;
+  pointer-events: all;
+}
+
+.chat-link:hover {
+  color: #764ba2;
+  border-bottom-style: solid;
+}
+
+.message-bot .chat-link {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.message-bot .chat-link:hover {
+  color: var(--color-prim2);
+  border-bottom-color: var(--color-prim2);
+}
+
 /* Contact Support button (shown on escalation) */
 .escalate-btn {
   display: inline-block;
