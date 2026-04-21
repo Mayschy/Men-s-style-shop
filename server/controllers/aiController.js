@@ -40,7 +40,6 @@ const ESCALATION_TRIGGERS = [
   "talk to manager",
   "поговорити з людиною",
   "живий оператор",
-  "真人",
 ];
 
 // Build formatted stock string for a product
@@ -55,14 +54,15 @@ function formatStock(sizes) {
 async function buildProductCatalog() {
   const products = await Product.find(
     {},
-    "name description price category styleTags sizes"
+    "name description price category styleTags sizes imageUrl"
   ).lean();
 
   return products
     .map((p) => {
       const stockInfo = formatStock(p.sizes);
       const tags = (p.styleTags || []).join(", ");
-      return `Product: ${p.name} | ID: ${p._id} | Category: ${p.category} | Price: $${p.price} | Stock: ${stockInfo} | Tags: ${tags || "none"} | Description: ${p.description}`;
+      const image = p.imageUrl || "";
+      return `Product: ${p.name} | ID: ${p._id} | Category: ${p.category} | Price: $${p.price} | Stock: ${stockInfo} | Tags: ${tags || "none"} | Image: ${image} | Description: ${p.description}`;
     })
     .join("\n");
 }
@@ -105,34 +105,33 @@ Your expertise covers two domains:
 ## Product Catalog
 ${catalog || "No products available at the moment."}
 
-## Product Links
-When recommending a product, include the direct link as a RAW URL on its own line. Do NOT use markdown link syntax. Just output the URL by itself.
+## Product Recommendations with Images & Links
+When recommending a product, you MUST include BOTH the product image AND a link using this exact Markdown format:
 
-Format:
-${PRODUCT_BASE_URL}[PRODUCT_ID]
+**[Product Name]** ![Product Image](imageUrl)   [View Product Details](https://mens-style-shop.vercel.app/product/ID)
 
 Example — output exactly like this:
-Great choice! The Lightweight Bomber Jacket ($129) is available in Size M with 5 units in stock.
-${PRODUCT_BASE_URL}64f1a2b3c4d5e6f7a8b9c0d1
+Great choice! The **Lightweight Bomber Jacket** ($129) is available in Size M with 5 units in stock.
+**Lightweight Bomber Jacket** ![Lightweight Bomber Jacket](https://example.com/image.jpg)   [View Product Details](https://mens-style-shop.vercel.app/product/64f1a2b3c4d5e6f7a8b9c0d1)
 
-Do NOT write: "Here's the link: ..." or "Check it out: ..." or use [text](url) format.
-Just give the URL on its own line after your recommendation.
+Do NOT use bare URLs. Always combine image + link on the same line as shown above.
+If the product has no image available, still provide the link: [View Product Details](https://mens-style-shop.vercel.app/product/ID)
 
 ## Stock & Availability
 - When a user asks about availability or a specific size, check the "Stock" field in the catalog.
 - If a size shows "OUT OF STOCK", inform the user politely in ${languageName}.
 - If a requested size is unavailable, ALWAYS suggest an available alternative size from the same product.
-- Example response for out-of-stock: "Unfortunately, Size M is currently OUT OF STOCK. However, Size L is available with 3 units — want me to show you? The link: ${PRODUCT_BASE_URL}[ID]"
+- Example response for out-of-stock: "Unfortunately, Size M is currently OUT OF STOCK. However, Size L is available with 3 units — want me to show you? **Lightweight Bomber Jacket** ![Lightweight Bomber Jacket](imageUrl)   [View Product Details](https://mens-style-shop.vercel.app/product/ID)"
 
 ## Guidelines
 - Use the product catalog above to make specific, relevant recommendations.
 - ALWAYS respond in ${languageName} language only.
-- ALWAYS output the product URL on its own line when mentioning a specific product.
+- ALWAYS use the image + link Markdown format when recommending a product.
 - Check stock availability for any size mentioned before confirming.
 - If a requested size is unavailable, suggest an alternative and reference available sizes.
 - Ask clarifying questions about budget, occasion, or style preference to give better advice.
 - Keep responses concise (2-4 sentences for general questions, up to 2 paragraphs for detailed style advice).
-- If you mention a specific product, include its name, price, AND the raw URL on a separate line.
+- If you mention a specific product, include its name, price, image, AND link.
 - Always be friendly, professional, and encouraging.
 
 ## Escalation
@@ -145,7 +144,7 @@ Do not explain, do not apologize, do not suggest alternatives. Just output __ESC
         { role: "system", content: systemPrompt },
         { role: "user", content: message },
       ],
-      max_tokens: 800,
+      max_tokens: 1000,
       temperature: 0.8,
     });
 

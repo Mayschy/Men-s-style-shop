@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import '../styles/ChatWidget.css';
 
@@ -20,8 +20,8 @@ const CHAT_TRANSLATIONS = {
   },
 };
 
-// Safely parse message text and convert URLs into clickable anchor elements
-// Handles both markdown links [text](url) and standalone URLs
+// Safely render message text with clickable links, images, and markdown
+// Handles: ![alt](url) images, [text](url) links, and bare URLs
 function renderMessageWithLinks(text) {
   // Return plain text if not a valid string
   if (typeof text !== 'string' || text.length === 0) {
@@ -29,75 +29,146 @@ function renderMessageWithLinks(text) {
   }
 
   try {
-    // Combined regex: markdown links AND standalone URLs
-    const urlRegex = /(?:\[([^\]]+)\]\((https?:\/\/[^\)]+)\)|(https?:\/\/[^\s]+))/g;
+    // Regex patterns:
+    // 1. Markdown image: ![alt](url)
+    // 2. Markdown link: [text](url)
+    // 3. Bare URL: https://...
+    const imageRegex = /!\[([^\]]*)\]\((https?:\/\/[^\)]+)\)/g;
+    const linkRegex = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+
     const parts = [];
     let lastIndex = 0;
-    let match;
     let hasMatches = false;
 
-    // First pass: collect all matches and split text
-    const segments = [];
+    // Track matches from all patterns
+    const matches = [];
+
+    let match;
+
+    // Find all markdown images
+    while ((match = imageRegex.exec(text)) !== null) {
+      matches.push({
+        index: match.index,
+        length: match[0].length,
+        type: 'image',
+        alt: match[1] || 'Product image',
+        url: match[2],
+      });
+    }
+
+    // Reset and find markdown links (that aren't images)
+    linkRegex.lastIndex = 0;
+    while ((match = linkRegex.exec(text)) !== null) {
+      // Skip if this is actually part of an image tag (overlapping)
+      const isOverlapping = matches.some(
+        (m) => match.index >= m.index && match.index < m.index + m.length
+      );
+      if (!isOverlapping) {
+        matches.push({
+          index: match.index,
+          length: match[0].length,
+          type: 'link',
+          label: match[1],
+          url: match[2],
+        });
+      }
+    }
+
+    // Find bare URLs (that aren't already captured)
     while ((match = urlRegex.exec(text)) !== null) {
-      hasMatches = true;
+      const isOverlapping = matches.some(
+        (m) => match.index >= m.index && match.index < m.index + m.length
+      );
+      if (!isOverlapping) {
+        matches.push({
+          index: match.index,
+          length: match[0].length,
+          type: 'url',
+          url: match[1],
+        });
+      }
+    }
+
+    // Sort matches by index
+    matches.sort((a, b) => a.index - b.index);
+
+    // If no matches, return plain text
+    if (matches.length === 0) {
+      return text;
+    }
+
+    // Build rendered parts
+    for (let i = 0; i < matches.length; i++) {
+      const m = matches[i];
+      const before = text.slice(lastIndex, m.index);
+
       // Add text before match
-      if (match.index > lastIndex) {
-        segments.push({ type: 'text', content: text.slice(lastIndex, match.index) });
+      if (before.length > 0) {
+        parts.push(<span key={`text-${i}`}>{before}</span>);
       }
 
-      if (match[1] && match[2]) {
-        // Markdown link: [text](url)
-        segments.push({ type: 'markdown', label: match[1], url: match[2] });
-      } else if (match[3]) {
-        // Standalone URL
-        segments.push({ type: 'url', url: match[3] });
+      if (m.type === 'image') {
+        // Render image with link wrapper
+        const isProductUrl = typeof m.url === 'string' && m.url.length > 0;
+        parts.push(
+          <span key={`img-${i}`} className="chat-image-wrapper">
+            {isProductUrl ? (
+              <a
+                href={m.url.startsWith('http') ? m.url : `${PRODUCT_BASE_URL}${m.url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="chat-link"
+              >
+                <img
+                  src={m.url}
+                  alt={m.alt || 'Product image'}
+                  className="chat-product-image"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </a>
+            ) : null}
+          </span>
+        );
+      } else if (m.type === 'link') {
+        parts.push(
+          <a
+            key={`link-${i}`}
+            href={typeof m.url === 'string' ? m.url : '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="chat-link"
+          >
+            {m.label || m.url}
+          </a>
+        );
+      } else if (m.type === 'url') {
+        const isProductLink =
+          typeof m.url === 'string' && m.url.startsWith(PRODUCT_BASE_URL);
+        parts.push(
+          <a
+            key={`url-${i}`}
+            href={m.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="chat-link"
+          >
+            {isProductLink ? 'View Product' : m.url}
+          </a>
+        );
       }
 
-      lastIndex = urlRegex.lastIndex;
+      lastIndex = m.index + m.length;
     }
 
     // Add remaining text
     if (lastIndex < text.length) {
-      segments.push({ type: 'text', content: text.slice(lastIndex) });
+      parts.push(<span key="text-end">{text.slice(lastIndex)}</span>);
     }
 
-    // If no URLs found, return plain text
-    if (!hasMatches) {
-      return text;
-    }
-
-    // Render segments
-    return segments.map((seg, i) => {
-      if (seg.type === 'markdown') {
-        return (
-          <a
-            key={i}
-            href={seg.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="chat-link"
-          >
-            {seg.label}
-          </a>
-        );
-      }
-      if (seg.type === 'url') {
-        const isProductLink = typeof seg.url === 'string' && seg.url.startsWith(PRODUCT_BASE_URL);
-        return (
-          <a
-            key={i}
-            href={seg.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="chat-link"
-          >
-            {isProductLink ? 'View Product' : seg.url}
-          </a>
-        );
-      }
-      // Plain text segment
-      return <span key={i}>{seg.content}</span>;
-    });
+    return parts;
   } catch (err) {
     // If anything goes wrong, return the plain text safely
     console.error('ChatWidget render error:', err);
@@ -119,7 +190,15 @@ export const ChatWidget = () => {
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
+  const messagesEndRef = useRef(null);
   const chatT = CHAT_TRANSLATIONS[language] || CHAT_TRANSLATIONS.en;
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   const handleSendMessage = useCallback(async () => {
     const trimmedInput = inputValue.trim();
@@ -233,6 +312,7 @@ export const ChatWidget = () => {
                   </p>
                 </div>
               )}
+              <div ref={messagesEndRef} />
             </div>
 
             <div className="chat-input-area">
