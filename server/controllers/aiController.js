@@ -11,6 +11,12 @@ const openai = new OpenAI({
 // Base product page URL
 const PRODUCT_BASE_URL = "https://mens-style-shop.vercel.app/product/";
 
+// Language name mapping
+const LANGUAGE_NAMES = {
+  en: "English",
+  uk: "Ukrainian",
+};
+
 // Escalation trigger phrases
 const ESCALATION_TRIGGERS = [
   "talk to a human",
@@ -61,10 +67,14 @@ function shouldEscalate(message) {
 // POST /api/ai/chat
 router.post("/chat", async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, lang } = req.body;
     if (!message || !message.trim()) {
       return res.status(400).json({ error: "Message is required" });
     }
+
+    // Determine language (default to English)
+    const languageCode = lang || "en";
+    const languageName = LANGUAGE_NAMES[languageCode] || "English";
 
     // Build catalog once
     const catalog = await buildProductCatalog();
@@ -72,6 +82,8 @@ router.post("/chat", async (req, res) => {
     const escalationFlag = shouldEscalate(message);
 
     const systemPrompt = `You are an expert style consultant for "Men's Style Shop" — a premium men's clothing store.
+
+IMPORTANT: You MUST respond strictly in ${languageName} language. Even if the user writes in another language, stay consistent with ${languageName} and respond only in ${languageName}. This is critical — the site UI is in ${languageName} and the user expects to be answered in ${languageName}.
 
 Your expertise covers two domains:
 1. **Fashion & Style**: You know the latest men's trends, how to dress for body types, match outfits, and pick the right sizes.
@@ -95,12 +107,13 @@ Just give the URL on its own line after your recommendation.
 
 ## Stock & Availability
 - When a user asks about availability or a specific size, check the "Stock" field in the catalog.
-- If a size shows "OUT OF STOCK", inform the user politely.
+- If a size shows "OUT OF STOCK", inform the user politely in ${languageName}.
 - If a requested size is unavailable, ALWAYS suggest an available alternative size from the same product.
 - Example response for out-of-stock: "Unfortunately, Size M is currently OUT OF STOCK. However, Size L is available with 3 units — want me to show you? The link: ${PRODUCT_BASE_URL}[ID]"
 
 ## Guidelines
 - Use the product catalog above to make specific, relevant recommendations.
+- ALWAYS respond in ${languageName} language only.
 - ALWAYS output the product URL on its own line when mentioning a specific product.
 - Check stock availability for any size mentioned before confirming.
 - If a requested size is unavailable, suggest an alternative and reference available sizes.

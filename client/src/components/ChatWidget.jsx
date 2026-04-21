@@ -1,19 +1,30 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import '../styles/ChatWidget.css';
 
 const API_URL = 'https://men-style-shop.onrender.com/api';
 const PRODUCT_BASE_URL = 'https://mens-style-shop.vercel.app/product/';
 
-// Parse message text and convert URLs into clickable anchor elements
-// Handles both markdown links [text](url) and standalone URLs
-function renderMessageWithLinks(text) {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
+const CHAT_TRANSLATIONS = {
+  en: {
+    placeholder: 'Ask about style, products, or sizing...',
+    contactSupport: '📱 Contact Support',
+    initialGreeting: 'Hi! 👋 Welcome to our store. How can I help you today?',
+    errorMessage: 'Sorry, something went wrong. Please try again later.',
+  },
+  uk: {
+    placeholder: 'Запитайте про стиль, товари чи розміри...',
+    contactSupport: '📱 Зв\'язатися з підтримкою',
+    initialGreeting: 'Привіт! 👋 Ласкаво просимо до нашого магазину. Чим я можу вам допомогти сьогодні?',
+    errorMessage: 'Вибачте, щось пішло не так. Будь ласка, спробуйте пізніше.',
+  },
+};
 
-  // Split text by URLs (markdown links or standalone)
+// Parse message text and convert URLs into clickable anchor elements
+function renderMessageWithLinks(text) {
   const parts = text.split(/(\[([^\]]+)\]\((https?:\/\/[^\)]+)\)|(https?:\/\/[^\s]+))/g);
 
   return parts.map((part, i) => {
-    // Markdown link: [text](url)
     const markdownMatch = part.match(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/);
     if (markdownMatch) {
       return (
@@ -29,11 +40,9 @@ function renderMessageWithLinks(text) {
       );
     }
 
-    // Standalone URL
     const urlMatch = part.match(/^(https?:\/\/[^\s]+)$/);
     if (urlMatch) {
       const url = urlMatch[1];
-      // Extract product name from URL if it's a product page
       const isProductLink = url.startsWith(PRODUCT_BASE_URL);
       const label = isProductLink ? 'View Product' : url;
 
@@ -55,17 +64,20 @@ function renderMessageWithLinks(text) {
 }
 
 export const ChatWidget = () => {
+  const { language, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: 'Hi! 👋 Welcome to our store. How can I help you today?',
+      text: CHAT_TRANSLATIONS[language]?.initialGreeting || CHAT_TRANSLATIONS.en.initialGreeting,
       sender: 'bot',
       timestamp: new Date()
     }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+
+  const chatT = CHAT_TRANSLATIONS[language] || CHAT_TRANSLATIONS.en;
 
   const handleSendMessage = async () => {
     const trimmedInput = inputValue.trim();
@@ -86,7 +98,10 @@ export const ChatWidget = () => {
       const response = await fetch(`${API_URL}/ai/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: trimmedInput })
+        body: JSON.stringify({
+          message: trimmedInput,
+          lang: language
+        })
       });
 
       const data = await response.json();
@@ -107,7 +122,7 @@ export const ChatWidget = () => {
     } catch (err) {
       const errorMessage = {
         id: messages.length + 2,
-        text: 'Sorry, something went wrong. Please try again later.',
+        text: chatT.errorMessage,
         sender: 'bot',
         timestamp: new Date()
       };
@@ -153,7 +168,7 @@ export const ChatWidget = () => {
                       rel="noopener noreferrer"
                       className="escalate-btn"
                     >
-                      📱 Contact Support
+                      {chatT.contactSupport}
                     </a>
                   )}
                   <span className="message-time">
@@ -176,7 +191,7 @@ export const ChatWidget = () => {
             <div className="chat-input-area">
               <input
                 type="text"
-                placeholder="Ask about style, products, or sizing..."
+                placeholder={chatT.placeholder}
                 value={inputValue}
                 onChange={e => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
