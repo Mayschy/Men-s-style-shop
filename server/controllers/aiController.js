@@ -17,6 +17,12 @@ const LANGUAGE_NAMES = {
   uk: "Ukrainian",
 };
 
+// Escalation messages by language
+const ESCALATION_MESSAGES = {
+  en: "I'm connecting you with our support team. You can reach us via:\n\n📱 **Telegram**: @mensstyleshop\n📧 **Email**: support@mensstyleshop.com\n\nWe'll get back to you shortly!",
+  uk: "З'єднуємо вас з нашою службою підтримки. Ви можете зв'язатися з нами:\n\n📱 **Telegram**: @mensstyleshop\n📧 **Email**: support@mensstyleshop.com\n\nМи скоро відповімо!",
+};
+
 // Escalation trigger phrases
 const ESCALATION_TRIGGERS = [
   "talk to a human",
@@ -32,6 +38,9 @@ const ESCALATION_TRIGGERS = [
   "live chat",
   "call support",
   "talk to manager",
+  "поговорити з людиною",
+  "живий оператор",
+  "真人",
 ];
 
 // Build formatted stock string for a product
@@ -60,6 +69,7 @@ async function buildProductCatalog() {
 
 // Check if message contains escalation trigger
 function shouldEscalate(message) {
+  if (!message || typeof message !== "string") return false;
   const lower = message.toLowerCase();
   return ESCALATION_TRIGGERS.some((trigger) => lower.includes(trigger));
 }
@@ -68,13 +78,16 @@ function shouldEscalate(message) {
 router.post("/chat", async (req, res) => {
   try {
     const { message, lang } = req.body;
-    if (!message || !message.trim()) {
+
+    // Validate message
+    if (!message || typeof message !== "string" || !message.trim()) {
       return res.status(400).json({ error: "Message is required" });
     }
 
     // Determine language (default to English)
-    const languageCode = lang || "en";
+    const languageCode = lang && typeof lang === "string" ? lang : "en";
     const languageName = LANGUAGE_NAMES[languageCode] || "English";
+    const escalationMsg = ESCALATION_MESSAGES[languageCode] || ESCALATION_MESSAGES.en;
 
     // Build catalog once
     const catalog = await buildProductCatalog();
@@ -136,13 +149,19 @@ Do not explain, do not apologize, do not suggest alternatives. Just output __ESC
       temperature: 0.8,
     });
 
-    let reply = completion.choices[0].message.content.trim();
+    // Safely extract reply
+    const rawReply = completion?.choices?.[0]?.message?.content;
+    let reply = typeof rawReply === "string" ? rawReply.trim() : "";
 
-    // If escalation triggered, return flag instead of raw AI response
+    // If no reply, return error
+    if (!reply) {
+      return res.status(500).json({ error: "Failed to get AI response" });
+    }
+
+    // If escalation triggered, return localized escalation message
     if (reply === "__ESCALATE__" || escalationFlag) {
       return res.json({
-        reply:
-          "I'm connecting you with our support team. You can reach us via:\n\n📱 **Telegram**: @mensstyleshop\n📧 **Email**: support@mensstyleshop.com\n\nWe'll get back to you shortly!",
+        reply: escalationMsg,
         escalate: true,
       });
     }

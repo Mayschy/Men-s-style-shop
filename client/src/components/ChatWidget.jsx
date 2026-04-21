@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import '../styles/ChatWidget.css';
 
@@ -20,66 +20,108 @@ const CHAT_TRANSLATIONS = {
   },
 };
 
-// Parse message text and convert URLs into clickable anchor elements
+// Safely parse message text and convert URLs into clickable anchor elements
+// Handles both markdown links [text](url) and standalone URLs
 function renderMessageWithLinks(text) {
-  const parts = text.split(/(\[([^\]]+)\]\((https?:\/\/[^\)]+)\)|(https?:\/\/[^\s]+))/g);
+  // Return plain text if not a valid string
+  if (typeof text !== 'string' || text.length === 0) {
+    return text;
+  }
 
-  return parts.map((part, i) => {
-    const markdownMatch = part.match(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/);
-    if (markdownMatch) {
-      return (
-        <a
-          key={i}
-          href={markdownMatch[2]}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="chat-link"
-        >
-          {markdownMatch[1]}
-        </a>
-      );
+  try {
+    // Combined regex: markdown links AND standalone URLs
+    const urlRegex = /(?:\[([^\]]+)\]\((https?:\/\/[^\)]+)\)|(https?:\/\/[^\s]+))/g;
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+    let hasMatches = false;
+
+    // First pass: collect all matches and split text
+    const segments = [];
+    while ((match = urlRegex.exec(text)) !== null) {
+      hasMatches = true;
+      // Add text before match
+      if (match.index > lastIndex) {
+        segments.push({ type: 'text', content: text.slice(lastIndex, match.index) });
+      }
+
+      if (match[1] && match[2]) {
+        // Markdown link: [text](url)
+        segments.push({ type: 'markdown', label: match[1], url: match[2] });
+      } else if (match[3]) {
+        // Standalone URL
+        segments.push({ type: 'url', url: match[3] });
+      }
+
+      lastIndex = urlRegex.lastIndex;
     }
 
-    const urlMatch = part.match(/^(https?:\/\/[^\s]+)$/);
-    if (urlMatch) {
-      const url = urlMatch[1];
-      const isProductLink = url.startsWith(PRODUCT_BASE_URL);
-      const label = isProductLink ? 'View Product' : url;
-
-      return (
-        <a
-          key={i}
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="chat-link"
-        >
-          {label}
-        </a>
-      );
+    // Add remaining text
+    if (lastIndex < text.length) {
+      segments.push({ type: 'text', content: text.slice(lastIndex) });
     }
 
-    return part;
-  });
+    // If no URLs found, return plain text
+    if (!hasMatches) {
+      return text;
+    }
+
+    // Render segments
+    return segments.map((seg, i) => {
+      if (seg.type === 'markdown') {
+        return (
+          <a
+            key={i}
+            href={seg.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="chat-link"
+          >
+            {seg.label}
+          </a>
+        );
+      }
+      if (seg.type === 'url') {
+        const isProductLink = typeof seg.url === 'string' && seg.url.startsWith(PRODUCT_BASE_URL);
+        return (
+          <a
+            key={i}
+            href={seg.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="chat-link"
+          >
+            {isProductLink ? 'View Product' : seg.url}
+          </a>
+        );
+      }
+      // Plain text segment
+      return <span key={i}>{seg.content}</span>;
+    });
+  } catch (err) {
+    // If anything goes wrong, return the plain text safely
+    console.error('ChatWidget render error:', err);
+    return text;
+  }
 }
 
 export const ChatWidget = () => {
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: CHAT_TRANSLATIONS[language]?.initialGreeting || CHAT_TRANSLATIONS.en.initialGreeting,
+      text: CHAT_TRANSLATIONS.en.initialGreeting,
       sender: 'bot',
-      timestamp: new Date()
-    }
+      timestamp: new Date(),
+    },
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
   const chatT = CHAT_TRANSLATIONS[language] || CHAT_TRANSLATIONS.en;
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = useCallback(async () => {
     const trimmedInput = inputValue.trim();
     if (!trimmedInput) return;
 
@@ -87,10 +129,10 @@ export const ChatWidget = () => {
       id: messages.length + 1,
       text: trimmedInput,
       sender: 'user',
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInputValue('');
     setIsTyping(true);
 
@@ -100,8 +142,8 @@ export const ChatWidget = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: trimmedInput,
-          lang: language
-        })
+          lang: language,
+        }),
       });
 
       const data = await response.json();
@@ -112,31 +154,34 @@ export const ChatWidget = () => {
 
       const botMessage = {
         id: messages.length + 2,
-        text: data.reply,
+        text: typeof data.reply === 'string' ? data.reply : String(data.reply || ''),
         sender: 'bot',
         timestamp: new Date(),
-        escalate: data.escalate || false
+        escalate: data.escalate === true,
       };
 
-      setMessages(prev => [...prev, botMessage]);
+      setMessages((prev) => [...prev, botMessage]);
     } catch (err) {
       const errorMessage = {
         id: messages.length + 2,
         text: chatT.errorMessage,
         sender: 'bot',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsTyping(false);
     }
-  };
+  }, [inputValue, language, messages.length, chatT.errorMessage]);
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !isTyping) {
-      handleSendMessage();
-    }
-  };
+  const handleKeyPress = useCallback(
+    (e) => {
+      if (e.key === 'Enter' && !isTyping) {
+        handleSendMessage();
+      }
+    },
+    [isTyping, handleSendMessage]
+  );
 
   return (
     <>
@@ -155,7 +200,7 @@ export const ChatWidget = () => {
             </div>
 
             <div className="chat-messages">
-              {messages.map(message => (
+              {messages.map((message) => (
                 <div
                   key={message.id}
                   className={`message message-${message.sender}`}
@@ -174,7 +219,7 @@ export const ChatWidget = () => {
                   <span className="message-time">
                     {message.timestamp.toLocaleTimeString('en-US', {
                       hour: '2-digit',
-                      minute: '2-digit'
+                      minute: '2-digit',
                     })}
                   </span>
                 </div>
@@ -182,7 +227,9 @@ export const ChatWidget = () => {
               {isTyping && (
                 <div className="message message-bot">
                   <p className="typing-indicator">
-                    <span></span><span></span><span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
                   </p>
                 </div>
               )}
@@ -193,7 +240,7 @@ export const ChatWidget = () => {
                 type="text"
                 placeholder={chatT.placeholder}
                 value={inputValue}
-                onChange={e => setInputValue(e.target.value)}
+                onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
                 className="chat-input"
                 disabled={isTyping}
