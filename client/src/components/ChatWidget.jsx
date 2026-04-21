@@ -2,26 +2,54 @@ import React, { useState } from 'react';
 import '../styles/ChatWidget.css';
 
 const API_URL = 'https://men-style-shop.onrender.com/api';
+const PRODUCT_BASE_URL = 'https://mens-style-shop.vercel.app/product/';
 
-// Parse markdown-style links [text](url) into anchor elements
+// Parse message text and convert URLs into clickable anchor elements
+// Handles both markdown links [text](url) and standalone URLs
 function renderMessageWithLinks(text) {
-  const parts = text.split(/(\[([^\]]+)\]\((https?:\/\/[^\)]+)\))/g);
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+  // Split text by URLs (markdown links or standalone)
+  const parts = text.split(/(\[([^\]]+)\]\((https?:\/\/[^\)]+)\)|(https?:\/\/[^\s]+))/g);
 
   return parts.map((part, i) => {
-    const linkMatch = part.match(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/);
-    if (linkMatch) {
+    // Markdown link: [text](url)
+    const markdownMatch = part.match(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/);
+    if (markdownMatch) {
       return (
         <a
           key={i}
-          href={linkMatch[2]}
+          href={markdownMatch[2]}
           target="_blank"
           rel="noopener noreferrer"
           className="chat-link"
         >
-          {linkMatch[1]}
+          {markdownMatch[1]}
         </a>
       );
     }
+
+    // Standalone URL
+    const urlMatch = part.match(/^(https?:\/\/[^\s]+)$/);
+    if (urlMatch) {
+      const url = urlMatch[1];
+      // Extract product name from URL if it's a product page
+      const isProductLink = url.startsWith(PRODUCT_BASE_URL);
+      const label = isProductLink ? 'View Product' : url;
+
+      return (
+        <a
+          key={i}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="chat-link"
+        >
+          {label}
+        </a>
+      );
+    }
+
     return part;
   });
 }
@@ -43,7 +71,6 @@ export const ChatWidget = () => {
     const trimmedInput = inputValue.trim();
     if (!trimmedInput) return;
 
-    // Add user message
     const userMessage = {
       id: messages.length + 1,
       text: trimmedInput,
