@@ -323,32 +323,34 @@
   border-bottom-color: var(--color-prim2);
 }
 
-/* Product image in chat */
+/* Product image in chat — non-clickable, displayed after text */
 .chat-image-wrapper {
-  display: inline-block;
-  margin: 6px 0;
+  display: block;
+  margin: 8px 0;
   max-width: 100%;
 }
 
 .chat-product-image {
-  max-width: 200px;
-  max-height: 150px;
+  max-width: 180px;
+  max-height: 140px;
   width: auto;
   height: auto;
   border-radius: 8px;
   display: block;
   border: 1px solid #e0e0e0;
-  transition: transform 0.2s;
 }
 
-.chat-product-image:hover {
-  transform: scale(1.02);
+/* Escalation buttons container */
+.escalate-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 /* Contact Support button (shown on escalation) */
 .escalate-btn {
   display: inline-block;
-  margin-top: 8px;
   padding: 8px 16px;
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-prim2) 100%);
   color: white;
@@ -357,7 +359,6 @@
   font-size: 13px;
   font-weight: 500;
   transition: all 0.2s;
-  pointer-events: all;
 }
 
 .escalate-btn:hover {

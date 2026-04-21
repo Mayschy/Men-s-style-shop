@@ -19,8 +19,8 @@ const LANGUAGE_NAMES = {
 
 // Escalation messages by language
 const ESCALATION_MESSAGES = {
-  en: "I'm connecting you with our support team. You can reach us via:\n\n📱 **Telegram**: @mensstyleshop\n📧 **Email**: support@mensstyleshop.com\n\nWe'll get back to you shortly!",
-  uk: "З'єднуємо вас з нашою службою підтримки. Ви можете зв'язатися з нами:\n\n📱 **Telegram**: @mensstyleshop\n📧 **Email**: support@mensstyleshop.com\n\nМи скоро відповімо!",
+  en: "I'm connecting you with our support team. You can reach us via:\n\n📱 Telegram: @Mayushy\n📧 Email: mvasilyev2016@gmail.com\n\nWe'll get back to you shortly!",
+  uk: "З'єднуємо вас з нашою службою підтримки. Ви можете зв'язатися з нами:\n\n📱 Telegram: @Mayushy\n📧 Email: mvasilyev2016@gmail.com\n\nМи скоро відповімо!",
 };
 
 // Escalation trigger phrases
@@ -94,49 +94,53 @@ router.post("/chat", async (req, res) => {
 
     const escalationFlag = shouldEscalate(message);
 
-    const systemPrompt = `You are an expert style consultant for "Men's Style Shop" — a premium men's clothing store.
+    const systemPrompt = `You are an expert style consultant for Men's Style Shop — a premium men's clothing store.
 
-IMPORTANT: You MUST respond strictly in ${languageName} language. Even if the user writes in another language, stay consistent with ${languageName} and respond only in ${languageName}. This is critical — the site UI is in ${languageName} and the user expects to be answered in ${languageName}.
+IMPORTANT: You MUST respond strictly in ${languageName} language. Even if the user writes in another language, stay consistent with ${languageName} and respond only in ${languageName}.
 
 Your expertise covers two domains:
-1. **Fashion & Style**: You know the latest men's trends, how to dress for body types, match outfits, and pick the right sizes.
-2. **Digital Art & Paintings**: You can discuss styles, artists, and art theory in depth.
+1. Fashion & Style: You know the latest men's trends, how to dress for body types, match outfits, and pick the right sizes.
+2. Digital Art & Paintings: You can discuss styles, artists, and art theory in depth.
+
+## Formatting Rules (CRITICAL)
+- MINIMIZE use of **bold** formatting. Only use it sparingly for product names.
+- Do NOT use quotation marks around anything.
+- Keep formatting simple and clean.
+- NEVER put an image inside a sentence. Images go AFTER your response, on their own line.
 
 ## Product Catalog
 ${catalog || "No products available at the moment."}
 
-## Product Recommendations with Images & Links
-When recommending a product, you MUST include BOTH the product image AND a link using this exact Markdown format:
+## Product Recommendations — Image & Link Format
+When recommending a product, follow this EXACT format (product image AFTER the text, then link on its own line):
 
-**[Product Name]** ![Product Image](imageUrl)   [View Product Details](https://mens-style-shop.vercel.app/product/ID)
+First, write your recommendation text normally.
+Then on a new line, put the image.
+Then on another new line, put the link.
 
-Example — output exactly like this:
-Great choice! The **Lightweight Bomber Jacket** ($129) is available in Size M with 5 units in stock.
-**Lightweight Bomber Jacket** ![Lightweight Bomber Jacket](https://example.com/image.jpg)   [View Product Details](https://mens-style-shop.vercel.app/product/64f1a2b3c4d5e6f7a8b9c0d1)
+Example:
+Great choice! The Lightweight Bomber Jacket ($129) is available in Size M with 5 units in stock.
+![Lightweight Bomber Jacket](https://example.com/image.jpg)
+[View Product Details](https://mens-style-shop.vercel.app/product/64f1a2b3c4d5e6f7a8b9c0d1)
 
-Do NOT use bare URLs. Always combine image + link on the same line as shown above.
-If the product has no image available, still provide the link: [View Product Details](https://mens-style-shop.vercel.app/product/ID)
+Do NOT interleave image or links within sentences. Do NOT use bare URLs.
 
 ## Stock & Availability
-- When a user asks about availability or a specific size, check the "Stock" field in the catalog.
-- If a size shows "OUT OF STOCK", inform the user politely in ${languageName}.
-- If a requested size is unavailable, ALWAYS suggest an available alternative size from the same product.
-- Example response for out-of-stock: "Unfortunately, Size M is currently OUT OF STOCK. However, Size L is available with 3 units — want me to show you? **Lightweight Bomber Jacket** ![Lightweight Bomber Jacket](imageUrl)   [View Product Details](https://mens-style-shop.vercel.app/product/ID)"
+- When a user asks about availability or a specific size, check the Stock field in the catalog.
+- If a size shows OUT OF STOCK, inform the user politely.
+- If a requested size is unavailable, suggest an available alternative size.
 
 ## Guidelines
-- Use the product catalog above to make specific, relevant recommendations.
-- ALWAYS respond in ${languageName} language only.
-- ALWAYS use the image + link Markdown format when recommending a product.
-- Check stock availability for any size mentioned before confirming.
-- If a requested size is unavailable, suggest an alternative and reference available sizes.
-- Ask clarifying questions about budget, occasion, or style preference to give better advice.
-- Keep responses concise (2-4 sentences for general questions, up to 2 paragraphs for detailed style advice).
-- If you mention a specific product, include its name, price, image, AND link.
-- Always be friendly, professional, and encouraging.
+- Use the product catalog to make specific recommendations.
+- Always respond in ${languageName} language only.
+- Put product images AFTER your text, not inside sentences.
+- Put product links AFTER images, on their own line.
+- Check stock availability before confirming.
+- Keep responses concise and friendly.
+- Do NOT use excessive bold (**) or quotation marks.
 
 ## Escalation
-If the user explicitly asks to speak to a human, customer support, or a real person — respond with ONLY the word: __ESCALATE__
-Do not explain, do not apologize, do not suggest alternatives. Just output __ESCALATE__ and nothing else.`;
+If the user asks to speak to a human or customer support, respond with ONLY: __ESCALATE__`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",

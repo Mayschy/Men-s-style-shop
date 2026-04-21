@@ -4,6 +4,8 @@ import '../styles/ChatWidget.css';
 
 const API_URL = 'https://men-style-shop.onrender.com/api';
 const PRODUCT_BASE_URL = 'https://mens-style-shop.vercel.app/product/';
+const TELEGRAM_URL = 'https://t.me/Mayushy';
+const EMAIL_URL = 'mailto:mvasilyev2016@gmail.com';
 
 const CHAT_TRANSLATIONS = {
   en: {
@@ -20,157 +22,118 @@ const CHAT_TRANSLATIONS = {
   },
 };
 
-// Safely render message text with clickable links, images, and markdown
-// Handles: ![alt](url) images, [text](url) links, and bare URLs
-function renderMessageWithLinks(text) {
-  // Return plain text if not a valid string
+// Parse message into structured segments: text, images, links
+function parseMessage(text) {
   if (typeof text !== 'string' || text.length === 0) {
-    return text;
+    return { textContent: text, images: [], links: [] };
   }
 
   try {
-    // Regex patterns:
-    // 1. Markdown image: ![alt](url)
-    // 2. Markdown link: [text](url)
-    // 3. Bare URL: https://...
+    const images = [];
+    const links = [];
+
+    // Extract markdown images: ![alt](url)
     const imageRegex = /!\[([^\]]*)\]\((https?:\/\/[^\)]+)\)/g;
-    const linkRegex = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-
-    const parts = [];
-    let lastIndex = 0;
-    let hasMatches = false;
-
-    // Track matches from all patterns
-    const matches = [];
-
     let match;
-
-    // Find all markdown images
     while ((match = imageRegex.exec(text)) !== null) {
-      matches.push({
-        index: match.index,
-        length: match[0].length,
-        type: 'image',
+      images.push({
         alt: match[1] || 'Product image',
         url: match[2],
       });
     }
 
-    // Reset and find markdown links (that aren't images)
-    linkRegex.lastIndex = 0;
+    // Extract markdown links: [text](url) — not images
+    const linkRegex = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
     while ((match = linkRegex.exec(text)) !== null) {
-      // Skip if this is actually part of an image tag (overlapping)
-      const isOverlapping = matches.some(
-        (m) => match.index >= m.index && match.index < m.index + m.length
+      // Skip if this overlaps with an image (image syntax includes link-like parts)
+      const isImage = images.some(
+        (img) => match.index >= img.index && match.index < img.index + img.length
       );
-      if (!isOverlapping) {
-        matches.push({
-          index: match.index,
-          length: match[0].length,
-          type: 'link',
+      if (!isImage) {
+        links.push({
           label: match[1],
           url: match[2],
         });
       }
     }
 
-    // Find bare URLs (that aren't already captured)
-    while ((match = urlRegex.exec(text)) !== null) {
-      const isOverlapping = matches.some(
-        (m) => match.index >= m.index && match.index < m.index + m.length
-      );
-      if (!isOverlapping) {
-        matches.push({
-          index: match.index,
-          length: match[0].length,
-          type: 'url',
-          url: match[1],
-        });
+    // Remove image and link syntax from text, replace with placeholder or just remove
+    let textContent = text
+      .replace(/!\[([^\]]*)\]\((https?:\/\/[^\)]+)\)/g, '')
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '$1');
+
+    return { textContent, images, links };
+  } catch (err) {
+    return { textContent: text, images: [], links: [] };
+  }
+}
+
+// Render message with text, non-clickable images after, and clickable links
+function renderMessageWithLinks(text) {
+  if (typeof text !== 'string' || text.length === 0) {
+    return text;
+  }
+
+  try {
+    const { textContent, images, links } = parseMessage(text);
+
+    const parts = [];
+
+    // Render text with bold **text** converted to <strong>
+    const boldRegex = /\*\*([^*]+)\*\*/g;
+    const textParts = [];
+    let lastIndex = 0;
+    let boldMatch;
+
+    while ((boldMatch = boldRegex.exec(textContent)) !== null) {
+      if (boldMatch.index > lastIndex) {
+        textParts.push(textContent.slice(lastIndex, boldMatch.index));
       }
+      textParts.push(<strong key={`b-${boldMatch.index}`}>{boldMatch[1]}</strong>);
+      lastIndex = boldMatch.index + boldMatch[0].length;
+    }
+    if (lastIndex < textContent.length) {
+      textParts.push(textContent.slice(lastIndex));
     }
 
-    // Sort matches by index
-    matches.sort((a, b) => a.index - b.index);
+    parts.push(<span key="text">{textParts.length > 0 ? textParts : textContent}</span>);
 
-    // If no matches, return plain text
-    if (matches.length === 0) {
-      return text;
-    }
-
-    // Build rendered parts
-    for (let i = 0; i < matches.length; i++) {
-      const m = matches[i];
-      const before = text.slice(lastIndex, m.index);
-
-      // Add text before match
-      if (before.length > 0) {
-        parts.push(<span key={`text-${i}`}>{before}</span>);
-      }
-
-      if (m.type === 'image') {
-        // Render image with link wrapper
-        const isProductUrl = typeof m.url === 'string' && m.url.length > 0;
+    // Render images AFTER the text, non-clickable
+    images.forEach((img, i) => {
+      if (img.url && typeof img.url === 'string') {
         parts.push(
-          <span key={`img-${i}`} className="chat-image-wrapper">
-            {isProductUrl ? (
-              <a
-                href={m.url.startsWith('http') ? m.url : `${PRODUCT_BASE_URL}${m.url}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="chat-link"
-              >
-                <img
-                  src={m.url}
-                  alt={m.alt || 'Product image'}
-                  className="chat-product-image"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
-              </a>
-            ) : null}
-          </span>
+          <img
+            key={`img-${i}`}
+            src={img.url}
+            alt={img.alt || 'Product image'}
+            className="chat-product-image"
+            onError={(e) => {
+              e.target.style.display = 'none';
+            }}
+          />
         );
-      } else if (m.type === 'link') {
+      }
+    });
+
+    // Render links AFTER images, clickable
+    links.forEach((link, i) => {
+      if (link.url && typeof link.url === 'string') {
         parts.push(
           <a
             key={`link-${i}`}
-            href={typeof m.url === 'string' ? m.url : '#'}
+            href={link.url}
             target="_blank"
             rel="noopener noreferrer"
             className="chat-link"
           >
-            {m.label || m.url}
-          </a>
-        );
-      } else if (m.type === 'url') {
-        const isProductLink =
-          typeof m.url === 'string' && m.url.startsWith(PRODUCT_BASE_URL);
-        parts.push(
-          <a
-            key={`url-${i}`}
-            href={m.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="chat-link"
-          >
-            {isProductLink ? 'View Product' : m.url}
+            {link.label || 'View Product'}
           </a>
         );
       }
-
-      lastIndex = m.index + m.length;
-    }
-
-    // Add remaining text
-    if (lastIndex < text.length) {
-      parts.push(<span key="text-end">{text.slice(lastIndex)}</span>);
-    }
+    });
 
     return parts;
   } catch (err) {
-    // If anything goes wrong, return the plain text safely
     console.error('ChatWidget render error:', err);
     return text;
   }
@@ -286,14 +249,22 @@ export const ChatWidget = () => {
                 >
                   <p>{renderMessageWithLinks(message.text)}</p>
                   {message.escalate && (
-                    <a
-                      href="https://t.me/mensstyleshop"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="escalate-btn"
-                    >
-                      {chatT.contactSupport}
-                    </a>
+                    <div className="escalate-buttons">
+                      <a
+                        href={TELEGRAM_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="escalate-btn"
+                      >
+                        📱 Telegram
+                      </a>
+                      <a
+                        href={EMAIL_URL}
+                        className="escalate-btn"
+                      >
+                        📧 Email
+                      </a>
+                    </div>
                   )}
                   <span className="message-time">
                     {message.timestamp.toLocaleTimeString('en-US', {
