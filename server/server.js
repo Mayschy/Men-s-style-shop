@@ -15,9 +15,10 @@ console.log('   MONGODB_URI:', process.env.MONGODB_URI ? 'SET ✓' : 'NOT SET �
 console.log('   CORS_ORIGIN:', process.env.CORS_ORIGIN || 'NOT SET');
 console.log('   NODE_ENV:', process.env.NODE_ENV || 'production');
 
-const productRoutes = require('./routes/productRoutes'); 
+const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
+const aiRouter = require('./controllers/aiController');
 
 // MongoDB Connection with detailed logging
 console.log('\n📡 Connecting to MongoDB...');
@@ -90,6 +91,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/auth', authRoutes);
 
 app.use('/api/user', userRoutes);
+app.use('/api/ai', aiRouter);
 
 // Error handler
 app.use((err, req, res, next) => {

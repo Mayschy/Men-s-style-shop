@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/ChatWidget.css';
 
-const BOT_RESPONSES = [
-  "I'm here to help! What would you like to know about our products?",
-  "Thank you for your question! Our team is working on providing better assistance.",
-  "Feel free to browse our collection. Is there anything specific you're looking for?",
-  "We're committed to providing the best fashion experience. Can I help you find something?",
-  "Our customer support team is available to assist you with any questions!"
-];
+const API_URL = 'https://men-style-shop.onrender.com/api';
 
 export const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +16,7 @@ export const ChatWidget = () => {
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     const trimmedInput = inputValue.trim();
     if (!trimmedInput) return;
 
@@ -38,18 +32,39 @@ export const ChatWidget = () => {
     setInputValue('');
     setIsTyping(true);
 
-    // Simulate bot response delay
-    setTimeout(() => {
-      const randomResponse = BOT_RESPONSES[Math.floor(Math.random() * BOT_RESPONSES.length)];
+    try {
+      const response = await fetch(`${API_URL}/ai/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: trimmedInput })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to get response');
+      }
+
       const botMessage = {
         id: messages.length + 2,
-        text: randomResponse,
+        text: data.reply,
+        sender: 'bot',
+        timestamp: new Date(),
+        escalate: data.escalate || false
+      };
+
+      setMessages(prev => [...prev, botMessage]);
+    } catch (err) {
+      const errorMessage = {
+        id: messages.length + 2,
+        text: 'Sorry, something went wrong. Please try again later.',
         sender: 'bot',
         timestamp: new Date()
       };
-      setMessages(prev => [...prev, botMessage]);
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsTyping(false);
-    }, 600);
+    }
   };
 
   const handleKeyPress = (e) => {
@@ -64,7 +79,7 @@ export const ChatWidget = () => {
         {isOpen && (
           <div className="chat-content">
             <div className="chat-header">
-              <h3>Support Assistant 🤖</h3>
+              <h3>Style Consultant 🤖</h3>
               <button
                 className="chat-close"
                 onClick={() => setIsOpen(false)}
@@ -81,6 +96,16 @@ export const ChatWidget = () => {
                   className={`message message-${message.sender}`}
                 >
                   <p>{message.text}</p>
+                  {message.escalate && (
+                    <a
+                      href="https://t.me/mensstyleshop"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="escalate-btn"
+                    >
+                      📱 Contact Support
+                    </a>
+                  )}
                   <span className="message-time">
                     {message.timestamp.toLocaleTimeString('en-US', {
                       hour: '2-digit',
@@ -101,7 +126,7 @@ export const ChatWidget = () => {
             <div className="chat-input-area">
               <input
                 type="text"
-                placeholder="Type your message..."
+                placeholder="Ask about style, products, or sizing..."
                 value={inputValue}
                 onChange={e => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -124,7 +149,7 @@ export const ChatWidget = () => {
           className="chat-toggle-btn"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle chat"
-          title="Open chat"
+          title="Chat with style consultant"
         >
           💬
         </button>
