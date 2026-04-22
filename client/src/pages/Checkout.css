@@ -424,76 +424,217 @@
    =================================== */
 @media (max-width: 799px) {
   .checkout-container {
-    padding: 20px 10px;
+    padding: 16px 12px;
+  }
+
+  .checkout-header {
+    margin-bottom: 30px;
   }
 
   .checkout-header h1 {
-    font-size: 1.5em;
+    font-size: 1.6em;
   }
 
   .checkout-header p {
-    font-size: 0.9em;
+    font-size: 0.85em;
   }
 
+  /* Single column layout */
   .checkout-content {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
-  .checkout-summary {
-    position: static;
-  }
-
-  .checkout-section,
-  .checkout-summary {
-    padding: 20px;
-  }
-
-  .section-title {
-    font-size: 1.1em;
-  }
-
+  /* Steps progress — compact horizontal strip */
   .steps-container {
-    flex-direction: column;
-    gap: 20px;
+    flex-direction: row;
+    justify-content: center;
     align-items: center;
+    gap: 0;
     padding: 0;
+    margin-bottom: 24px;
+    position: relative;
   }
 
   .steps-container::before {
-    display: none;
+    display: block;
+    top: 18px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: var(--color-border);
   }
 
   .step {
-    flex-direction: row;
-    gap: 15px;
-    width: 100%;
-    max-width: 200px;
-    text-align: left;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    padding: 0 8px;
+    z-index: 1;
   }
 
   .step-circle {
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
+    font-size: 0.9em;
+    border-width: 2px;
+  }
+
+  .step.active .step-circle {
+    transform: scale(1.05);
   }
 
   .step-label {
-    margin-top: 0;
-    font-size: 0.9em;
+    font-size: 0.7em;
+    margin-top: 4px;
+    text-align: center;
   }
 
+  /* Cards */
+  .checkout-section,
+  .checkout-summary {
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  .section-title {
+    font-size: 1.05em;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+  }
+
+  /* Info cards */
   .shipping-info,
   .payment-method,
   .order-review {
-    padding: 15px;
+    padding: 14px;
+    border-radius: 8px;
+    margin-bottom: 14px;
   }
 
+  .shipping-info-label {
+    font-size: 0.8em;
+  }
+
+  .shipping-info-value {
+    font-size: 0.95em;
+    padding-left: 24px;
+  }
+
+  .payment-icon {
+    font-size: 1.6em;
+  }
+
+  .payment-info h4 {
+    font-size: 0.95em;
+  }
+
+  .payment-info p {
+    font-size: 0.8em;
+  }
+
+  /* Order review items */
+  .review-item {
+    padding: 8px 0;
+  }
+
+  .review-item-label {
+    font-size: 0.85em;
+  }
+
+  .review-item-value {
+    font-size: 0.9em;
+  }
+
+  /* Order summary */
+  .checkout-summary {
+    order: -1;
+    border-top: 3px solid var(--color-secondary);
+  }
+
+  .checkout-summary h2 {
+    font-size: 1.05em;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+  }
+
+  .summary-item {
+    padding: 10px 0;
+    font-size: 0.9em;
+  }
+
+  .summary-item-name {
+    font-size: 0.9em;
+  }
+
+  .summary-item-price {
+    font-size: 0.9em;
+  }
+
+  .summary-total {
+    font-size: 1.1em;
+    padding: 12px 0;
+    margin-bottom: 14px;
+  }
+
+  .summary-divider {
+    margin: 12px 0;
+  }
+
+  /* Buttons — full width, stacked */
   .button-group {
     flex-direction: column;
     gap: 10px;
+    margin-top: 20px;
+  }
+
+  .btn-checkout-next,
+  .btn-place-order,
+  .btn-checkout-back {
+    width: 100%;
+    flex: none;
+    padding: 14px 20px;
+    font-size: 0.95em;
+    border-radius: 8px;
+    text-align: center;
+    justify-content: center;
   }
 
   .btn-checkout-back {
-    flex: 1;
+    flex: none;
+    order: 1;
+  }
+
+  .btn-checkout-next,
+  .btn-place-order {
+    order: 0;
+  }
+
+  /* Empty / unauthorized */
+  .empty-checkout,
+  .checkout-unauthorized {
+    padding: 40px 16px;
+    border-radius: 10px;
+  }
+
+  .empty-checkout-icon {
+    font-size: 3em;
+    margin-bottom: 16px;
+  }
+
+  .empty-checkout h2 {
+    font-size: 1.4em;
+  }
+
+  .empty-checkout p {
+    font-size: 0.9em;
+    margin-bottom: 24px;
+  }
+
+  .btn-return-shop {
+    padding: 12px 24px;
+    font-size: 0.95em;
+    border-radius: 8px;
   }
 }
