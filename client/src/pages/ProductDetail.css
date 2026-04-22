@@ -340,95 +340,10 @@
   padding: 20px;
 }
 
-/* ===== MOBILE RESPONSIVE STYLES ===== */
-
-/* Tablet (768px and below) */
-@media (max-width: 768px) {
-  .product-detail-container {
-    padding: 30px 15px;
-  }
-
-  .product-layout {
-    grid-template-columns: 1fr;
-    gap: 30px;
-    margin-top: 20px;
-  }
-
-  .product-image-section {
-    position: static;
-    padding: 20px;
-    height: auto;
-  }
-
-  .product-image {
-    max-height: 300px;
-  }
-
-  .product-title {
-    font-size: 1.8em;
-  }
-
-  .product-price {
-    font-size: 1.8em;
-  }
-
-  .price-stock-row {
-    gap: 15px;
-  }
-
-  .stock-badge {
-    font-size: 0.85em;
-    padding: 8px 12px;
-  }
-
-  .category-pill {
-    font-size: 0.85em;
-    padding: 6px 12px;
-  }
-
-  .description-box,
-  .style-tags-box {
-    padding: 18px;
-  }
-
-  .details-header {
-    gap: 15px;
-  }
-
-  .purchase-section {
-    padding: 20px;
-  }
-
-  .size-buttons {
-    gap: 8px;
-  }
-
-  .size-btn {
-    padding: 12px 8px;
-    font-size: 0.9em;
-  }
-
-  .quantity-row {
-    gap: 12px;
-    margin-bottom: 18px;
-  }
-
-  .quantity-control {
-    flex: 1;
-  }
-
-  .qty-input {
-    width: 50px;
-  }
-
-  .btn-add-to-cart {
-    padding: 14px;
-    font-size: 1em;
-  }
-}
-
-/* Mobile (480px and below) */
-@media (max-width: 480px) {
+/* ===================================
+   MOBILE / TABLET (799px and below)
+   =================================== */
+@media (max-width: 799px) {
   .product-detail-container {
     padding: 20px 10px;
     margin: 0;
@@ -440,7 +355,9 @@
   }
 
   .product-image-section {
+    position: static;
     padding: 15px;
+    height: auto;
   }
 
   .product-image {
@@ -466,6 +383,7 @@
     width: 100%;
     text-align: center;
     font-size: 0.8em;
+    padding: 8px 12px;
   }
 
   .category-pill {
@@ -552,6 +470,10 @@
     padding: 10px 16px;
     font-size: 0.9em;
     margin-top: 15px;
+  }
+
+  .details-header {
+    gap: 15px;
   }
 }
 

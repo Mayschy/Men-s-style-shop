@@ -1,4 +1,4 @@
-/* Navbar Desktop Styles (default - shown on screens > 768px) */
+/* Navbar Desktop Styles (default — shown on screens ≥ 800px) */
 
 .navbar-hamburger {
   display: none !important;
@@ -21,10 +21,12 @@
   padding: 8px 14px;
 }
 
-/* Mobile/Tablet Styles (screens ≤ 768px) */
-@media (max-width: 768px) {
+/* ===================================
+   MOBILE / TABLET (799px and below)
+   =================================== */
+@media (max-width: 799px) {
   .navbar-left {
-    display: none;
+    display: none !important;
   }
 
   .navbar-hamburger {
@@ -37,13 +39,13 @@
   }
 
   .navbar-right {
-    position: fixed;
-    top: 70px;
-    left: 0;
-    right: 0;
+    position: fixed !important;
+    top: 70px !important;
+    left: 0 !important;
+    right: 0 !important;
     background: var(--color-navbar-bg);
-    flex-direction: column;
-    gap: 0;
+    flex-direction: column !important;
+    gap: 0 !important;
     padding: 0;
     max-height: 0;
     overflow: hidden;
@@ -54,7 +56,7 @@
   }
 
   .navbar-right.mobile-open {
-    max-height: 500px;
+    max-height: 500px !important;
     padding: 10px 0;
   }
 
@@ -80,7 +82,6 @@
     background-color: #f5f5f5;
   }
 
-  /* Language toggle button in accordion */
   .navbar-right button {
     justify-content: flex-start;
     flex-direction: row;
@@ -92,7 +93,6 @@
     color: var(--color-text-dark);
   }
 
-  /* Cart link */
   .navbar-right a {
     color: var(--color-text-dark);
     text-decoration: none;
@@ -102,7 +102,6 @@
     font-size: 1em !important;
   }
 
-  /* User welcome message on mobile */
   .navbar-right span.welcome-msg {
     display: block;
     padding: 12px 16px;
@@ -112,7 +111,6 @@
     border-bottom: 1px solid #f0f0f0;
   }
 
-  /* Sign in button styling in accordion */
   .navbar-right a[href="/auth"] {
     background-color: var(--color-secondary);
     color: var(--color-text-dark);
@@ -121,18 +119,5 @@
     width: auto;
     border-radius: 6px;
     text-align: center;
-  }
-}
-
-/* Very small phones (320px and below) */
-@media (max-width: 320px) {
-  .navbar-right {
-    font-size: 0.85em;
-  }
-
-  .navbar-right a,
-  .navbar-right button {
-    padding: 10px 12px;
-    font-size: 0.8em;
   }
 }

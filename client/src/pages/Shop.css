@@ -336,59 +336,16 @@
 }
 
 /* ===================================
-   TABLET (768px and below)
+   MOBILE / TABLET (799px and below)
+   One breakpoint — identical scaling
    =================================== */
-@media (max-width: 768px) {
-  .shop-container {
-    padding: 40px 24px;
-  }
-
-  .shop-title {
-    font-size: 2rem;
-    margin-bottom: 24px;
-  }
-
-  .shop-filter-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-
-  .shop-categories {
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-
-  .shop-price-filter {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .shop-price-range {
-    width: 100px;
-  }
-
-  .shop-secondary-filters {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .shop-grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 24px;
-  }
-}
-
-/* ===================================
-   MOBILE (480px and below)
-   =================================== */
-@media (max-width: 480px) {
+@media (max-width: 799px) {
   .shop-container {
     padding: 30px 16px;
   }
 
   .shop-title {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     margin-bottom: 20px;
   }
 
@@ -398,6 +355,7 @@
 
   .shop-categories {
     gap: 12px;
+    flex-wrap: wrap;
   }
 
   .shop-category-link {
@@ -415,6 +373,8 @@
   }
 
   .shop-secondary-filters {
+    flex-direction: column;
+    align-items: flex-start;
     gap: 12px;
   }
 
@@ -453,31 +413,5 @@
   .shop-empty svg {
     width: 48px;
     height: 48px;
-  }
-}
-
-/* ===================================
-   VERY SMALL (320px and below)
-   =================================== */
-@media (max-width: 320px) {
-  .shop-container {
-    padding: 20px 12px;
-  }
-
-  .shop-title {
-    font-size: 1.4rem;
-  }
-
-  .shop-categories {
-    gap: 8px;
-  }
-
-  .shop-category-link {
-    font-size: 0.8rem;
-  }
-
-  .shop-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
   }
 }

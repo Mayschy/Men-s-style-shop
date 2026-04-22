@@ -62,14 +62,8 @@
 }
 
 @keyframes chatSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Chat Header */
@@ -119,22 +113,10 @@
   background: #f8f9fa;
 }
 
-.chat-messages::-webkit-scrollbar {
-  width: 6px;
-}
-
-.chat-messages::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.chat-messages::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 3px;
-}
-
-.chat-messages::-webkit-scrollbar-thumb:hover {
-  background: #999;
-}
+.chat-messages::-webkit-scrollbar { width: 6px; }
+.chat-messages::-webkit-scrollbar-track { background: transparent; }
+.chat-messages::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+.chat-messages::-webkit-scrollbar-thumb:hover { background: #999; }
 
 /* Message Styles */
 .message {
@@ -145,23 +127,12 @@
 }
 
 @keyframes messageAppear {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.message-user {
-  align-items: flex-end;
-}
-
-.message-bot {
-  align-items: flex-start;
-}
+.message-user { align-items: flex-end; }
+.message-bot { align-items: flex-start; }
 
 .message p {
   margin: 0;
@@ -225,9 +196,7 @@
   box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
 }
 
-.chat-input::placeholder {
-  color: #999;
-}
+.chat-input::placeholder { color: #999; }
 
 .chat-send-btn {
   width: 40px;
@@ -275,27 +244,13 @@
   animation: typing 1.4s infinite;
 }
 
-.typing-indicator span:nth-child(1) {
-  animation-delay: 0s;
-}
-
-.typing-indicator span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.typing-indicator span:nth-child(3) {
-  animation-delay: 0.4s;
-}
+.typing-indicator span:nth-child(1) { animation-delay: 0s; }
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes typing {
-  0%, 60%, 100% {
-    opacity: 0.5;
-    transform: translateY(0);
-  }
-  30% {
-    opacity: 1;
-    transform: translateY(-10px);
-  }
+  0%, 60%, 100% { opacity: 0.5; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-10px); }
 }
 
 /* Chat link styling */
@@ -323,7 +278,7 @@
   border-bottom-color: var(--color-prim2);
 }
 
-/* Product image in chat — non-clickable, displayed after text */
+/* Product image in chat */
 .chat-image-wrapper {
   display: block;
   margin: 8px 0;
@@ -340,7 +295,7 @@
   border: 1px solid #e0e0e0;
 }
 
-/* Escalation buttons container */
+/* Escalation buttons */
 .escalate-buttons {
   display: flex;
   gap: 8px;
@@ -348,7 +303,6 @@
   flex-wrap: wrap;
 }
 
-/* Contact Support button (shown on escalation) */
 .escalate-btn {
   display: inline-block;
   padding: 8px 16px;
@@ -366,42 +320,10 @@
   box-shadow: 0 4px 12px rgba(83, 48, 22, 0.4);
 }
 
-/* ===== MOBILE RESPONSIVE STYLES ===== */
-
-/* Tablet (768px and below) */
-@media (max-width: 768px) {
-  .chat-widget.open {
-    width: 350px;
-    max-height: 500px;
-  }
-
-  .chat-content {
-    height: 500px;
-  }
-
-  .chat-header h3 {
-    font-size: 16px;
-  }
-
-  .message p {
-    max-width: 85%;
-    font-size: 13px;
-  }
-
-  .chat-input {
-    font-size: 13px;
-    padding: 8px 12px;
-  }
-
-  .chat-send-btn {
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
-  }
-}
-
-/* Mobile (480px and below) */
-@media (max-width: 480px) {
+/* ===================================
+   MOBILE / TABLET (799px and below)
+   =================================== */
+@media (max-width: 799px) {
   .chat-widget {
     bottom: 70px;
     right: 10px;
@@ -482,31 +404,10 @@
     width: 6px;
     height: 6px;
   }
-}
 
-/* Responsive */
-@media (max-width: 600px) {
-  .chat-widget {
-    bottom: 10px;
-    right: 10px;
-  }
-
-  .chat-widget.open {
-    width: calc(100vw - 20px);
-    max-height: 500px;
-  }
-
-  .chat-toggle-btn {
-    width: 50px;
-    height: 50px;
-    font-size: 24px;
-  }
-
-  .message p {
-    max-width: 85%;
-  }
-
-  .chat-header h3 {
-    font-size: 16px;
+  .escalate-buttons {
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
   }
 }

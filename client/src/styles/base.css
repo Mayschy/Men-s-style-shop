@@ -22,43 +22,31 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Скрываем стандартные маркеры у списков */
 ul, ol {
     list-style: none;
 }
 
-/* ===== RESPONSIVE BASE STYLES ===== */
-
-/* Root container adjustments */
+/* Root container */
 #root {
     width: 100%;
     min-height: 100vh;
 }
 
-/* Tablet responsive */
-@media (max-width: 768px) {
-    html {
-        font-size: 14px;
-    }
-
-    body {
-        line-height: 1.4;
-    }
-}
-
-/* Mobile responsive */
-@media (max-width: 480px) {
+/* ===================================
+   MOBILE / TABLET (799px and below)
+   =================================== */
+@media (max-width: 799px) {
     html {
         font-size: 13px;
     }
 
     body {
-        line-height: 1.3;
+        line-height: 1.4;
         overflow-x: hidden;
         max-width: 100vw;
+        font-size: 0.9em;
     }
 
-    /* Remove margin/padding from default elements */
     p {
         margin: 0.5em 0;
         word-break: break-word;
@@ -76,34 +64,13 @@ ul, ol {
         font-size: inherit;
     }
 
-    /* Make images responsive */
     img {
         max-width: 100%;
         height: auto;
         display: block;
     }
-}
 
-/* Responsive Design */
-
-/* Tablet (768px and below) */
-@media (max-width: 768px) {
-  body {
-    font-size: 0.9em;
-  }
-
-  a {
-    font-size: 0.9em;
-  }
-}
-
-/* Mobile (480px and below) */
-@media (max-width: 480px) {
-  body {
-    font-size: 0.8em;
-  }
-
-  a {
-    font-size: 0.8em;
-  }
+    a {
+        font-size: 0.9em;
+    }
 }

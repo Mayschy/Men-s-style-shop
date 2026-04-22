@@ -272,32 +272,10 @@ button:focus,
   }
 }
 
-/* ===== RESPONSIVE BUTTON STYLES ===== */
-
-/* Tablet (768px and below) */
-@media (max-width: 768px) {
-  .btn-primary,
-  .btn-checkout,
-  .btn-place-order,
-  .btn-checkout-next {
-    padding: 12px 18px;
-    font-size: 0.95em;
-  }
-
-  .btn-continue-shopping,
-  .btn-checkout-back,
-  .btn-return-shop {
-    padding: 12px 18px;
-    font-size: 0.95em;
-  }
-
-  .button-group {
-    gap: 10px;
-  }
-}
-
-/* Mobile (480px and below) */
-@media (max-width: 480px) {
+/* ===================================
+   MOBILE / TABLET (799px and below)
+   =================================== */
+@media (max-width: 799px) {
   button,
   [class*="btn"],
   a[class*="btn"] {
@@ -351,27 +329,5 @@ button:focus,
     width: 36px;
     height: 36px;
     font-size: 16px;
-  }
-}
-
-/* Ultra-small phones (320px and below) */
-@media (max-width: 320px) {
-  .btn-primary,
-  .btn-checkout,
-  .btn-place-order,
-  .btn-continue-shopping,
-  .btn-checkout-back {
-    padding: 10px 12px;
-    font-size: 0.8em;
-  }
-
-  .button-group {
-    gap: 4px;
-  }
-
-  .filter-button,
-  .tag-button {
-    padding: 4px 8px;
-    font-size: 0.7em;
   }
 }

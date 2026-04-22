@@ -419,58 +419,10 @@
   margin-bottom: 30px;
 }
 
-/* ===== MOBILE RESPONSIVE STYLES ===== */
-
-/* Tablet (768px and below) */
-@media (max-width: 768px) {
-  .checkout-container {
-    padding: 30px 15px;
-  }
-
-  .checkout-content {
-    grid-template-columns: 1fr;
-  }
-
-  .checkout-summary {
-    position: static;
-  }
-
-  .checkout-header h1 {
-    font-size: 1.8em;
-  }
-
-  .steps-container {
-    margin-bottom: 40px;
-  }
-
-  .steps-container::before {
-    top: 20px;
-    left: 40px;
-    right: 40px;
-    height: 2px;
-  }
-
-  .step-circle {
-    width: 42px;
-    height: 42px;
-    font-size: 1em;
-  }
-
-  .step-label {
-    font-size: 0.85em;
-  }
-
-  .button-group {
-    flex-direction: column;
-  }
-
-  .btn-checkout-back {
-    flex: 1;
-  }
-}
-
-/* Mobile (480px and below) */
-@media (max-width: 480px) {
+/* ===================================
+   MOBILE / TABLET (799px and below)
+   =================================== */
+@media (max-width: 799px) {
   .checkout-container {
     padding: 20px 10px;
   }
@@ -481,6 +433,14 @@
 
   .checkout-header p {
     font-size: 0.9em;
+  }
+
+  .checkout-content {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-summary {
+    position: static;
   }
 
   .checkout-section,
@@ -529,6 +489,11 @@
   }
 
   .button-group {
+    flex-direction: column;
     gap: 10px;
+  }
+
+  .btn-checkout-back {
+    flex: 1;
   }
 }

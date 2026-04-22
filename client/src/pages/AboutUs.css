@@ -1,55 +1,9 @@
 /* AboutUs Page Responsive Styles */
 
-/* Tablet (768px and below) */
-@media (max-width: 768px) {
-  .aboutus-container {
-    padding: 40px 20px !important;
-  }
-
-  .aboutus-hero {
-    height: 50vh !important;
-    margin-bottom: 40px !important;
-    border-radius: 12px !important;
-  }
-
-  .aboutus-hero-title {
-    font-size: clamp(2rem, 5vw, 3rem) !important;
-  }
-
-  .aboutus-hero-subtitle {
-    font-size: 1em !important;
-    max-width: 90% !important;
-  }
-
-  .aboutus-philosophy {
-    padding: 40px 20px !important;
-    margin-bottom: 40px !important;
-    border-radius: 12px !important;
-  }
-
-  .aboutus-philosophy-title {
-    font-size: 1.8em !important;
-    margin-bottom: 15px !important;
-  }
-
-  .aboutus-philosophy-text {
-    font-size: 1em !important;
-  }
-
-  .aboutus-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
-    gap: 20px !important;
-    padding: 0 !important;
-  }
-
-  .aboutus-card {
-    padding: 25px !important;
-    border-radius: 12px !important;
-  }
-}
-
-/* Mobile (480px and below) */
-@media (max-width: 480px) {
+/* ===================================
+   MOBILE / TABLET (799px and below)
+   =================================== */
+@media (max-width: 799px) {
   .aboutus-container {
     padding: 20px 10px !important;
     color: var(--color-text-dark);
@@ -165,29 +119,5 @@
   .aboutus-stat-label {
     font-size: 0.85em !important;
     margin-top: 8px !important;
-  }
-}
-
-/* Very small phones (320px and below) */
-@media (max-width: 320px) {
-  .aboutus-hero-title {
-    font-size: clamp(1.2rem, 3vw, 1.5rem) !important;
-    letter-spacing: 0.5px !important;
-  }
-
-  .aboutus-philosophy-title {
-    font-size: 1.2em !important;
-  }
-
-  .aboutus-card-title {
-    font-size: 1em !important;
-  }
-
-  .aboutus-quote {
-    font-size: 1.1em !important;
-  }
-
-  .aboutus-stat-number {
-    font-size: 1.5em !important;
   }
 }

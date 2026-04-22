@@ -1,28 +1,9 @@
 /* Home Page Responsive Styles */
 
-/* Tablet (768px and below) */
-@media (max-width: 768px) {
-  .home-hero-title {
-    font-size: 3em !important;
-    letter-spacing: 3px !important;
-  }
-
-  .home-hero-subtitle {
-    font-size: 1.2em !important;
-  }
-
-  .home-hero {
-    height: 80vh !important;
-  }
-
-  .home-background {
-    background-size: 50% auto, 45% auto, 50% auto !important;
-    top: -15% !important;
-  }
-}
-
-/* Mobile (480px and below) */
-@media (max-width: 480px) {
+/* ===================================
+   MOBILE / TABLET (799px and below)
+   =================================== */
+@media (max-width: 799px) {
   .home-hero {
     height: 100vh !important;
     min-height: 500px;
@@ -63,24 +44,5 @@
 
   .home-content-wrapper {
     max-width: 100% !important;
-  }
-}
-
-/* Very small phones (320px and below) */
-@media (max-width: 320px) {
-  .home-hero-title {
-    font-size: 1.5em !important;
-    letter-spacing: 1px !important;
-    margin-bottom: 8px !important;
-  }
-
-  .home-hero-subtitle {
-    font-size: 0.85em !important;
-    margin-bottom: 20px !important;
-  }
-
-  .home-shop-button {
-    padding: 10px 20px !important;
-    font-size: 0.8em !important;
   }
 }

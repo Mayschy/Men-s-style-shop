@@ -1,81 +1,16 @@
 /* Profile Page Responsive Styles */
 
-/* Tablet (768px and below) */
-@media (max-width: 768px) {
-  .profile-container {
-    padding: 20px !important;
-    max-width: 100% !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  .profile-main {
-    min-width: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: hidden !important;
-  }
-
-  .profile-content {
-    overflow-x: hidden !important;
-  }
-
-  .profile-header-title {
-    font-size: 1.8em !important;
-  }
-
-  .profile-content {
-    gap: 30px !important;
-    flex-direction: column !important;
-  }
-
-  .profile-sidebar {
-    width: 100% !important;
-    padding-right: 0 !important;
-    border-right: none !important;
-    border-bottom: 2px solid #E0E0E0;
-    padding-bottom: 20px;
-  }
-
-  .profile-nav {
-    display: flex;
-    gap: 15px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 10px;
-  }
-
-  .profile-nav ul {
-    display: flex !important;
-    gap: 15px;
-    list-style: none;
-    padding: 0 !important;
-    margin: 0;
-  }
-
-  .profile-nav li {
-    padding: 8px 12px !important;
-    border-bottom: 2px solid transparent !important;
-    border-left: none !important;
-    white-space: nowrap;
-  }
-
-  .profile-nav li.active {
-    border-bottom: 2px solid var(--color-primary) !important;
-  }
-
-  .profile-main {
-    flex: 1;
-  }
-}
-
-/* Mobile (480px and below) */
-@media (max-width: 480px) {
+/* ===================================
+   MOBILE / TABLET (799px and below)
+   =================================== */
+@media (max-width: 799px) {
   .profile-container {
     padding: 10px !important;
     margin: 0 !important;
+    max-width: 100% !important;
     overflow-x: hidden !important;
     word-break: break-word !important;
+    box-sizing: border-box !important;
   }
 
   .profile-main {
@@ -84,17 +19,21 @@
     max-width: 100vw !important;
     overflow-x: hidden !important;
     word-break: break-word !important;
+    flex: 1;
   }
 
   .profile-content {
     flex-direction: column !important;
+    gap: 20px !important;
     overflow-x: hidden !important;
   }
 
-  .profile-card {
-    max-width: 100% !important;
-    word-break: break-word !important;
-    overflow-x: hidden !important;
+  .profile-sidebar {
+    width: 100% !important;
+    padding-right: 0 !important;
+    padding-bottom: 0 !important;
+    border-right: none !important;
+    border-bottom: none;
   }
 
   .profile-header-title {
@@ -105,19 +44,6 @@
   .profile-header-subtitle {
     font-size: 0.85em !important;
     margin-bottom: 20px !important;
-  }
-
-  .profile-content {
-    gap: 20px !important;
-    flex-direction: column !important;
-  }
-
-  .profile-sidebar {
-    width: 100% !important;
-    padding-right: 0 !important;
-    padding-bottom: 0 !important;
-    border-right: none !important;
-    border-bottom: none;
   }
 
   .profile-nav-title {
@@ -131,6 +57,7 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     margin-bottom: 0;
+    padding-bottom: 10px;
   }
 
   .profile-nav ul {
@@ -164,12 +91,11 @@
     width: 100%;
   }
 
-  .profile-main {
-    flex: 1;
-  }
-
   .profile-card {
     padding: 15px !important;
+    max-width: 100% !important;
+    word-break: break-word !important;
+    overflow-x: hidden !important;
   }
 
   .profile-data-row {
@@ -222,22 +148,5 @@
 
   .profile-order-products {
     font-size: 0.85em !important;
-  }
-}
-
-/* Very small phones (320px and below) */
-@media (max-width: 320px) {
-  .profile-header-title {
-    font-size: 1.2em !important;
-  }
-
-  .profile-nav li {
-    padding: 8px 10px !important;
-    font-size: 0.75em !important;
-  }
-
-  .profile-button {
-    padding: 8px 10px !important;
-    font-size: 0.8em !important;
   }
 }
