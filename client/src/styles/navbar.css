@@ -2,13 +2,6 @@
 
 .navbar-hamburger {
   display: none !important;
-  cursor: pointer;
-  font-size: 24px;
-  background: none;
-  border: none;
-  padding: 8px;
-  color: var(--color-primary);
-  line-height: 1;
 }
 
 .navbar-left {
@@ -28,91 +21,55 @@
   padding: 8px 14px;
 }
 
-.navbar-right a,
-.navbar-right button {
-  color: var(--color-text-dark);
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.navbar-right a:hover {
-  color: var(--color-primary);
-}
-
 /* ===================================
    MOBILE / TABLET (799px and below)
    =================================== */
 @media (max-width: 799px) {
-  /* Navbar container — no brown box-shadow */
-  nav {
-    border-bottom: 2px solid var(--color-primary) !important;
-    box-shadow: none !important;
-  }
-
-  /* Left side links — hidden on mobile */
   .navbar-left {
     display: none !important;
   }
 
-  /* Hamburger — always visible on mobile */
   .navbar-hamburger {
     display: block !important;
-    z-index: 1002;
+    z-index: 1001;
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 26px;
-    padding: 8px;
-    color: var(--color-primary);
-    line-height: 1;
+    font-size: 24px;
   }
 
-  /* Accordion menu — hidden by default */
   .navbar-right {
-    position: fixed;
-    top: 58px !important;
+    position: fixed !important;
+    top: 70px !important;
     left: 0 !important;
     right: 0 !important;
     background: var(--color-navbar-bg);
     flex-direction: column !important;
-    align-items: stretch !important;
     gap: 0 !important;
-    padding: 0 !important;
-    max-height: 0 !important;
+    padding: 0;
+    max-height: 0;
     overflow: hidden;
-    transition: max-height 0.35s ease, box-shadow 0.35s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    z-index: 1001;
+    transition: max-height 0.3s ease;
+    border-bottom: 1px solid var(--color-primary);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
   }
 
-  /* Accordion OPEN state */
   .navbar-right.mobile-open {
-    max-height: 600px !important;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    max-height: 500px !important;
+    padding: 10px 0;
   }
 
-  /* Nav links — styled as full-width tap targets */
   .navbar-right a,
   .navbar-right button {
     width: 100%;
     text-align: left;
-    padding: 14px 18px;
+    padding: 12px 16px;
     margin: 0 !important;
     border-radius: 0;
-    border-bottom: 1px solid #eee;
-    display: flex !important;
-    align-items: center;
-    font-size: 1em !important;
-    color: var(--color-text-dark) !important;
-    background: var(--color-navbar-bg);
-    box-shadow: none !important;
-    font-weight: 600;
-  }
-
-  .navbar-right a:hover,
-  .navbar-right button:hover {
-    background: #f8f7f4;
-    color: var(--color-primary) !important;
+    border-bottom: 1px solid #f0f0f0;
+    display: block;
+    font-size: 0.9em;
   }
 
   .navbar-right a:last-child,
@@ -120,59 +77,47 @@
     border-bottom: none;
   }
 
-  /* Language toggle */
-  .navbar-right button[title="Language"] {
-    color: var(--color-text-dark) !important;
+  .navbar-right a:hover,
+  .navbar-right button:hover {
+    background-color: #f5f5f5;
+  }
+
+  .navbar-right button {
     justify-content: flex-start;
-    background: var(--color-navbar-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    margin: 8px 18px !important;
-    width: auto !important;
-    padding: 10px 14px;
+    flex-direction: row;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9em;
+    color: var(--color-text-dark);
   }
 
-  .navbar-right button[title="Language"]:hover {
-    background: #f0efe8;
-    border-color: var(--color-primary);
+  .navbar-right a {
+    color: var(--color-text-dark);
+    text-decoration: none;
   }
 
-  /* Cart link */
-  .navbar-right a[href="/cart"] {
-    font-weight: 700;
-    color: var(--color-primary) !important;
+  .navbar-right a span {
+    font-size: 1em !important;
   }
 
-  /* Welcome message */
   .navbar-right span.welcome-msg {
     display: block;
-    padding: 12px 18px;
-    color: var(--color-text-light);
-    font-weight: 600;
+    padding: 12px 16px;
+    color: var(--color-primary);
+    font-weight: bold;
     font-size: 0.85em;
-    border-bottom: 1px solid #eee;
-    background: #fafaf8;
+    border-bottom: 1px solid #f0f0f0;
   }
 
-  /* Sign in button */
   .navbar-right a[href="/auth"] {
-    background: var(--color-secondary);
-    color: var(--color-text-dark) !important;
+    background-color: var(--color-secondary);
+    color: var(--color-text-dark);
+    padding: 12px 16px;
+    margin: 5px 10px;
+    width: auto;
     border-radius: 6px;
-    margin: 8px 18px !important;
-    width: auto !important;
     text-align: center;
-    border-bottom: none;
-  }
-
-  .navbar-right a[href="/auth"]:hover {
-    background: #c4b85a;
-    color: var(--color-text-dark) !important;
-  }
-
-  /* Admin panel link — make it visually distinct */
-  .navbar-right a[href="/admin/products"] {
-    color: var(--color-primary) !important;
-    font-weight: 700;
   }
 }
