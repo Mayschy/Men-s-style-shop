@@ -9,7 +9,7 @@ const openai = new OpenAI({
 });
 
 // Base product page URL
-const PRODUCT_BASE_URL = "https://mens-style-shop.vercel.app/product/";
+const PRODUCT_BASE_URL = "https://mensfashion.site/product/";
 
 // Language name mapping
 const LANGUAGE_NAMES = {

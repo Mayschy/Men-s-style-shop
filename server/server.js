@@ -63,8 +63,12 @@ app.use(express.json());
 
 
 const allowedOrigins = [
-    process.env.CORS_ORIGIN, 
+    process.env.CORS_ORIGIN,
     'http://localhost:5173',
+    'https://mensfashion.site',
+    'https://www.mensfashion.site',
+    'https://mens-style-shop.vercel.app',
+    'https://mens-style-shop-theta.vercel.app',
 ];
 
 console.log('\n🔐 CORS Settings:');

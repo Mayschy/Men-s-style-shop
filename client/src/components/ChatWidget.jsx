@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import '../styles/ChatWidget.css';
 
 const API_URL = 'https://men-style-shop.onrender.com/api';
-const PRODUCT_BASE_URL = 'https://mens-style-shop.vercel.app/product/';
+const PRODUCT_BASE_URL = 'https://mensfashion.site/product/';
 const TELEGRAM_URL = 'https://t.me/Mayushy';
 const EMAIL_URL = 'mailto:mvasilyev2016@gmail.com';
 
