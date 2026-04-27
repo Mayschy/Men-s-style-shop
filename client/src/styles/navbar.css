@@ -79,12 +79,13 @@
   .navbar-right button {
     width: 100%;
     text-align: left;
-    padding: 12px 16px;
+    padding: 15px 20px;
     margin: 0 !important;
     border-radius: 0;
     border-bottom: 1px solid #f0f0f0;
     display: block;
-    font-size: 0.9em;
+    font-size: 18px;
+    font-weight: 600;
   }
 
   .navbar-right a:last-child,
@@ -104,7 +105,7 @@
     border: none;
     cursor: pointer;
     font-weight: 600;
-    font-size: 0.9em;
+    font-size: 18px;
     color: var(--color-text-dark);
   }
 
@@ -113,23 +114,24 @@
     text-decoration: none;
   }
 
-  .navbar-right a span {
-    font-size: 1em !important;
+  .navbar-right a span,
+  .navbar-right button span {
+    font-size: 18px !important;
   }
 
   .navbar-right span.welcome-msg {
     display: block;
-    padding: 12px 16px;
+    padding: 15px 20px;
     color: var(--color-primary);
     font-weight: bold;
-    font-size: 0.85em;
+    font-size: 16px;
     border-bottom: 1px solid #f0f0f0;
   }
 
   .navbar-right a[href="/auth"] {
     background-color: var(--color-secondary);
     color: var(--color-text-dark);
-    padding: 12px 16px;
+    padding: 15px 20px;
     margin: 5px 10px;
     width: auto;
     border-radius: 6px;

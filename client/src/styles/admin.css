@@ -1,0 +1,295 @@
+/* ===== ADMIN PAGES RESPONSIVE STYLES ===== */
+
+/* Desktop: show table, hide cards */
+@media (min-width: 800px) {
+  .admin-cards-mobile {
+    display: none !important;
+  }
+}
+
+/* Mobile: show cards, hide desktop table */
+@media (max-width: 799px) {
+  .admin-table-desktop {
+    display: none !important;
+  }
+}
+
+@media (max-width: 799px) {
+  /* Container — full width, reduce padding */
+  .admin-container,
+  .admin-product-manager {
+    padding: 15px !important;
+    margin: 30px auto !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .admin-product-manager h1 {
+    font-size: 1.5em !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* Stats bar — 2 columns to 1 */
+  .admin-stats-bar {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  .admin-stat-card {
+    padding: 15px !important;
+  }
+
+  .admin-stat-value {
+    font-size: 1.6em !important;
+  }
+
+  /* Search bar — stack vertically */
+  .admin-search-bar {
+    flex-direction: column !important;
+    gap: 10px !important;
+    align-items: stretch !important;
+  }
+
+  .admin-search-bar input {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .admin-search-bar button {
+    width: 100% !important;
+    padding: 12px !important;
+  }
+
+  /* ===== TABLE → CARD TRANSFORMATION ===== */
+  .admin-table-container {
+    overflow-x: auto !important;
+  }
+
+  /* Hide desktop table columns you don't need on mobile */
+  .admin-table-desktop-header {
+    display: none !important;
+  }
+
+  /* Products list — each product becomes a vertical card */
+  .admin-products-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+  }
+
+  .admin-product-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid #eee;
+  }
+
+  .admin-product-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .admin-product-card-name {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: var(--color-primary, #333A40);
+    flex: 1;
+  }
+
+  .admin-product-card-category {
+    background-color: var(--color-secondary, #A67C52);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    white-space: nowrap;
+  }
+
+  .admin-product-card-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #eee;
+    flex-shrink: 0;
+  }
+
+  .admin-product-card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .admin-product-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: 0.9em;
+  }
+
+  .admin-product-card-row:last-child {
+    border-bottom: none;
+  }
+
+  .admin-product-card-label {
+    color: var(--color-text-light, #888);
+    font-weight: 500;
+  }
+
+  .admin-product-card-value {
+    font-weight: 600;
+    color: var(--color-text-dark, #333);
+  }
+
+  /* Stock badges per size — wrap nicely */
+  .admin-stock-sizes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: flex-end;
+  }
+
+  .admin-stock-badge {
+    background-color: #E8F5E9;
+    color: #2E7D32;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.75em;
+    font-weight: bold;
+  }
+
+  .admin-stock-badge.zero {
+    background-color: #FFEBEE;
+    color: #D32F2F;
+  }
+
+  /* ===== ACTION BUTTONS — STACK ON MOBILE ===== */
+  .admin-action-buttons {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .admin-action-buttons button {
+    width: 100% !important;
+    padding: 10px 15px !important;
+    font-size: 0.9em !important;
+    text-align: center !important;
+  }
+
+  /* ===== MODAL FORM — MOBILE OPTIMIZED ===== */
+  .admin-modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
+    z-index: 1000 !important;
+    padding: 0 !important;
+  }
+
+  .admin-modal {
+    background-color: white !important;
+    border-radius: 16px 16px 0 0 !important;
+    padding: 25px !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .admin-modal-header {
+    font-size: 1.4em !important;
+    margin-bottom: 20px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .admin-form-grid-2col {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .admin-form-grid-2col > * {
+    width: 100% !important;
+  }
+
+  /* Size inputs grid — 5 columns → 3 columns on mobile */
+  .admin-size-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .admin-size-grid > div {
+    text-align: center !important;
+  }
+
+  .admin-size-grid label {
+    display: block !important;
+    font-weight: bold !important;
+    margin-bottom: 5px !important;
+    font-size: 0.9em !important;
+  }
+
+  .admin-size-grid input {
+    width: 100% !important;
+    text-align: center !important;
+    padding: 8px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* All form inputs — full width on mobile */
+  .admin-modal input,
+  .admin-modal textarea,
+  .admin-modal select {
+    width: 100% !important;
+    padding: 12px !important;
+    margin: 6px 0 !important;
+    border: 1px solid #ddd !important;
+    border-radius: 6px !important;
+    box-sizing: border-box !important;
+    font-size: 16px !important;
+  }
+
+  .admin-submit-btn,
+  .admin-cancel-btn {
+    width: 100% !important;
+    padding: 14px !important;
+    font-size: 1em !important;
+    margin-top: 10px !important;
+    border-radius: 6px !important;
+  }
+
+  .admin-submit-btn {
+    background-color: #5CB85C !important;
+  }
+
+  .admin-cancel-btn {
+    background-color: #999 !important;
+  }
+
+  /* Product image thumbnail in modal/list */
+  .admin-product-thumb {
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 200px !important;
+    object-fit: contain !important;
+    border-radius: 6px !important;
+    display: block !important;
+  }
+}

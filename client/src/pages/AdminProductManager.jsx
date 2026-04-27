@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import '../styles/admin.css';
 
 const BASE_URL = 'https://men-style-shop.onrender.com/api/products';
 
@@ -238,7 +239,6 @@ const AdminProductManager = () => {
                 throw new Error('Failed to fetch products');
             }
             const data = await response.json();
-            // Handle both paginated { products: [...] } and plain array responses
             const productArray = Array.isArray(data) ? data : (data.products || []);
             setProducts(productArray);
         } catch (err) {
@@ -400,7 +400,7 @@ const AdminProductManager = () => {
                     throw new Error(`${errorData.message || response.statusText}`);
                 }
 
-                setProducts(prev => prev.filter(p => p._id !== id));
+                setProducts(prev => prev.filter(p => p._id === id));
                 alert(`✓ Product "${name}" deleted successfully!`);
 
             } catch (error) {
@@ -438,7 +438,6 @@ const AdminProductManager = () => {
         }
     };
 
-    // Filter products based on search - ensure products is always an array
     const filteredProducts = Array.isArray(products)
         ? products.filter(product =>
             product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -459,23 +458,23 @@ const AdminProductManager = () => {
     }
 
     return (
-        <div style={styles.container}>
+        <div style={styles.container} className="admin-product-manager">
             <h1 style={styles.heading}>🛍️ Admin Dashboard: Product Management</h1>
 
             {/* Stats Section */}
-            <div style={styles.statsBar}>
-                <div style={styles.statCard}>
-                    <div style={styles.statValue}>{products.length}</div>
+            <div style={styles.statsBar} className="admin-stats-bar">
+                <div style={styles.statCard} className="admin-stat-card">
+                    <div style={styles.statValue} className="admin-stat-value">{products.length}</div>
                     <div style={styles.statLabel}>Total Products</div>
                 </div>
-                <div style={styles.statCard}>
-                    <div style={styles.statValue}>{filteredProducts.length}</div>
+                <div style={styles.statCard} className="admin-stat-card">
+                    <div style={styles.statValue} className="admin-stat-value">{filteredProducts.length}</div>
                     <div style={styles.statLabel}>Filtered Results</div>
                 </div>
             </div>
 
             {/* Search, Add Button, and Migrate */}
-            <div style={styles.searchBar}>
+            <div style={styles.searchBar} className="admin-search-bar">
                 <input
                     type="text"
                     placeholder="🔍 Search products by name or category..."
@@ -500,8 +499,8 @@ const AdminProductManager = () => {
                 </button>
             </div>
 
-            {/* Products Table */}
-            <div style={styles.productTableContainer}>
+            {/* Products Table — desktop view */}
+            <div style={styles.productTableContainer} className="admin-table-container admin-table-desktop">
                 {filteredProducts.length === 0 ? (
                     <div style={{ padding: '30px', textAlign: 'center', color: '#999' }}>
                         <p style={{ fontSize: '1.1em' }}>
@@ -512,12 +511,12 @@ const AdminProductManager = () => {
                     <table style={styles.productTable}>
                         <thead>
                             <tr>
-                                <th style={styles.tableHeader}>Product Name</th>
-                                <th style={styles.tableHeader}>Category</th>
-                                <th style={styles.tableHeader}>Price</th>
-                                <th style={styles.tableHeader}>Stock by Size</th>
-                                <th style={styles.tableHeader}>Total</th>
-                                <th style={styles.tableHeader}>Actions</th>
+                                <th className="admin-table-desktop-header" style={styles.tableHeader}>Product Name</th>
+                                <th className="admin-table-desktop-header" style={styles.tableHeader}>Category</th>
+                                <th className="admin-table-desktop-header" style={styles.tableHeader}>Price</th>
+                                <th className="admin-table-desktop-header" style={styles.tableHeader}>Stock by Size</th>
+                                <th className="admin-table-desktop-header" style={styles.tableHeader}>Total</th>
+                                <th className="admin-table-desktop-header" style={styles.tableHeader}>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -576,22 +575,24 @@ const AdminProductManager = () => {
                                             </span>
                                         </td>
                                         <td style={styles.tableCell}>
-                                            <button
-                                                style={styles.buttonSecondary}
-                                                onClick={() => openEditModal(product)}
-                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#8B6239'}
-                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colorSecondary}
-                                            >
-                                                ✏️ Edit
-                                            </button>
-                                            <button
-                                                style={styles.buttonDelete}
-                                                onClick={() => handleDeleteProduct(product._id, product.name)}
-                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#B0413C'}
-                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colorDanger}
-                                            >
-                                                🗑️ Delete
-                                            </button>
+                                            <div className="admin-action-buttons">
+                                                <button
+                                                    style={styles.buttonSecondary}
+                                                    onClick={() => openEditModal(product)}
+                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#8B6239'}
+                                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colorSecondary}
+                                                >
+                                                    ✏️ Edit
+                                                </button>
+                                                <button
+                                                    style={styles.buttonDelete}
+                                                    onClick={() => handleDeleteProduct(product._id, product.name)}
+                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#B0413C'}
+                                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colorDanger}
+                                                >
+                                                    🗑️ Delete
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 );
@@ -601,10 +602,91 @@ const AdminProductManager = () => {
                 )}
             </div>
 
+            {/* Products Cards — mobile view */}
+            <div className="admin-products-list admin-cards-mobile">
+                {filteredProducts.length === 0 ? (
+                    <div style={{ padding: '30px', textAlign: 'center', color: '#999' }}>
+                        <p style={{ fontSize: '1.1em' }}>
+                            {searchTerm ? '❌ No products found matching your search.' : '❌ No products in the database.'}
+                        </p>
+                    </div>
+                ) : (
+                    filteredProducts.map(product => {
+                        const totalStock = getTotalStock(product);
+                        return (
+                            <div key={product._id} className="admin-product-card">
+                                <div className="admin-product-card-header">
+                                    <span className="admin-product-card-name">{product.name}</span>
+                                    <span className="admin-product-card-category">{product.category}</span>
+                                </div>
+
+                                {product.imageUrl && (
+                                    <img
+                                        src={product.imageUrl}
+                                        alt={product.name}
+                                        className="admin-product-card-image admin-product-thumb"
+                                        onError={(e) => e.target.style.display = 'none'}
+                                    />
+                                )}
+
+                                <div className="admin-product-card-details">
+                                    <div className="admin-product-card-row">
+                                        <span className="admin-product-card-label">Price</span>
+                                        <span className="admin-product-card-value">${product.price.toFixed(2)}</span>
+                                    </div>
+                                    <div className="admin-product-card-row">
+                                        <span className="admin-product-card-label">Stock by Size</span>
+                                        <div className="admin-stock-sizes">
+                                            {SIZES.map(size => {
+                                                const sizeData = product.sizes?.find(s => s.size === size);
+                                                const stock = sizeData?.stock || 0;
+                                                return (
+                                                    <span
+                                                        key={size}
+                                                        className={`admin-stock-badge ${stock === 0 ? 'zero' : ''}`}
+                                                    >
+                                                        {size}:{stock}
+                                                    </span>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                    <div className="admin-product-card-row">
+                                        <span className="admin-product-card-label">Total Stock</span>
+                                        <span className={`admin-stock-badge ${totalStock === 0 ? 'zero' : ''}`}>
+                                            {totalStock}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="admin-action-buttons">
+                                    <button
+                                        style={styles.buttonSecondary}
+                                        onClick={() => openEditModal(product)}
+                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#8B6239'}
+                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colorSecondary}
+                                    >
+                                        ✏️ Edit
+                                    </button>
+                                    <button
+                                        style={styles.buttonDelete}
+                                        onClick={() => handleDeleteProduct(product._id, product.name)}
+                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#B0413C'}
+                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colorDanger}
+                                    >
+                                        🗑️ Delete
+                                    </button>
+                                </div>
+                            </div>
+                        );
+                    })
+                )}
+            </div>
+
             {/* Modal */}
             {showModal && (
-                <div style={modalStyles.overlay} onClick={closeModal}>
-                    <div style={modalStyles.modal} onClick={(e) => e.stopPropagation()}>
+                <div style={modalStyles.overlay} className="admin-modal-overlay" onClick={closeModal}>
+                    <div style={modalStyles.modal} className="admin-modal" onClick={(e) => e.stopPropagation()}>
                         <button
                             style={modalStyles.modalCloseButton}
                             onClick={closeModal}
@@ -612,7 +694,7 @@ const AdminProductManager = () => {
                             ✕
                         </button>
 
-                        <h2 style={modalStyles.modalHeader}>
+                        <h2 style={modalStyles.modalHeader} className="admin-modal-header">
                             {isEditMode ? '✏️ Edit Product' : '➕ Add New Product'}
                         </h2>
 
@@ -627,7 +709,7 @@ const AdminProductManager = () => {
                                 required
                             />
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                            <div className="admin-form-grid-2col">
                                 <input
                                     type="number"
                                     name="price"
@@ -657,7 +739,7 @@ const AdminProductManager = () => {
                                 <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold', color: colorPrimary }}>
                                     Stock by Size:
                                 </label>
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px' }}>
+                                <div className="admin-size-grid">
                                     {SIZES.map(size => {
                                         const sizeData = productData.sizes.find(s => s.size === size);
                                         return (
@@ -724,6 +806,7 @@ const AdminProductManager = () => {
                             <button
                                 type="submit"
                                 style={styles.submitButton}
+                                className="admin-submit-btn"
                                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#45A049'}
                                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colorSuccess}
                             >
@@ -734,6 +817,7 @@ const AdminProductManager = () => {
                                 type="button"
                                 onClick={closeModal}
                                 style={styles.cancelButton}
+                                className="admin-cancel-btn"
                                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#777'}
                                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#999'}
                             >
