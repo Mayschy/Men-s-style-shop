@@ -90,17 +90,6 @@ const Navbar = () => {
   };
   return (
     <nav style={navStyle}>
-      {" "}
-      <div className="navbar-left" style={{ display: "flex", alignItems: "center" }}>
-        {" "}
-        <NavLinkWithHover to="/" isLogo={true}>
-          MEN'S STYLE
-        </NavLinkWithHover>
-        <NavLinkWithHover to="/shop">{t("shop")}</NavLinkWithHover> {" "}
-        {user && user.role === "admin" && (
-          <NavLinkWithHover to="/admin/products">{t("adminPanel")}</NavLinkWithHover>
-        )}
-      </div>{" "}
       {/* Hamburger Menu Button for Mobile */}
       <button
         className="navbar-hamburger"
@@ -109,6 +98,7 @@ const Navbar = () => {
       >
         ☰
       </button>
+      {/* Navigation items — desktop uses navbar-left, mobile uses navbar-right accordion */}
       <div
         className={`navbar-right ${isMobileMenuOpen ? "mobile-open" : ""}`}
         style={{
@@ -117,7 +107,35 @@ const Navbar = () => {
           gap: "var(--space-md)",
         }}
       >
-        {" "}
+        {/* Desktop-only nav items (hidden in mobile accordion — shown in navbar-left instead) */}
+        <span className="navbar-desktop-only">
+          <NavLinkWithHover to="/" isLogo={true}>
+            MEN'S STYLE
+          </NavLinkWithHover>
+        </span>
+        <span className="navbar-desktop-only">
+          <NavLinkWithHover to="/shop">{t("shop")}</NavLinkWithHover>
+        </span>
+        <span className="navbar-desktop-only">
+          {user && user.role === "admin" && (
+            <NavLinkWithHover to="/admin/products">{t("adminPanel")}</NavLinkWithHover>
+          )}
+        </span>
+        {/* Mobile nav items (visible in accordion on <800px) */}
+        <span className="navbar-mobile-only">
+          <NavLinkWithHover to="/" isLogo={true}>
+            MEN'S STYLE
+          </NavLinkWithHover>
+        </span>
+        <span className="navbar-mobile-only">
+          <NavLinkWithHover to="/shop">{t("shop")}</NavLinkWithHover>
+        </span>
+        <span className="navbar-mobile-only">
+          {user && user.role === "admin" && (
+            <NavLinkWithHover to="/admin/products">{t("adminPanel")}</NavLinkWithHover>
+          )}
+        </span>
+        {/* Language toggle */}
         <button
           onClick={toggleLanguage}
           style={{

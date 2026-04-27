@@ -21,10 +21,25 @@
   padding: 8px 14px;
 }
 
+/* Mobile-only nav items hidden on desktop */
+.navbar-mobile-only {
+  display: none;
+}
+
 /* ===================================
    MOBILE / TABLET (799px and below)
    =================================== */
 @media (max-width: 799px) {
+  /* Desktop-only nav items hidden on mobile */
+  .navbar-desktop-only {
+    display: none !important;
+  }
+
+  /* Mobile-only items shown in accordion */
+  .navbar-mobile-only {
+    display: block !important;
+  }
+
   .navbar-left {
     display: none !important;
   }
