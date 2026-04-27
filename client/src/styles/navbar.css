@@ -21,7 +21,7 @@
   padding: 8px 14px;
 }
 
-/* Mobile-only nav items hidden on desktop */
+/* Mobile-only nav items hidden on desktop (also used by media query below) */
 .navbar-mobile-only {
   display: none;
 }
