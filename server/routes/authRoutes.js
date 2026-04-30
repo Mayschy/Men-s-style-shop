@@ -40,6 +40,7 @@ router.post("/register", async (req, res) => {
       firstName: firstName || "",
       lastName: lastName || "",
       shippingAddress,
+      orders: [],
     });
 
     await newUser.save();

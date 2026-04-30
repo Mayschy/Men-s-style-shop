@@ -30,10 +30,24 @@ mongoose.connect(process.env.MONGODB_URI, {
     retryWrites: true,
     family: 4
 })
-.then(() => {
+.then(async () => {
     console.log('✅ MongoDB connected successfully!');
     console.log('   Database:', mongoose.connection.name || 'default');
     console.log('   Host:', mongoose.connection.host || 'unknown');
+
+    // Cleanup problematic unique index on orders.orderNumber (E11000 duplicate key error)
+    // This index causes issues because null values violate unique constraint
+    try {
+        const User = require('./models/User');
+        await User.collection.dropIndex('orders.orderNumber_1');
+        console.log('✅ Dropped problematic orders.orderNumber unique index');
+    } catch (err) {
+        if (err.codeName === 'IndexNotFound') {
+            console.log('ℹ️  orders.orderNumber index not found (OK)');
+        } else {
+            console.warn('⚠️  Could not drop orders.orderNumber index:', err.message);
+        }
+    }
 })
 .catch(err => {
     console.error('❌ MongoDB connection FAILED!');

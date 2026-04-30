@@ -39,7 +39,7 @@ const orderItemSchema = new mongoose.Schema({
 });
 
 const orderSchema = new mongoose.Schema({
-  orderNumber: { type: String, required: true, unique: true },
+  orderNumber: { type: String, required: true },
   items: [orderItemSchema],
   totalAmount: { type: Number, required: true },
   shippingAddress: {
