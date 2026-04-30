@@ -143,9 +143,9 @@ const translations = {
     // Footer
     company: 'COMPANY',
     aboutUs: 'About Us',
-    careers: 'Careers (TODO)',
+    careers: 'Careers',
     help: 'HELP',
-    faq: 'FAQ (TODO)',
+    faq: 'FAQ',
     shippingReturns: 'Shipping & Returns',
     contactUs: 'CONTACT US',
     needAssistance: 'Need assistance with your order?',
@@ -358,9 +358,9 @@ const translations = {
     // Footer
     company: 'КОМПАНІЯ',
     aboutUs: 'Про нас',
-    careers: 'Кар\'єра (TODO)',
+    careers: 'Кар\'єра',
     help: 'ДОПОМОГА',
-    faq: 'FAQ (TODO)',
+    faq: 'Питання',
     shippingReturns: 'Доставка та повернення',
     contactUs: 'ЗВЯЖІТЬСЯ З НАМИ',
     needAssistance: 'Вам потрібна допомога з вашим замовленням?',
