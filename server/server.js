@@ -59,7 +59,8 @@ mongoose.connection.on('error', (err) => {
 });
 
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
 
 
 const allowedOrigins = [
@@ -101,12 +102,19 @@ app.use('/api/ai', aiRouter);
 app.use((err, req, res, next) => {
     console.error('❌ Error:', {
         message: err.message,
+        name: err.name,
         path: req.path,
         method: req.method,
-        status: err.status || 500
+        status: err.status || 500,
+        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
     });
-    res.status(err.status || 500).json({
-        error: err.message,
+
+    // Ensure err is an Error object
+    const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+    const errorStatus = typeof err.status === 'number' ? err.status : 500;
+
+    res.status(errorStatus).json({
+        error: errorMessage,
         path: req.path
     });
 });

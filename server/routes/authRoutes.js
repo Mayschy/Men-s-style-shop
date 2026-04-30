@@ -9,26 +9,39 @@ const jwt = require("jsonwebtoken");
 // (POST /api/auth/register) ---
 router.post("/register", async (req, res) => {
   try {
-    const { email, password, firstName, lastName, street, city, zip, country } =
-      req.body;
+    const { email, password, firstName, lastName, street, city, zip, country } = req.body;
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res
-        .status(400)
-        .json({ message: "User with this email already exists." });
+    // Validate required fields
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required." });
     }
 
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User with this email already exists." });
+    }
+
+    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Build shipping address object with only defined values
+    const shippingAddress = {};
+    if (street) shippingAddress.street = street;
+    if (city) shippingAddress.city = city;
+    if (zip) shippingAddress.zip = zip;
+    if (country) shippingAddress.country = country;
+
+    // Create new user
     const newUser = new User({
       email,
       password: hashedPassword,
-      firstName,
-      lastName,
-      shippingAddress: { street, city, zip, country },
+      firstName: firstName || "",
+      lastName: lastName || "",
+      shippingAddress,
     });
+
     await newUser.save();
 
     res.status(201).json({
@@ -36,6 +49,7 @@ router.post("/register", async (req, res) => {
       userId: newUser._id,
     });
   } catch (err) {
+    console.error("Registration error:", err);
     res.status(500).json({
       message: "Server error during registration.",
       error: err.message,

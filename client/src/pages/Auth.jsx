@@ -182,44 +182,56 @@ const Auth = () => {
             />
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr 1fr",
+                display: "flex",
+                flexWrap: "wrap",
                 gap: "10px",
               }}
             >
-              <input
-                type="text"
-                placeholder={t("city")}
-                value={formData.city}
-                onChange={(e) => updateField("city", e.target.value)}
-                style={{
-                  padding: "10px",
-                  border: `1px solid var(--color-border)`,
-                  borderRadius: "4px",
-                }}
-              />
-              <input
-                type="text"
-                placeholder={t("zip")}
-                value={formData.zip}
-                onChange={(e) => updateField("zip", e.target.value)}
-                style={{
-                  padding: "10px",
-                  border: `1px solid var(--color-border)`,
-                  borderRadius: "4px",
-                }}
-              />
-              <input
-                type="text"
-                placeholder={t("country")}
-                value={formData.country}
-                onChange={(e) => updateField("country", e.target.value)}
-                style={{
-                  padding: "10px",
-                  border: `1px solid var(--color-border)`,
-                  borderRadius: "4px",
-                }}
-              />
+              <div style={{ flex: "1 1 120px", minWidth: "100px" }}>
+                <input
+                  type="text"
+                  placeholder={t("city")}
+                  value={formData.city}
+                  onChange={(e) => updateField("city", e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    border: `1px solid var(--color-border)`,
+                    borderRadius: "4px",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+              <div style={{ flex: "1 1 100px", minWidth: "80px" }}>
+                <input
+                  type="text"
+                  placeholder={t("zip")}
+                  value={formData.zip}
+                  onChange={(e) => updateField("zip", e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    border: `1px solid var(--color-border)`,
+                    borderRadius: "4px",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+              <div style={{ flex: "1 1 120px", minWidth: "100px" }}>
+                <input
+                  type="text"
+                  placeholder={t("country")}
+                  value={formData.country}
+                  onChange={(e) => updateField("country", e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    border: `1px solid var(--color-border)`,
+                    borderRadius: "4px",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
             </div>
           </div>
         )}
