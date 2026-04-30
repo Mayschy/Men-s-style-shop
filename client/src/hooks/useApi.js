@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-import { useAuth } from '../context/AuthContext';
 
 /**
  * Custom hook for centralized API calls with error/loading state management
@@ -8,7 +7,6 @@ import { useAuth } from '../context/AuthContext';
 export const useApi = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { user } = useAuth();
 
   /**
    * Generic fetch function
@@ -30,8 +28,9 @@ export const useApi = () => {
       };
 
       // Add auth token if available
-      if (user?.token) {
-        options.headers.Authorization = `Bearer ${user.token}`;
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        options.headers.Authorization = `Bearer ${token}`;
       }
 
       // Add request body for POST/PUT

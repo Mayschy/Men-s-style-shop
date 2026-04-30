@@ -107,9 +107,3 @@ export const DELAYS = {
   DEBOUNCE_SEARCH: 300,
   LOADING_MIN: 500,
 };
-
-// Support contact URLs
-export const SUPPORT_URLS = {
-  TELEGRAM: 'https://t.me/Mayushy',
-  EMAIL: 'mailto:mvasilyev2016@gmail.com',
-};

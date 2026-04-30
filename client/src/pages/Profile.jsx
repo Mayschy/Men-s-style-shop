@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
-import { API_BASE_URL } from "../config/api";
 import "./Profile.css";
 
 
@@ -55,6 +54,8 @@ const Profile = () => {
     zip: "",
     country: "",
   });
+
+  const API_BASE_URL = "https://men-style-shop.onrender.com";
 
   const fetchProfile = async () => {
     setLoading(true);

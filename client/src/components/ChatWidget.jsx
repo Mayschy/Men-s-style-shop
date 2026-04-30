@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { API_ENDPOINTS, SUPPORT_URLS } from '../config/api';
 import '../styles/ChatWidget.css';
 
-const API_URL = API_ENDPOINTS.AI_CHAT.replace('/chat', '');
-const TELEGRAM_URL = SUPPORT_URLS.TELEGRAM;
-const EMAIL_URL = SUPPORT_URLS.EMAIL;
+const API_URL = 'https://men-style-shop.onrender.com/api';
+const PRODUCT_BASE_URL = 'https://mensfashion.site/product/';
+const TELEGRAM_URL = 'https://t.me/Mayushy';
+const EMAIL_URL = 'mailto:mvasilyev2016@gmail.com';
 
 const CHAT_TRANSLATIONS = {
   en: {

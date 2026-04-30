@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { API_ENDPOINTS } from '../config/api';
 import '../styles/admin.css';
 
-const BASE_URL = API_ENDPOINTS.PRODUCTS_ALL;
+const BASE_URL = 'https://men-style-shop.onrender.com/api/products';
 
 const colorPrimary = '#333A40';
 const colorSecondary = '#A67C52';
@@ -418,7 +417,7 @@ const AdminProductManager = () => {
         }
 
         try {
-            const response = await fetch(API_ENDPOINTS.PRODUCTS_MIGRATE, {
+            const response = await fetch(`${BASE_URL}/migrate`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
