@@ -100,6 +100,14 @@ export const commonStyles = {
     color: "var(--color-text-light)",
     fontSize: "0.9em",
   },
+
+  // Icon styles
+  minimalistIcon: {
+    width: "24px",
+    height: "24px",
+    filter: "invert(0) sepia(0) saturate(0) hue-rotate(0deg) brightness(0) contrast(1)",
+    display: "block",
+  },
 };
 
 // Helper function to merge styles
