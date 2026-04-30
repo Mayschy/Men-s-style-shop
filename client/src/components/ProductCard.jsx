@@ -169,20 +169,12 @@ const ProductCard = React.memo(({ product }) => {
   );
 
   return (
-    <>
-      {isOutOfStock ? (
-        <div style={{ textDecoration: "none", color: "inherit" }}>
-          {content}
-        </div>
-      ) : (
-        <Link
-          to={`/product/${product._id}`}
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
-          {content}
-        </Link>
-      )}
-    </>
+    <Link
+      to={`/product/${product._id}`}
+      style={{ textDecoration: "none", color: "inherit" }}
+    >
+      {content}
+    </Link>
   );
 }, (prev, next) => prev.product._id === next.product._id);
 

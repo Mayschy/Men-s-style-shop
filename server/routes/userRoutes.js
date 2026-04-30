@@ -89,17 +89,14 @@ router.post("/cart", auth, async (req, res) => {
       return res.status(400).json({ message: `Not enough stock for size ${size}.` });
     }
 
-    // Decrement stock for specific size only
-    await Product.updateOne(
-      { _id: productId, "sizes.size": size },
+    // Decrement stock atomically with validation (prevents negative stock)
+    const result = await Product.updateOne(
+      { _id: productId, "sizes.size": size, "sizes.$.stock": { $gte: quantity } },
       { $inc: { "sizes.$.stock": -quantity } }
     );
 
-    // Check if all sizes are out of stock
-    const updatedProduct = await Product.findById(productId);
-    const allOutOfStock = updatedProduct.sizes.every(s => s.stock === 0);
-    if (allOutOfStock) {
-      await Product.findByIdAndUpdate(productId, { isAvailable: false });
+    if (result.modifiedCount === 0) {
+      return res.status(400).json({ message: `Not enough stock for size ${size}.` });
     }
 
     // Add or update item in user's cart (distinguish by productId + size)
@@ -149,9 +146,6 @@ router.delete("/cart/:productId", auth, async (req, res) => {
       { _id: productId, "sizes.size": restoreSize },
       { $inc: { "sizes.$.stock": restoreQuantity } }
     );
-
-    // Update availability
-    await Product.findByIdAndUpdate(productId, { isAvailable: true });
 
     // Remove item from user's cart
     user.cart = user.cart.filter(

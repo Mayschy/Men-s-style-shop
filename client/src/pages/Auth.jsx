@@ -52,7 +52,7 @@ const Auth = () => {
         setAuthError(result.error || t("error"));
       }
     } else {
-      const endpoint = `${API_ENDPOINTS.BASE_URL}/api/auth/register`;
+      const endpoint = API_ENDPOINTS.AUTH_REGISTER;
       const body = {
         email: formData.email,
         password: formData.password,

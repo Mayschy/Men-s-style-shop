@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config/api';
 
 const AuthContext = createContext(null);
-
-const API_BASE_URL = 'https://men-style-shop.onrender.com/api';
 
 export const useAuth = () => {
     return useContext(AuthContext);
