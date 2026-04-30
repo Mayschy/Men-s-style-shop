@@ -52,7 +52,7 @@ const Auth = () => {
         setAuthError(result.error || t("error"));
       }
     } else {
-      const endpoint = `${API_ENDPOINTS.BASE_URL}/api/auth/register`;
+      const endpoint = API_ENDPOINTS.AUTH_REGISTER;
       const body = {
         email: formData.email,
         password: formData.password,
@@ -71,7 +71,8 @@ const Auth = () => {
           body: JSON.stringify(body),
         });
 
-        const data = await response.json();
+        const text = await response.text();
+        const data = text ? JSON.parse(text) : {};
 
         if (response.ok) {
           showToast(t("success"), 'success');
