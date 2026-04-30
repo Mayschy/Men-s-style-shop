@@ -6,6 +6,12 @@ const Careers = () => {
   const { t } = useLanguage();
   const [emailHovered, setEmailHovered] = useState(false);
 
+  const valueIcons = [
+    "/assets/icons/purpose.svg",
+    "/assets/icons/impact.svg",
+    "/assets/icons/growth.svg",
+  ];
+
   return (
     <div className="info-page">
       <div className="info-hero">
@@ -38,15 +44,33 @@ const Careers = () => {
 
         <div className="info-values">
           <div className="info-value-card">
-            <span className="info-value-icon">🎯</span>
+            <span className="info-value-icon">
+              <img
+                src={valueIcons[0]}
+                alt="icon"
+                className="minimalist-icon"
+              />
+            </span>
             <h3>{t("careersPurpose")}</h3>
           </div>
           <div className="info-value-card">
-            <span className="info-value-icon">🚀</span>
+            <span className="info-value-icon">
+              <img
+                src={valueIcons[1]}
+                alt="icon"
+                className="minimalist-icon"
+              />
+            </span>
             <h3>{t("careersImpact")}</h3>
           </div>
           <div className="info-value-card">
-            <span className="info-value-icon">🤝</span>
+            <span className="info-value-icon">
+              <img
+                src={valueIcons[2]}
+                alt="icon"
+                className="minimalist-icon"
+              />
+            </span>
             <h3>{t("careersGrowth")}</h3>
           </div>
         </div>

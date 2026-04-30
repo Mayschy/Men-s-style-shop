@@ -7,12 +7,12 @@ const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(null);
 
   const faqKeys = [
-    { q: "faqTrackOrder", a: "faqTrackOrderAnswer", icon: "📍" },
-    { q: "faqReturnPolicy", a: "faqReturnPolicyAnswer", icon: "↩️" },
-    { q: "faqShippingTime", a: "faqShippingTimeAnswer", icon: "📦" },
-    { q: "faqInternational", a: "faqInternationalAnswer", icon: "🌍" },
-    { q: "faqSizeGuide", a: "faqSizeGuideAnswer", icon: "📏" },
-    { q: "faqChangeOrder", a: "faqChangeOrderAnswer", icon: "✏️" },
+    { q: "faqTrackOrder", a: "faqTrackOrderAnswer", icon: "/assets/icons/track-order.svg" },
+    { q: "faqReturnPolicy", a: "faqReturnPolicyAnswer", icon: "/assets/icons/return-policy.svg" },
+    { q: "faqShippingTime", a: "faqShippingTimeAnswer", icon: "/assets/icons/shipping-time.svg" },
+    { q: "faqInternational", a: "faqInternationalAnswer", icon: "/assets/icons/international.svg" },
+    { q: "faqSizeGuide", a: "faqSizeGuideAnswer", icon: "/assets/icons/size-guide.svg" },
+    { q: "faqChangeOrder", a: "faqChangeOrderAnswer", icon: "/assets/icons/change-order.svg" },
   ];
 
   const toggleFAQ = (index) => {
@@ -41,7 +41,9 @@ const FAQ = () => {
                 className="faq-question"
                 onClick={() => toggleFAQ(index)}
               >
-                <span className="faq-icon">{faq.icon}</span>
+                <span className="faq-icon">
+                  <img src={faq.icon} alt="icon" className="minimalist-icon" />
+                </span>
                 <span className="faq-q-text">{t(faq.q)}</span>
                 <span className={`faq-toggle ${openIndex === index ? "rotated" : ""}`}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

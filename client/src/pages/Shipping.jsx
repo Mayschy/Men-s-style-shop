@@ -13,7 +13,12 @@ const Shipping = () => {
     { titleKey: "shippingDelivered", descKey: "shippingDeliveredDesc" },
   ];
 
-  const stepIcons = ["📦", "⚙️", "📮", "🏠"];
+  const stepIcons = [
+    "/assets/icons/place-order.svg",
+    "/assets/icons/processing.svg",
+    "/assets/icons/shipped.svg",
+    "/assets/icons/delivered.svg",
+  ];
 
   return (
     <div className="info-page">
@@ -54,7 +59,13 @@ const Shipping = () => {
               onClick={() => setActiveStep(index === activeStep ? -1 : index)}
             >
               <div className="shipping-step-number">{index + 1}</div>
-              <div className="shipping-step-icon">{stepIcons[index]}</div>
+              <div className="shipping-step-icon">
+                <img
+                  src={stepIcons[index]}
+                  alt="icon"
+                  className="minimalist-icon"
+                />
+              </div>
               <h3>{t(step.titleKey)}</h3>
               <p>{t(step.descKey)}</p>
             </div>
